@@ -4,7 +4,7 @@ title: Knowledge Docs Index
 concept: knowledge_docs_index
 topic: root
 created_at: '2026-03-16T00:00:00+08:00'
-updated_at: '2026-03-16T14:56:22+08:00'
+updated_at: '2026-03-16T18:05:42+08:00'
 source_basis:
   - derived_repository_index
 time_context: snapshot_2026_03_16
@@ -35,6 +35,8 @@ open_questions:
 ## programming-languages
 
 - [协程认知手册：以 C++20 为例，从概念到可操作模型](./programming-languages/cpp20-coroutine-playbook.md)
+- [PImpl：当你真正想隔离的是 ABI、编译依赖与实现细节](./programming-languages/pimpl.md)
+- [回调函数：显式 continuation、异步边界与变量生命周期管理](./programming-languages/callback-lifetime-management.md)
 
 ## computer-systems
 
