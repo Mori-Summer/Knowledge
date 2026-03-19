@@ -1,10 +1,10 @@
 ---
 doc_id: programming-languages-callback-lifetime-management
 title: 回调函数：显式 continuation、异步边界与变量生命周期管理
-concept: callback function and callback lifetime management
+concept: callback_lifetime_management
 topic: programming-languages
 created_at: '2026-03-16T18:05:42+08:00'
-updated_at: '2026-03-16T18:05:42+08:00'
+updated_at: '2026-03-19T21:20:00+08:00'
 source_basis:
   - cpp_core_guidelines_f52_f54_2026_03_16
   - mdn_closures_2026_03_16

@@ -1,10 +1,10 @@
 ---
 doc_id: computer-systems-memory-order
 title: Memory Order：从原子性到可见性与重排序控制
-concept: memory order
+concept: memory_order
 topic: computer-systems
 created_at: '2026-03-16T10:40:00+08:00'
-updated_at: '2026-03-16T11:12:00+08:00'
+updated_at: '2026-03-19T21:20:00+08:00'
 source_basis:
   - cxx_draft_atomics_order_2026_03_16
   - cxx_draft_depr_atomics_order_2026_03_16

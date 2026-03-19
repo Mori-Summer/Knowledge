@@ -1,10 +1,10 @@
 ---
 doc_id: computer-systems-happens-before
 title: Happens-Before：并发里真正决定“可见”与“成不成 race”的关系
-concept: happens-before
+concept: happens_before
 topic: computer-systems
 created_at: '2026-03-16T14:16:47+08:00'
-updated_at: '2026-03-16T14:16:47+08:00'
+updated_at: '2026-03-19T21:20:00+08:00'
 source_basis:
   - cxx_draft_intro_races_2026_03_16
   - cxx_draft_atomics_order_2026_03_16

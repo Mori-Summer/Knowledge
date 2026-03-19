@@ -4,11 +4,13 @@ title: 固定概念文档生成 Prompt
 concept: fixed_concept_doc_generation_prompt
 topic: methodology
 created_at: '2026-03-16T10:12:00+08:00'
-updated_at: '2026-03-16T10:12:00+08:00'
+updated_at: '2026-03-19T18:10:00+08:00'
 source_basis:
   - architecture_rules
   - concept_template
-time_context: prompt_baseline_2026_03_16
+  - methodology_operator_guide
+  - concept_document_quality_gate
+time_context: prompt_baseline_2026_03_19
 applicability: future_concept_doc_generation_and_upgrade
 prompt_version: concept_generation_prompt_v1
 template_version: concept_doc_v1
@@ -17,28 +19,36 @@ related_docs:
   - docs/methodology/concept-document-template.md
   - docs/methodology/learning-new-things-playbook.md
   - docs/methodology/cognitive-modeling-playbook.md
+  - docs/methodology/methodology-operator-guide.md
+  - docs/methodology/concept-document-quality-gate.md
 open_questions:
-  - 后续是否需要再拆出“新建文档 prompt”和“升级旧文档 prompt”两个独立版本？
+  - 未来是否需要把“生成”“升级”“审查”三种 prompt 完全拆成三个独立文件？
 ---
 
 # 固定概念文档生成 Prompt
 
-这份文件定义以后你触发我生成知识文档时的固定入口。
+这份文件定义以后你触发概念文档生成与升级时的固定入口。
 
-目标不是“让 AI 解释一个词”，而是让它按你已经定下的知识库规则，生成一篇可直接进入 `docs/` 的模型化文档。
+目标不是“让 AI 解释一个词”，而是让它按你已经定下的知识库规则，生成一篇可直接进入 `docs/` 的模型化文档，并完成必要的仓库集成动作。
+
+建议配套使用顺序是：
+
+1. 先看 [methodology-operator-guide.md](/Users/maxwell/Knowledge/docs/methodology/methodology-operator-guide.md)
+2. 再按 [concept-document-template.md](/Users/maxwell/Knowledge/docs/methodology/concept-document-template.md) 组织输出
+3. 最后用 [concept-document-quality-gate.md](/Users/maxwell/Knowledge/docs/methodology/concept-document-quality-gate.md) 做验收
 
 ## 1. 最短可用指令
 
 如果你想最快触发，直接发这一句：
 
 ```text
-按 docs/methodology/concept-document-template.md 和两份 playbook，为概念 {concept} 生成一篇新的知识文档，并直接放入合适的 docs/{topic}/ 目录。不要写成泛泛解释，必须包含：问题定义、对象边界、核心结构、机制/因果链、关键 tradeoff 与失败模式、应用场景、工业/现实世界锚点、当前推荐实践、过时路径与替代、自测题、迁移入口、未解问题、参考资料，并补齐统一 frontmatter。
+按 docs/methodology/methodology-operator-guide.md、docs/methodology/concept-document-template.md、docs/methodology/concept-document-quality-gate.md 和两份 playbook，为概念 {concept} 新建一篇知识库文档。直接写入合适的 docs/{topic}/ 目录，文件名使用 kebab-case，补齐统一 frontmatter，并在完成后更新 docs/index.md。不要写成泛泛解释，必须建立可复用内部模型。
 ```
 
 例如：
 
 ```text
-按 docs/methodology/concept-document-template.md 和两份 playbook，为概念 memory order 生成一篇新的知识文档，并直接放入合适的 docs/{topic}/ 目录。不要写成泛泛解释，必须包含：问题定义、对象边界、核心结构、机制/因果链、关键 tradeoff 与失败模式、应用场景、工业/现实世界锚点、当前推荐实践、过时路径与替代、自测题、迁移入口、未解问题、参考资料，并补齐统一 frontmatter。
+按 docs/methodology/methodology-operator-guide.md、docs/methodology/concept-document-template.md、docs/methodology/concept-document-quality-gate.md 和两份 playbook，为概念 memory order 新建一篇知识库文档。直接写入合适的 docs/{topic}/ 目录，文件名使用 kebab-case，补齐统一 frontmatter，并在完成后更新 docs/index.md。不要写成泛泛解释，必须建立可复用内部模型。
 ```
 
 ## 2. 推荐标准指令
@@ -50,9 +60,11 @@ open_questions:
 
 要求：
 1. 严格遵循：
+   - docs/methodology/methodology-operator-guide.md
    - docs/methodology/learning-new-things-playbook.md
    - docs/methodology/cognitive-modeling-playbook.md
    - docs/methodology/concept-document-template.md
+   - docs/methodology/concept-document-quality-gate.md
 2. 输出目标不是术语解释，而是建立可复用的内部模型。
 3. 文档必须直接写入合适的 docs/{topic}/ 目录，文件名使用 kebab-case，并补齐统一 frontmatter。
 4. 文档必须至少包含：
@@ -71,15 +83,23 @@ open_questions:
    - 参考资料
 5. 不能泛泛而谈。工业场景必须真实，若提到旧技术或旧做法，必须解释为什么旧、局限在哪、现在更推荐什么。
 6. 文档要以“我读完后能分析问题、能迁移模型”为标准，不以“像一篇百科文章”为标准。
+7. 如果正文涉及当前实践、现行制度、最新状态、当前产品行为或其他时间敏感内容，必须：
+   - 明确写出核对日期
+   - 优先使用一手或官方来源
+   - 区分事实、推断与结论
+8. 新增正式文档后，顺手更新 docs/index.md。
+9. 交付前按 docs/methodology/concept-document-quality-gate.md 自查；如果不满足 `upgraded_v1` 条件，就不要伪装成已经达标。
 
 补充上下文：
 - 所属主题：{topic}
 - 我是在什么场景下遇到它的：{context_where_i_met_it}
 - 我现在最不理解的点：{what_confuses_me}
 - 我希望后续能拿它分析什么问题：{future_use_case}
+- 这个概念是否时间敏感：{is_time_sensitive}
+- 我希望看到哪些真实工业锚点：{preferred_real_world_anchors}
 ```
 
-## 3. `memory order` 的建议触发方式
+## 3. 一个技术概念示例：`memory order`
 
 你以后如果想生成 `memory order`，直接这样发就够了：
 
@@ -88,13 +108,16 @@ open_questions:
 
 要求：
 1. 严格遵循：
+   - docs/methodology/methodology-operator-guide.md
    - docs/methodology/learning-new-things-playbook.md
    - docs/methodology/cognitive-modeling-playbook.md
    - docs/methodology/concept-document-template.md
+   - docs/methodology/concept-document-quality-gate.md
 2. 输出目标不是术语解释，而是建立可复用的内部模型。
-3. 文档直接写入合适的 docs/{topic}/ 目录，补齐统一 frontmatter。
+3. 文档直接写入合适的 docs/{topic}/ 目录，补齐统一 frontmatter，并在完成后更新 docs/index.md。
 4. 必须包含：问题定义、对象边界、核心结构、机制/因果链、关键 tradeoff 与失败模式、应用场景、工业/现实世界锚点、当前推荐实践、过时路径与替代、自测题、迁移入口、未解问题、参考资料。
-5. 重点讲清：
+5. 交付前按 docs/methodology/concept-document-quality-gate.md 自查，不要把未达标稿伪装成正式文档。
+6. 重点讲清：
    - memory order 到底在解决什么问题
    - 它和 atomic、synchronization、visibility、reordering、happens-before 的边界
    - acquire / release / seq_cst / relaxed 的核心差异
@@ -112,13 +135,15 @@ open_questions:
 如果不是新建，而是让已有文档继续升级，直接用这个：
 
 ```text
-按 docs/methodology/concept-document-template.md 升级现有文档 {path}。
+按 docs/methodology/methodology-operator-guide.md、docs/methodology/concept-document-template.md 和 docs/methodology/concept-document-quality-gate.md 升级现有文档 {path}。
 
 要求：
 - 保留原有高价值内容，不要整篇重写
 - 补齐当前缺失的标准章节和 frontmatter 字段
 - 把文档提升到可保留、可复用、可迁移的状态
 - 重点补：工业/现实世界锚点、当前推荐实践、过时路径与替代、自测题、迁移入口、未解问题
+- 如果正文包含时间敏感内容，补上核对日期和更强来源
+- 如果升级完成后达到正式文档标准，顺手更新 docs/index.md（若该文档尚未被索引）
 ```
 
 ## 5. 你以后只需要告诉我的最小信息
@@ -141,9 +166,10 @@ open_questions:
 
 ## 6. 最稳的使用习惯
 
-以后建议你把触发分成两类：
+以后建议你把触发分成三类：
 
 - 新建文档：`为概念 X 新建一篇知识库文档`
 - 升级旧文档：`按统一模板升级现有文档 Y`
+- 审查达标：`按 concept-document-quality-gate 审查文档 Z`
 
-这样我会自动进入两种不同的工作模式，而不是把“生成新文档”和“修旧文档”混在一起。
+这样我会自动进入三种不同的工作模式，而不是把“生成”“修订”“验收”混在一起。

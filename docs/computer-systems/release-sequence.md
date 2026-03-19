@@ -1,10 +1,10 @@
 ---
 doc_id: computer-systems-release-sequence
 title: Release Sequence：为什么 release 之后的一串 RMW 还能继续“带着发布语义往前走”
-concept: release sequence
+concept: release_sequence
 topic: computer-systems
 created_at: '2026-03-16T14:16:47+08:00'
-updated_at: '2026-03-16T14:16:47+08:00'
+updated_at: '2026-03-19T21:20:00+08:00'
 source_basis:
   - cxx_draft_intro_races_2026_03_16
   - cxx_draft_atomics_order_2026_03_16

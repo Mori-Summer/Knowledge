@@ -1,10 +1,10 @@
 ---
 doc_id: computer-systems-cache-coherence
 title: Cache Coherence：同一份数据为什么不会在不同核心缓存里“各说各话”
-concept: cache coherence
+concept: cache_coherence
 topic: computer-systems
 created_at: '2026-03-16T14:16:47+08:00'
-updated_at: '2026-03-16T14:16:47+08:00'
+updated_at: '2026-03-19T21:20:00+08:00'
 source_basis:
   - linux_kernel_lkmm_explanation_2026_03_16
   - intel_xeon_directory_article_2026_03_16

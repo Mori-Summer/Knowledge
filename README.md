@@ -1,195 +1,198 @@
 # Knowledge
 
-一个用来沉淀“可学习、可建模、可迁移”知识文档的 Markdown 仓库。
+一个用于沉淀“可学习、可建模、可迁移”知识文档的 Markdown 仓库。
 
-这个项目的目标，不是收集一堆术语解释，也不是做百科式笔记，而是用统一的方法把一个概念写成一篇以后还能反复调用的文档。  
-理想状态是：你读完一篇文档后，不只是“知道这个词”，而是能拿它去分析问题、定位边界、建立模型、迁移到相邻主题。
+这个仓库的目标，不是收集术语解释，也不是写百科式摘要，而是把一个概念压缩成以后还能反复调用的内部模型。  
+理想结果是：读完一篇文档后，你不只是“知道这个词”，而是能用它分析问题、判断边界、解释机制、迁移到相邻主题。
 
-## 这类文档解决什么问题
+## 这个仓库现在长什么样
 
-很多知识库会在两个方向上失效：
+当前仓库已经形成了比较明确的两层结构：
+
+- `docs/{topic}/`：正式概念文档，按主题分目录归档
+- `docs/methodology/`：方法论栈，负责“怎么学、怎么建模、怎么输出、怎么验收、怎么触发”
+
+也就是说，这里不只是放文档，还放了一套生成、升级、审查概念文档的工作规程。
+
+## 仓库目标
+
+这个仓库要避免两类常见失败：
 
 - 只有定义，没有机制，读完还是不会分析
-- 只有碎片化笔记，没有统一结构，过段时间就无法复用
+- 只有碎片笔记，没有统一结构，过段时间无法复用
 
-这个仓库希望避免这两种失败模式。  
-这里的文档默认都应该回答：
+因此，这里的概念文档默认都应该回答：
 
-1. 这个概念试图解决什么问题
+1. 它试图解决什么问题
 2. 它的边界在哪里，不是什么
 3. 它由哪些关键结构构成
-4. 它是如何运转的，核心因果链是什么
-5. 它什么时候有效，什么时候失效
+4. 它如何运转，核心因果链是什么
+5. 什么时候有效，什么时候失效
 6. 现实里它怎样被使用，工业上为什么关心它
 7. 旧做法为什么不够好，现在更推荐什么
 8. 怎样验证自己是否真的理解了
-9. 怎样把这个模型迁移到相邻问题
+9. 怎样把模型迁移到相邻问题
 10. 还有哪些未解问题值得继续深挖
 
-## 适用范围
-
-这个仓库不是只写技术概念。  
-它适用于：
-
-- 计算机系统
-- 编程语言
-- AI 系统
-- 数学对象
-- 图像处理方法
-- 经济金融概念
-- 其他可以被“问题-结构-机制-边界-应用”方式建模的主题
-
-## 仓库结构
+## 当前目录结构
 
 ```text
 docs/
-  methodology/                方法论文档
+  methodology/                方法论文档与执行入口
   ai-systems/                 AI 系统相关概念
   computer-systems/           计算机系统相关概念
-  programming-languages/      编程语言相关概念
+  economics/                  经济学与制度类概念
   image-processing/           图像处理相关概念
+  programming-languages/      编程语言相关概念
+  systems/                    系统设计与一般系统概念
   _reports/                   规范化/升级报告
   index.md                    文档导航
 ```
 
-关键文件：
+入口文档：
 
-- [docs/methodology/learning-new-things-playbook.md](/Users/maxwell/Knowledge/docs/methodology/learning-new-things-playbook.md)：学习新概念的方法论
-- [docs/methodology/cognitive-modeling-playbook.md](/Users/maxwell/Knowledge/docs/methodology/cognitive-modeling-playbook.md)：建模和分析问题的方法论
-- [docs/methodology/concept-document-template.md](/Users/maxwell/Knowledge/docs/methodology/concept-document-template.md)：统一概念文档模板
-- [docs/methodology/fixed-concept-generation-prompt.md](/Users/maxwell/Knowledge/docs/methodology/fixed-concept-generation-prompt.md)：固定生成指令
-- [docs/index.md](/Users/maxwell/Knowledge/docs/index.md)：当前文档导航
-- [CONTRIBUTING.md](/Users/maxwell/Knowledge/CONTRIBUTING.md)：继续新增或升级知识文档时的执行规范
+- [docs/index.md](/Users/maxwell/Knowledge/docs/index.md)：当前概念文档导航
+- [CONTRIBUTING.md](/Users/maxwell/Knowledge/CONTRIBUTING.md)：贡献与维护规则
 
-## 文档质量标准
+## 方法论栈
 
-一篇合格的概念文档，不应该只是“写得通顺”。  
-它至少要满足下面这些要求：
+当前方法论已经分成 6 份角色明确的文档：
 
-- 能看出清晰的问题定义和对象边界
-- 有核心结构和主链路，而不是概念堆砌
-- 有真实的应用场景和工业/现实世界锚点
-- 对时间敏感内容给出日期语境，并尽量使用一手资料
-- 如果提到旧技术、旧做法或被淘汰路径，必须解释为什么旧、替代方案是什么
-- 有自测题、验证入口或纠错入口
-- 有迁移入口，能把模型引向相邻问题
-- 不把文档写成泛泛而谈的百科条目
+- [methodology-operator-guide.md](/Users/maxwell/Knowledge/docs/methodology/methodology-operator-guide.md)
+  作用：说明整套方法论文档怎么读、怎么组合、怎么用于新建 / 升级 / 验收
 
-## 如何生成一篇新文档
+- [learning-new-things-playbook.md](/Users/maxwell/Knowledge/docs/methodology/learning-new-things-playbook.md)
+  作用：定义“怎么把一个陌生对象学到可理解、可操作、可迁移”
 
-最推荐的用法，是把这个仓库交给一个支持读写文件的 AI agent，然后直接让它按方法论文档生成，并把结果写回 `docs/{topic}/`。
+- [cognitive-modeling-playbook.md](/Users/maxwell/Knowledge/docs/methodology/cognitive-modeling-playbook.md)
+  作用：约束建模纪律，强制区分边界、机制、变量、约束、因果链、事实与推断
 
-### 最短可用指令
+- [concept-document-template.md](/Users/maxwell/Knowledge/docs/methodology/concept-document-template.md)
+  作用：规定正式概念文档的输出合同、标准章节和 frontmatter 最小集合
 
-直接使用这句：
+- [concept-document-quality-gate.md](/Users/maxwell/Knowledge/docs/methodology/concept-document-quality-gate.md)
+  作用：规定 Hard Fail、评分规则和 `upgraded_v1` 验收标准
 
-```text
-按 docs/methodology/concept-document-template.md 和两份 playbook，为概念 {concept} 生成一篇新的知识文档，并直接放入合适的 docs/{topic}/ 目录。不要写成泛泛解释，必须包含：问题定义、对象边界、核心结构、机制/因果链、关键 tradeoff 与失败模式、应用场景、工业/现实世界锚点、当前推荐实践、过时路径与替代、自测题、迁移入口、未解问题、参考资料，并补齐统一 frontmatter。
-```
+- [fixed-concept-generation-prompt.md](/Users/maxwell/Knowledge/docs/methodology/fixed-concept-generation-prompt.md)
+  作用：提供稳定的生成 / 升级触发指令
 
-例如：
+如果你第一次进入这个仓库，最稳的阅读顺序是：
 
-```text
-按 docs/methodology/concept-document-template.md 和两份 playbook，为概念 memory order 生成一篇新的知识文档，并直接放入合适的 docs/{topic}/ 目录。不要写成泛泛解释，必须包含：问题定义、对象边界、核心结构、机制/因果链、关键 tradeoff 与失败模式、应用场景、工业/现实世界锚点、当前推荐实践、过时路径与替代、自测题、迁移入口、未解问题、参考资料，并补齐统一 frontmatter。
-```
+1. [methodology-operator-guide.md](/Users/maxwell/Knowledge/docs/methodology/methodology-operator-guide.md)
+2. [learning-new-things-playbook.md](/Users/maxwell/Knowledge/docs/methodology/learning-new-things-playbook.md)
+3. [cognitive-modeling-playbook.md](/Users/maxwell/Knowledge/docs/methodology/cognitive-modeling-playbook.md)
+4. [concept-document-template.md](/Users/maxwell/Knowledge/docs/methodology/concept-document-template.md)
+5. [concept-document-quality-gate.md](/Users/maxwell/Knowledge/docs/methodology/concept-document-quality-gate.md)
+6. [fixed-concept-generation-prompt.md](/Users/maxwell/Knowledge/docs/methodology/fixed-concept-generation-prompt.md)
 
-### 推荐完整指令
+## 现在支持的 3 种主要工作模式
 
-如果你希望生成结果更稳，建议把上下文也一起给 AI：
+### 1. 新建概念文档
 
-```text
-为概念 {concept} 新建一篇知识库文档。
+适用场景：
 
-要求：
-1. 严格遵循：
-   - docs/methodology/learning-new-things-playbook.md
-   - docs/methodology/cognitive-modeling-playbook.md
-   - docs/methodology/concept-document-template.md
-2. 输出目标不是术语解释，而是建立可复用的内部模型。
-3. 文档必须直接写入合适的 docs/{topic}/ 目录，文件名使用 kebab-case，并补齐统一 frontmatter。
-4. 文档必须至少包含：
-   - 这份文档要帮我学会什么
-   - 一句话结论 / 问题定义
-   - 对象边界与相邻概念
-   - 核心结构
-   - 核心机制 / 主链路 / 因果链
-   - 关键 tradeoff 与失败模式
-   - 应用场景
-   - 工业 / 现实世界锚点
-   - 当前推荐实践、过时路径与替代
-   - 自测题 / 验证入口
-   - 迁移与关联模型
-   - 未解问题与继续深挖
-   - 参考资料
-5. 不能泛泛而谈。工业场景必须真实；如果提到旧技术或旧做法，必须解释为什么旧、局限在哪、现在更推荐什么。
-6. 文档完成后，顺手更新 docs/index.md。
+- 仓库里还没有对应概念
+- 想把一个新对象直接写成正式知识文档
 
-补充上下文：
-- 所属主题：{topic}
-- 我是在什么场景下遇到它的：{context_where_i_met_it}
-- 我现在最不理解的点：{what_confuses_me}
-- 我希望后续能拿它分析什么问题：{future_use_case}
-```
-
-### 最少需要告诉 AI 的信息
-
-最少给出这 4 项，也可以开工：
+最短入口参考：
 
 ```text
-概念：{concept}
-主题：{topic}
-遇到语境：{context}
-当前困惑：{confusion}
+按 docs/methodology/methodology-operator-guide.md、docs/methodology/concept-document-template.md、docs/methodology/concept-document-quality-gate.md 和两份 playbook，为概念 {concept} 新建一篇知识库文档。直接写入合适的 docs/{topic}/ 目录，文件名使用 kebab-case，补齐统一 frontmatter，并在完成后更新 docs/index.md。不要写成泛泛解释，必须建立可复用内部模型。
 ```
 
-例如：
+### 2. 升级已有文档
+
+适用场景：
+
+- 仓库里已有旧文档，但结构、证据或当前实践部分不够稳
+- 需要补齐标准章节、frontmatter、工业锚点、参考资料或时间语境
+
+最短入口参考：
 
 ```text
-概念：memory order
-主题：computer-systems
-遇到语境：看 C++ 原子操作和并发资料时遇到
-当前困惑：不知道 relaxed/acquire/release/seq_cst 到底差在哪，为什么会影响正确性
+按 docs/methodology/methodology-operator-guide.md、docs/methodology/concept-document-template.md 和 docs/methodology/concept-document-quality-gate.md 升级现有文档 {path}。
 ```
 
-## 如何升级已有文档
+### 3. 审计 / 审查现有文档
 
-如果不是新建，而是升级某篇旧文档，直接使用：
+适用场景：
 
-```text
-按 docs/methodology/concept-document-template.md 升级现有文档 {path}。
+- 想系统性检查现有概念库还有哪些 Hard Fail 或高价值改进点
+- 想按统一标准做 findings-first review
 
-要求：
-- 保留原有高价值内容，不要整篇重写
-- 补齐当前缺失的标准章节和 frontmatter 字段
-- 把文档提升到可保留、可复用、可迁移的状态
-- 重点补：工业/现实世界锚点、当前推荐实践、过时路径与替代、自测题、迁移入口、未解问题
-```
+推荐基线：
 
-## 生成文档时的几个硬规则
+- 以 [concept-document-quality-gate.md](/Users/maxwell/Knowledge/docs/methodology/concept-document-quality-gate.md) 为审计标准
+- 先查 frontmatter 和结构完整性，再看模型质量、工业锚点、时间敏感性和来源纪律
 
-- 新文档必须放进合适的 `docs/{topic}/` 目录
-- 文件名使用 `kebab-case`
-- 文档应尽量直接落盘，而不是只输出在聊天窗口里
-- 时间敏感结论要显式带日期
-- 规范性、标准状态、库行为、语言特性等，优先引用官方或一手资料
-- 工业案例不能是空泛比喻，必须说明为什么现实里关心它
-- 如果内容涉及已过时路径，必须说明它为何过时、当前替代方案是什么
+## 概念文档的最小合同
 
-## 这个仓库不追求什么
+正式概念文档默认应包含以下信息位点：
 
-- 不追求“文档都长得一样”
-- 不追求“解释得像百科”
-- 不追求“为了整齐而删掉高价值细节”
-- 不追求“看起来懂了”，而追求“以后还能拿出来分析问题”
+1. 这份文档要帮你学会什么
+2. 一句话结论 / 问题定义
+3. 对象边界与相邻概念
+4. 核心结构
+5. 核心机制 / 主链路 / 因果链
+6. 关键 tradeoff 与失败模式
+7. 应用场景
+8. 工业 / 现实世界锚点
+9. 当前推荐实践、过时路径与替代
+10. 自测题 / 验证入口
+11. 迁移与关联模型
+12. 未解问题与继续深挖
+13. 参考资料
+
+frontmatter 最少应包含：
+
+- `doc_id`
+- `title`
+- `concept`
+- `topic`
+- `created_at`
+- `updated_at`
+- `source_basis`
+- `time_context`
+- `applicability`
+- `prompt_version`
+- `template_version`
+- `quality_status`
+- `related_docs`
+- `open_questions`
+
+其中：
+
+- `concept` 现在统一使用稳定的 `snake_case` 标识
+- `topic` 对应 `docs/{topic}/` 目录
+- 时间敏感内容必须有日期语境与相称来源
+
+## 当前质量线
+
+一篇合格文档不应只是“写得顺”，还至少要满足：
+
+- 问题定义和边界清楚
+- 有结构、有机制、有失效条件
+- 有真实、可定位的工业 / 现实世界锚点
+- 当前实践部分写清核对日期、旧路径局限和当前替代
+- 有验证入口和迁移入口
+- frontmatter 与正文语义一致
+
+正式验收时，以 [concept-document-quality-gate.md](/Users/maxwell/Knowledge/docs/methodology/concept-document-quality-gate.md) 为准，不以主观阅读感受为准。
 
 ## 快速入口
 
-- 看方法：先读 [learning-new-things-playbook.md](/Users/maxwell/Knowledge/docs/methodology/learning-new-things-playbook.md) 和 [cognitive-modeling-playbook.md](/Users/maxwell/Knowledge/docs/methodology/cognitive-modeling-playbook.md)
-- 看模板：读 [concept-document-template.md](/Users/maxwell/Knowledge/docs/methodology/concept-document-template.md)
-- 直接生成：参考 [fixed-concept-generation-prompt.md](/Users/maxwell/Knowledge/docs/methodology/fixed-concept-generation-prompt.md)
-- 看已有例子：读 [memory-order.md](/Users/maxwell/Knowledge/docs/computer-systems/memory-order.md)
+- 看导航：读 [docs/index.md](/Users/maxwell/Knowledge/docs/index.md)
+- 看方法：读 [docs/methodology/methodology-operator-guide.md](/Users/maxwell/Knowledge/docs/methodology/methodology-operator-guide.md)
+- 看模板：读 [docs/methodology/concept-document-template.md](/Users/maxwell/Knowledge/docs/methodology/concept-document-template.md)
+- 看验收：读 [docs/methodology/concept-document-quality-gate.md](/Users/maxwell/Knowledge/docs/methodology/concept-document-quality-gate.md)
+- 看触发命令：读 [docs/methodology/fixed-concept-generation-prompt.md](/Users/maxwell/Knowledge/docs/methodology/fixed-concept-generation-prompt.md)
+- 看现有例子：从 [docs/index.md](/Users/maxwell/Knowledge/docs/index.md) 中任选主题进入
+
+## 贡献与维护
+
+如果你要继续往仓库里增加、升级或审查文档，直接看 [CONTRIBUTING.md](/Users/maxwell/Knowledge/CONTRIBUTING.md)。
 
 ## 一句话总结
 
-这是一个“把概念写成可调用模型”的 Markdown 知识库。  
-如果你想使用它，最重要的不是多写几篇，而是始终按统一方法把每一篇写到“以后还能拿来分析问题”的质量线以上。
+这是一个“把概念写成可调用模型”的知识库。  
+现在它不只包含概念文档，也包含一整套生成、升级、审查这些文档的方法论与验收规则。

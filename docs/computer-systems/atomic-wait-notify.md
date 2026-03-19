@@ -1,10 +1,10 @@
 ---
 doc_id: computer-systems-atomic-wait-notify
 title: Atomic Wait / Notify：当你只是在等一个原子值变化时，不必先上 condition variable
-concept: atomic wait / notify
+concept: atomic_wait_notify
 topic: computer-systems
 created_at: '2026-03-16T14:56:22+08:00'
-updated_at: '2026-03-16T14:56:22+08:00'
+updated_at: '2026-03-19T21:20:00+08:00'
 source_basis:
   - cxx_draft_atomics_wait_2026_03_16
   - cxx_draft_atomics_order_2026_03_16

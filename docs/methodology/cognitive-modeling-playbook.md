@@ -4,10 +4,12 @@ title: 认知规范与问题建模手册
 concept: 认知规范与问题建模
 topic: methodology
 created_at: '2026-03-16T00:00:00+08:00'
-updated_at: '2026-03-16T00:00:00+08:00'
+updated_at: '2026-03-19T18:35:00+08:00'
 source_basis:
   - legacy_repository_document
   - personal_synthesis
+  - methodology_operator_guide
+  - concept_document_quality_gate
 time_context: evergreen_methodology
 applicability: personal_learning_and_model_building
 prompt_version: not_applicable
@@ -15,10 +17,13 @@ template_version: playbook_v1
 quality_status: maintained_asset
 related_docs:
   - docs/methodology/learning-new-things-playbook.md
+  - docs/methodology/concept-document-template.md
+  - docs/methodology/methodology-operator-guide.md
+  - docs/methodology/concept-document-quality-gate.md
   - docs/computer-systems/virtual-memory-learning-model.md
   - docs/ai-systems/agent-mcp-skill-openclaw-concepts.md
 open_questions:
-  - 如何把这套建模规范转成更可程序化执行的检查表和评分规则？
+  - 是否需要进一步建立来源等级与证据强度的受控词表，减少时间敏感文档的表达歧义？
 ---
 
 # 认知规范与问题建模手册
@@ -416,6 +421,31 @@ open_questions:
 
 这类判断常常来自认知舒适，而不是结构真实。
 
+## 4.11 证据与时效规范
+
+很多分析之所以表面上看起来严谨，实际上却不稳，问题不在逻辑链，而在证据层级和时间基线没有被显式处理。
+
+尤其当问题涉及：
+
+- 当前推荐实践
+- 现行制度 / 现行标准
+- 平台规则 / 产品行为
+- 库行为 / 生态实践 / 工业做法
+
+必须额外问：
+
+- 这个判断的时间基线是什么
+- 这个判断依赖的是一手来源、二手来源，还是经验推断
+- 这个结论是事实、推断，还是基于价值函数的建议
+
+### 执行要求
+
+- 时间敏感结论必须显式写核对日期
+- 优先使用一手来源或官方来源支撑关键判断
+- 如果没有足够强的来源，只能降低结论强度，不能伪装成确定事实
+- 对“当前实践”类结论，尽量把事实、推断和建议拆开表达
+- 不把历史语境中的正确结论，直接平移成当前实践结论
+
 ---
 
 ## 5. 问题建模总框架
@@ -731,6 +761,41 @@ open_questions:
 - 时间窗口
 - 观测指标
 - 干预位置
+
+## 6.6 面向概念文档的建模补充模板
+
+如果你的输出对象是正式概念文档，而不是临时分析草稿，建议在通用建模模板之外，再补下面这组信息。
+
+### 1. 核心判断
+
+- 一句话结论：
+- 它解决的问题：
+- 这句结论里哪些是事实，哪些是推断：
+
+### 2. 边界与相邻概念
+
+- 它不是什么：
+- 最易混淆的对象：
+- 当前分析不覆盖什么：
+
+### 3. 证据与时效
+
+- 正文中最关键的三个判断分别依赖什么来源：
+- 哪些结论是时间敏感的：
+- 核对日期：
+
+### 4. 旧路径与替代
+
+- 旧路径是什么：
+- 为什么旧：
+- 局限在哪：
+- 当前替代是什么：
+
+### 5. 工业 / 现实世界锚点
+
+- 真实对象：
+- 这个对象为何能说明该概念：
+- 它体现的是成功路径、失败路径，还是边界条件：
 
 ---
 
@@ -1065,6 +1130,8 @@ open_questions:
 - 我定义的是问题，还是情绪？
 - 目标函数是否明确？
 - 事实、假设、推断、价值判断是否分开？
+- 关键判断是否有相称的来源支撑？
+- 时间敏感内容是否写明核对日期？
 - 系统边界是否清楚？
 - 关键变量是否识别出来？
 - 有没有看到至少一个反馈回路？
@@ -1080,6 +1147,8 @@ open_questions:
 - 原始假设是否被完整保留？
 - 结果偏差出现在哪里？
 - 是模型错、数据错、执行错还是环境变了？
+- 哪些结论其实缺少足够证据？
+- 哪些判断是把过时语境误写成了当前结论？
 - 哪个变量此前被忽略？
 - 哪个延迟此前被低估？
 - 下一轮要更新哪条因果判断？

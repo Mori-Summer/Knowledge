@@ -1,10 +1,10 @@
 ---
 doc_id: computer-systems-modification-order
 title: Modification Order：为什么每个原子对象都有自己的修改总序，但整个世界并没有一个总时间线
-concept: modification order
+concept: modification_order
 topic: computer-systems
 created_at: '2026-03-16T14:56:22+08:00'
-updated_at: '2026-03-16T14:56:22+08:00'
+updated_at: '2026-03-19T21:20:00+08:00'
 source_basis:
   - cxx_draft_basic_exec_2026_03_16
   - cxx_draft_atomics_order_2026_03_16

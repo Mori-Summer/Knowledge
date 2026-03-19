@@ -1,10 +1,10 @@
 ---
 doc_id: computer-systems-false-sharing
 title: False Sharing：明明线程没抢同一个变量，为什么缓存行还在疯狂打架
-concept: false sharing
+concept: false_sharing
 topic: computer-systems
 created_at: '2026-03-16T14:56:22+08:00'
-updated_at: '2026-03-16T14:58:30+08:00'
+updated_at: '2026-03-19T21:20:00+08:00'
 source_basis:
   - linux_kernel_false_sharing_doc_2026_03_16
   - intel_vtune_false_sharing_2026_03_16

@@ -4,11 +4,12 @@ title: 统一概念文档模板
 concept: unified_concept_document_template
 topic: methodology
 created_at: '2026-03-16T10:05:00+08:00'
-updated_at: '2026-03-16T10:05:00+08:00'
+updated_at: '2026-03-19T18:10:00+08:00'
 source_basis:
   - architecture_rules
   - personal_knowledge_base_practice
-time_context: template_baseline_2026_03_16
+  - methodology_workflow_review_2026_03_19
+time_context: template_baseline_2026_03_19
 applicability: future_concept_doc_generation_and_manual_upgrade
 prompt_version: template_alignment_v1
 template_version: concept_doc_v1
@@ -16,8 +17,10 @@ quality_status: maintained_asset
 related_docs:
   - docs/methodology/learning-new-things-playbook.md
   - docs/methodology/cognitive-modeling-playbook.md
+  - docs/methodology/methodology-operator-guide.md
+  - docs/methodology/concept-document-quality-gate.md
 open_questions:
-  - 未来是否需要把数学推导型文档拆成 concept layer 和 derivation layer 两层模板？
+  - 未来是否需要给制度/政策类概念再补一份更强的一手来源模板？
 ---
 
 # 统一概念文档模板
@@ -75,7 +78,9 @@ open_questions:
 
 不是每篇文档都必须逐字逐句照抄这个目录，但这些信息位点不能缺。
 
-## 4. 数学推导型文档的特殊规则
+## 4. 特殊规则与分型约束
+
+### 4.1 数学推导型文档
 
 如果文档本体是数学推导或公式证明，仍然不能只停留在推导本身。至少要额外补：
 
@@ -84,6 +89,40 @@ open_questions:
 - 当前更推荐怎样使用它，而不是误把它当万能工具
 - 如何通过样例、自测题或反例检查自己是否真的理解
 - 它能迁移到哪些相邻方法、近似方法或实现设计中
+
+### 4.2 时间敏感型文档
+
+如果正文涉及：
+
+- 当前推荐实践
+- 现行制度 / 现行标准
+- 最新产品行为 / 当前工业实现
+- 仍可能变化的软件库、平台规则、监管状态
+
+则至少额外满足：
+
+- 正文显式写出核对日期
+- `time_context` 能看出时间基线
+- `source_basis` 和参考资料能反映一手或官方来源基础
+- 正文尽量区分“事实”“推断”“当前建议”
+
+### 4.3 制度 / 政策 / 监管 / 市场实践型文档
+
+如果概念本体涉及规则、制度、市场设计、监管实践或产业政策，则不能只靠抽象原理。至少还要补：
+
+- 真实制度对象或真实市场对象
+- 当前约束是如何通过规则落地的
+- 旧路径为什么不够用，当前替代是怎样补这个缺口的
+- 这套制度设计在现实里最常见的失败模式是什么
+
+### 4.4 历史 / 经典理论型文档
+
+如果概念本体主要来自经典理论或历史文本，则至少要区分：
+
+- 原始语境里的问题定义
+- 后来常见的误读或泛化
+- 当前仍可迁移的结构是什么
+- 哪些结论只能放在原始语境下理解
 
 ## 5. 元数据最小集合
 
@@ -104,6 +143,26 @@ frontmatter 至少保留这些字段：
 - `related_docs`
 - `open_questions`
 
+### 5.1 字段语义与填写约定
+
+为了便于后续索引、升级和自动化检查，推荐再遵守下面这些约定：
+
+- `doc_id`：建议稳定对应 `topic + slug`
+- `concept`：建议写成稳定、可复用的概念标识，而不是整句标题
+- `created_at` / `updated_at`：使用带时区的 ISO 8601 时间
+- `source_basis`：优先写来源类别或来源簇，不写空泛词
+- `time_context`：要能看出这篇文档是 evergreen、historical，还是 checked-on-date 的当前判断
+- `related_docs`：使用仓库内相对路径
+- `open_questions`：至少保留一个仍值得继续深挖的问题
+
+### 5.2 仓库集成约束
+
+一篇正式概念文档不仅要内容合格，还要满足：
+
+- 直接写入合适的 `docs/{topic}/`
+- 文件名使用 `kebab-case`
+- 新增正式文档后同步更新 `docs/index.md`
+
 ## 6. 升级判定标准
 
 一篇文档可以标记为 `upgraded_v1`，至少要满足：
@@ -115,6 +174,11 @@ frontmatter 至少保留这些字段：
 - 存在验证入口：自测题、预测题、纠错题或等价机制
 - 存在迁移入口：能引向相邻概念或新问题
 - 存在未解问题，不把文档伪装成“已经彻底完成”
+- 如果正文包含时间敏感内容，显式给出核对日期
+- 如果正文包含“当前实践”结论，参考资料能支撑关键判断
+- 工业锚点具体到真实组织、系统、产品、市场、法规或标准，而不是泛泛行业印象
+
+更完整的验收方式，见 [concept-document-quality-gate.md](/Users/maxwell/Knowledge/docs/methodology/concept-document-quality-gate.md)。
 
 ## 7. 不能做的事
 
@@ -123,3 +187,5 @@ frontmatter 至少保留这些字段：
 - 不能提“旧方法”却不解释为什么旧、局限在哪、当前怎么替代
 - 不能只追求语言流畅，忽略模型可调用性
 - 不能为了整齐删掉高价值的专业细节
+- 不能写时间敏感结论却不给出时间基线
+- 不能生成正式文档却不更新 `docs/index.md`

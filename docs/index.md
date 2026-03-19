@@ -4,10 +4,10 @@ title: Knowledge Docs Index
 concept: knowledge_docs_index
 topic: root
 created_at: '2026-03-16T00:00:00+08:00'
-updated_at: '2026-03-18T17:07:38+08:00'
+updated_at: '2026-03-19T20:45:00+08:00'
 source_basis:
   - derived_repository_index
-time_context: snapshot_2026_03_18
+time_context: snapshot_2026_03_19
 applicability: repository_navigation
 prompt_version: not_applicable
 template_version: index_v1
@@ -23,19 +23,21 @@ open_questions:
 
 ## methodology
 
+- [方法论文档使用说明：怎么读、怎么用、怎么验收](./methodology/methodology-operator-guide.md)
 - [固定概念文档生成 Prompt](./methodology/fixed-concept-generation-prompt.md)
 - [统一概念文档模板](./methodology/concept-document-template.md)
+- [统一概念文档质量门禁](./methodology/concept-document-quality-gate.md)
 - [认知规范与问题建模手册](./methodology/cognitive-modeling-playbook.md)
 - [学习新事物的方法手册：从陌生到可理解、可操作、可迁移](./methodology/learning-new-things-playbook.md)
 
 ## ai-systems
 
-- [AI应用中的 Agent、MCP、Skill 与 OpenClaw：概念、机制与边界](./ai-systems/agent-mcp-skill-openclaw-concepts.md)
+- [AI 代理栈分层：Agent、MCP、Skill 与 OpenClaw 的概念边界](./ai-systems/agent-mcp-skill-openclaw-concepts.md)
 
 ## programming-languages
 
 - [回调函数中的死锁与强引用泄漏：为什么会“自己等自己”，又为什么会“永远不释放”](./programming-languages/callback-deadlock-and-ownership-cycles.md)
-- [协程认知手册：以 C++20 为例，从概念到可操作模型](./programming-languages/cpp20-coroutine-playbook.md)
+- [C++20 协程：可挂起控制流、语言机制与运行时边界](./programming-languages/cpp20-coroutine-playbook.md)
 - [PImpl：当你真正想隔离的是 ABI、编译依赖与实现细节](./programming-languages/pimpl.md)
 - [回调函数：显式 continuation、异步边界与变量生命周期管理](./programming-languages/callback-lifetime-management.md)
 
@@ -55,12 +57,20 @@ open_questions:
 - [Release Sequence：为什么 release 之后的一串 RMW 还能继续“带着发布语义往前走”](./computer-systems/release-sequence.md)
 - [Semaphore：当问题是“还有没有令牌”，而不是“谁拥有锁”](./computer-systems/semaphore.md)
 - [Synchronizes-With：并发关系图里真正跨线程连边的那一下](./computer-systems/synchronizes-with.md)
-- [虚拟内存：按“学习建模”方式理解的完整说明](./computer-systems/virtual-memory-learning-model.md)
+- [虚拟内存：地址抽象、访问控制与工作集行为的统一模型](./computer-systems/virtual-memory-learning-model.md)
 
 ## image-processing
 
 - [导向滤波的数学原理、公式推导与 C++ 对照](./image-processing/guided-filter-derivation.md)
 - [快速导向滤波的数学原理、公式推导与 C++ 对照](./image-processing/fast-guided-filter-derivation.md)
+
+## economics
+
+- [看得见的手与看不见的手：市场、组织与国家如何分工协调资源](./economics/visible-hand-and-invisible-hand.md)
+
+## systems
+
+- [去中心化：不是“没有中心”，而是拆掉单点控制、单点信任与单点故障](./systems/decentralization.md)
 
 ## reports
 

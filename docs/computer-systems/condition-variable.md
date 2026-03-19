@@ -1,10 +1,10 @@
 ---
 doc_id: computer-systems-condition-variable
 title: Condition Variable：你等的不是通知，而是条件何时在同步关系下成立
-concept: condition variable
+concept: condition_variable
 topic: computer-systems
 created_at: '2026-03-16T14:38:05+08:00'
-updated_at: '2026-03-16T14:38:05+08:00'
+updated_at: '2026-03-19T21:20:00+08:00'
 source_basis:
   - cxx_draft_thread_condition_2026_03_16
   - cxx_draft_thread_mutex_requirements_2026_03_16

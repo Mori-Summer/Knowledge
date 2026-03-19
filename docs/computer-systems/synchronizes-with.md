@@ -1,10 +1,10 @@
 ---
 doc_id: computer-systems-synchronizes-with
 title: Synchronizes-With：并发关系图里真正跨线程连边的那一下
-concept: synchronizes-with
+concept: synchronizes_with
 topic: computer-systems
 created_at: '2026-03-16T14:38:05+08:00'
-updated_at: '2026-03-16T14:38:05+08:00'
+updated_at: '2026-03-19T21:20:00+08:00'
 source_basis:
   - cxx_draft_intro_races_2026_03_16
   - cxx_draft_atomics_order_2026_03_16

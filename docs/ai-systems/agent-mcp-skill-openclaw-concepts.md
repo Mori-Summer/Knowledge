@@ -1,29 +1,203 @@
 ---
 doc_id: ai-systems-agent-mcp-skill-openclaw-concepts
-title: AI应用中的 Agent、MCP、Skill 与 OpenClaw：概念、机制与边界
-concept: Agent / MCP / Skill / OpenClaw
+title: AI 代理栈分层：Agent、MCP、Skill 与 OpenClaw 的概念边界
+concept: agent_stack_layering
 topic: ai-systems
 created_at: '2026-03-16T00:00:00+08:00'
-updated_at: '2026-03-16T10:05:00+08:00'
+updated_at: '2026-03-19T20:45:00+08:00'
 source_basis:
-  - legacy_repository_document
-  - personal_synthesis
-time_context: review_when_agent_frameworks_or_mcp_practices_change
-applicability: personal_concept_learning_and_system_modeling
-prompt_version: legacy_pre_versioning
+  - openclaw_homepage_checked_2026_03_19
+  - openclaw_gateway_architecture_checked_2026_03_19
+  - openclaw_agent_runtime_docs_checked_2026_03_19
+  - openclaw_agent_loop_docs_checked_2026_03_19
+  - mcp_architecture_spec_checked_2026_03_19
+  - mcp_architecture_concepts_docs_checked_2026_03_19
+time_context: current_practice_checked_2026_03_19
+applicability: ai_agent_architecture_analysis_protocol_layering_and_product_boundary_judgment
+prompt_version: concept_generation_prompt_v1
 template_version: concept_doc_v1
 quality_status: upgraded_v1
 related_docs:
   - docs/methodology/learning-new-things-playbook.md
   - docs/methodology/cognitive-modeling-playbook.md
+  - docs/programming-languages/callback-lifetime-management.md
 open_questions:
   - OpenClaw 与其他长期代理平台的系统边界对比是否需要单独成文？
   - MCP 在生产环境中的权限与安全边界是否需要补一节工业案例？
 ---
 
-# AI应用中的 Agent、MCP、Skill 与 OpenClaw：概念、机制与边界
+# AI 代理栈分层：Agent、MCP、Skill 与 OpenClaw 的概念边界
 
 ## 1. 这份文档要帮你学会什么
+
+这篇文档的目标，不是把 `Agent`、`MCP`、`Skill`、`OpenClaw` 四个词逐个解释，而是把它们压成一套以后分析 AI 产品、编码代理、企业助手和长期在线代理平台时都能调用的分层模型。
+
+读完后，你应该至少能做到：
+
+- 区分什么是执行闭环、什么是能力协议、什么是操作知识资产、什么是产品运行时
+- 判断一个系统的问题出在 agent loop、tool contract、skill 设计，还是产品编排边界
+- 识别“有很多工具”但其实没有 agent、“有 prompt”但没有 skill、“有 server”但没有协议治理的伪分层
+- 用统一框架分析 OpenClaw 这类长期在线代理平台和一般 coding agent 工作台的差异
+
+## 2. 一句话结论 / 问题定义
+
+**在 AI 代理栈里，Agent 解决的是目标驱动执行闭环，MCP 解决的是能力与上下文如何标准接入，Skill 解决的是操作知识如何沉淀和复用，OpenClaw 解决的是如何把这些分层资产编排成一个可长期运行、可连接真实世界、可治理的产品系统。**
+
+这组概念真正要解决的问题不是“AI 应用里名词为什么这么多”，而是：
+
+- 不同抽象层到底各自负责什么
+- 能力接入、行为约束、执行循环和产品运行时应该怎样解耦
+- 为什么复杂代理系统不能只靠“一个更长的 prompt + 一堆工具”维持稳定
+
+## 3. 对象边界与相邻概念
+
+这篇文档里四个对象的边界是：
+
+- `Agent`：围绕目标感知、决策、行动、读取反馈的执行闭环
+- `MCP`：把外部能力与上下文以 host / client / server 协议暴露给 AI 应用的标准接口层
+- `Skill`：把 SOP、约束、操作步骤和工作模式压缩成可复用行为资产
+- `OpenClaw`：把长期连接、会话、节点、代理循环和产品通道编排起来的代理平台
+
+它们不等于：
+
+- `Agent` 不等于“会聊天的模型”
+- `MCP` 不等于“某个具体工具集合”
+- `Skill` 不等于“随便一段 prompt”
+- `OpenClaw` 不等于“另一个聊天 UI”
+
+最容易混淆的相邻概念是 workflow、tool/plugin、gateway、runtime、system prompt 和 product orchestration。
+
+## 4. 核心结构
+
+分析这组概念时，最稳的最小结构是：
+
+```text
+用户目标
+  -> Agent loop
+  -> Skill / policy / workflow knowledge
+  -> Tool / Resource / Prompt contract
+  -> MCP host / client / server protocol
+  -> 外部系统
+  -> Product runtime / gateway / session orchestration
+```
+
+真正值得记住的是：`Agent`、`MCP`、`Skill`、`OpenClaw` 不是同层对象，而是“执行层、协议层、知识资产层、产品编排层”的分层组合。
+
+## 5. 核心机制 / 主链路 / 因果链
+
+一个最小可运行链路可以压成 6 步：
+
+1. 用户目标进入 host / gateway
+2. Agent loop 基于当前状态判断下一步动作
+3. Skill 提供约束、步骤模板和行为边界
+4. Host 通过 MCP client 访问 server 暴露出的 tools / resources / prompts
+5. 外部系统返回结果，Agent 再读取反馈继续循环
+6. Product runtime 负责会话、权限、节点连接、长生命周期和多通道交互
+
+这条链路说明两个关键点：
+
+- 没有标准化能力面，Agent 很快会退化成 ad-hoc tool glue
+- 没有 product runtime，很多“长期在线代理”其实只是一次性推理包装
+
+## 6. 关键 tradeoff 与失败模式
+
+这套分层买到的是可治理性、可扩展性和复用边界；代价是系统复杂度、权限设计和运行时编排成本显著上升。
+
+最常见的失败模式是：
+
+- 用一个超长 system prompt 同时承担 skill、policy、tool contract 和 runtime 责任
+- 把“能调用很多工具”误当成“已经有 agent”
+- 工具接口没有协议化，导致每个产品都发明一套 ad-hoc JSON
+- 长期在线代理默认持有高权限、弱审计、弱隔离的执行面
+- 把 skill 和 tool 混成一层，导致知识资产无法迁移、能力资产无法治理
+
+## 7. 应用场景
+
+这套模型最适合分析：
+
+- AI 编码工作台与 repo agent
+- 企业内部工单、运维、知识库与审批助手
+- 多渠道长期在线个人助理
+- 需要把权限、能力接入、执行循环和产品编排拆层的代理平台
+
+## 8. 工业 / 现实世界锚点
+
+### 8.1 OpenClaw Gateway / Agent Loop
+
+OpenClaw 官方架构把 gateway、client websocket、node connection、agent runtime 和 agent loop 明确拆开，这就是“产品编排层不等于单次模型调用”的真实锚点。
+
+### 8.2 MCP Host / Client / Server
+
+MCP 官方架构把 host、client、server 角色明确区分，并把 tools、resources、prompts 视为协议原语。这说明能力接入可以被协议化，而不是每个代理产品各自硬编码。
+
+### 8.3 代理式编码工作台
+
+编码代理工作台是这套模型最直接的现实落点：Agent 负责任务闭环，Skill 负责 SOP 与行为约束，MCP 或等价协议负责接文件系统 / 终端 / 浏览器 / 数据源，产品运行时负责权限与审计。
+
+## 9. 当前推荐实践、过时路径与替代
+
+### 9.1 截至 2026-03-19 更推荐的实践
+
+当前更稳的方向通常是：
+
+- 协议化能力接入，而不是靠提示词暗示模型“大概能做什么”
+- 最小权限、审批点和可回放执行链，而不是默认高权限长期在线
+- versioned skill / workflow 资产，而不是把操作知识堆进一个单体 system prompt
+- 明确分开 protocol、capability、skill、runtime 和 product orchestration
+
+### 9.2 过时路径与替代
+
+下面这些路径通常已经不够稳：
+
+- 一个巨大的单体 prompt 同时承担所有层的责任
+- 每个产品都发明一套 ad-hoc tool schema
+- 只做工具接入却不设计 skill、权限和运行时治理
+- 默认让长期在线代理静默执行高风险动作
+
+更稳的替代是：
+
+- 用 MCP 这类协议或等价 contract 明确能力边界
+- 用 skill / workflow 资产固化操作知识
+- 用 gateway / runtime 设计承接长生命周期、会话和权限控制
+
+## 10. 自测题 / 验证入口
+
+1. 为什么 `Agent`、`MCP`、`Skill`、`OpenClaw` 不是同一层概念？
+2. 什么时候一个“多工具聊天产品”还不能算真正的 agent？
+3. 为什么 skill 不能简单等同于一段 prompt？
+4. MCP 解决的是“模型更聪明”还是“能力接入更标准”？
+5. 长期在线代理如果没有 runtime、权限和审计设计，最容易出什么问题？
+
+## 11. 迁移与关联模型
+
+理解了这篇文档后，你应该能把模型迁移到：
+
+- coding agent 产品
+- 企业代理框架
+- plugin / extension 生态
+- tool calling 与 workflow 编排
+- 任何需要分清“能力接入、行为约束、执行循环、产品运行时”的 AI 系统
+
+## 12. 未解问题与继续深挖
+
+- MCP 在生产环境里的权限、审批、多租户和沙箱模型怎样进一步制度化？
+- 长期在线代理平台与轻量交互式 coding agent 工作台的最优边界怎样划分？
+- skill 资产如何版本化、测试化、审计化，而不重新滑回“超长 prompt”？
+
+## 13. 参考资料
+
+以下“当前实践”相关内容的核对日期均为 `2026-03-19`。
+
+- OpenClaw homepage: https://openclaw.ai/
+- OpenClaw architecture: https://docs.openclaw.ai/architecture
+- OpenClaw agent runtime: https://docs.openclaw.ai/concepts/agent
+- OpenClaw agent loop: https://docs.openclaw.ai/concepts/agent-loop
+- MCP architecture specification: https://modelcontextprotocol.io/specification/2025-06-18/architecture
+- MCP concepts, architecture: https://modelcontextprotocol.io/docs/concepts/architecture
+
+## 14. 详细展开与原有分项拆解
+
+### 1. 这份文档要帮你学会什么
 
 这份文档不是一份安装教程，也不是术语词典。
 
@@ -47,7 +221,7 @@ open_questions:
 
 ---
 
-## 2. 先建立一张总地图
+### 2. 先建立一张总地图
 
 很多人一开始学这些概念时会混乱，原因不是概念本身太难，而是把不同层级的东西混在一起了。
 
@@ -84,9 +258,9 @@ MCP / API 协议层
 
 ---
 
-## 3. Agent 到底是什么
+### 3. Agent 到底是什么
 
-### 3.1 Agent 不是“会聊天的模型”
+#### 3.1 Agent 不是“会聊天的模型”
 
 一个普通聊天模型只做一件事：
 
@@ -107,7 +281,7 @@ MCP / API 协议层
 
 **让模型从“只生成文本”变成“围绕目标持续感知、决策、行动、再修正”的执行体。**
 
-### 3.2 Agent 的最小运行闭环
+#### 3.2 Agent 的最小运行闭环
 
 可以把一个最小 Agent 想成下面这条链：
 
@@ -138,7 +312,7 @@ MCP / API 协议层
 
 这就是 agentic behavior。重点不是“有很多步骤”，而是“它自己维护执行闭环”。
 
-### 3.3 Agent 和几个近似概念的边界
+#### 3.3 Agent 和几个近似概念的边界
 
 #### Agent vs Chatbot
 
@@ -174,7 +348,7 @@ Agent 是人只给目标和边界，它在运行时自己选择具体动作。
 
 这并不代表 Agent 一定比脚本更好。很多场景里，固定脚本更稳定、更便宜、更可审计。Agent 的价值在于处理不完全结构化的任务。
 
-### 3.4 Agent 的强项和弱点
+#### 3.4 Agent 的强项和弱点
 
 强项：
 
@@ -194,9 +368,9 @@ Agent 是人只给目标和边界，它在运行时自己选择具体动作。
 
 ---
 
-## 4. MCP 到底是什么
+### 4. MCP 到底是什么
 
-### 4.1 先讲它解决的问题
+#### 4.1 先讲它解决的问题
 
 在 `MCP` 出现之前，AI 应用要连接外部能力时，通常是每个应用自己写一套接入：
 
@@ -221,7 +395,7 @@ Agent 是人只给目标和边界，它在运行时自己选择具体动作。
 
 它不替你做推理，不替你决定任务策略，也不自动把系统变成强 Agent。它只是把“能力接口”做成一个公共标准。
 
-### 4.2 MCP 的最核心分工
+#### 4.2 MCP 的最核心分工
 
 根据 MCP 官方架构，最重要的角色有三类：
 
@@ -239,7 +413,7 @@ Agent 是人只给目标和边界，它在运行时自己选择具体动作。
 - Host 决定把哪些能力展示给模型
 - Server 只专注提供具体能力，不负责整个应用的任务编排
 
-### 4.3 MCP 的三种核心 primitive
+#### 4.3 MCP 的三种核心 primitive
 
 MCP 官方最重要的概念是三个 primitive：
 
@@ -288,7 +462,7 @@ MCP 官方最重要的概念是三个 primitive：
 
 它不是底层执行器，而是“如何组织与模型的交互”。
 
-### 4.4 MCP 是怎么运作的
+#### 4.4 MCP 是怎么运作的
 
 从运行链路看，一个典型的 MCP 交互大致是这样：
 
@@ -319,7 +493,7 @@ Host 再把结果放回模型上下文或交给用户界面
 - 它的价值不是替设备工作
 - 它的价值是把连接方式标准化
 
-### 4.5 MCP 的价值和边界
+#### 4.5 MCP 的价值和边界
 
 价值：
 
@@ -339,9 +513,9 @@ Host 再把结果放回模型上下文或交给用户界面
 
 ---
 
-## 5. skill 到底是什么
+### 5. skill 到底是什么
 
-### 5.1 先说一个关键事实：skill 不是统一标准词
+#### 5.1 先说一个关键事实：skill 不是统一标准词
 
 `skill` 这个词在 AI 应用里很常见，但它不像 `MCP` 那样有统一协议规范。
 
@@ -359,7 +533,7 @@ Host 再把结果放回模型上下文或交给用户界面
 
 **skill 是一种产品层和应用层的抽象，不是底层协议标准。**
 
-### 5.2 skill 的本质是什么
+#### 5.2 skill 的本质是什么
 
 如果从功能上看，skill 的本质是：
 
@@ -375,7 +549,7 @@ Host 再把结果放回模型上下文或交给用户界面
 
 所以 skill 更像“给模型看的操作手册”，而不是“真正干活的执行器”。
 
-### 5.3 skill、tool、prompt 的关系
+#### 5.3 skill、tool、prompt 的关系
 
 这是最容易混淆的部分。
 
@@ -408,7 +582,7 @@ Host 再把结果放回模型上下文或交给用户界面
 
 前者偏接口层，后者偏认知层。
 
-### 5.4 一个很实用的判断方法
+#### 5.4 一个很实用的判断方法
 
 当你看到某个能力包时，可以问四个问题：
 
@@ -419,7 +593,7 @@ Host 再把结果放回模型上下文或交给用户界面
 
 如果答案更偏“传授策略”，那它大概率更像 skill。
 
-### 5.5 在代理式编码环境里，skill 往往长什么样
+#### 5.5 在代理式编码环境里，skill 往往长什么样
 
 在很多 coding agent 或 personal agent 系统中，skill 往往不是一个神秘组件，而是一个很朴素的包：
 
@@ -434,7 +608,7 @@ Host 再把结果放回模型上下文或交给用户界面
 
 ---
 
-## 6. 把 Agent、MCP、skill 放在一起看
+### 6. 把 Agent、MCP、skill 放在一起看
 
 你可以用下面这张表，快速定位三者区别：
 
@@ -459,9 +633,9 @@ Host 再把结果放回模型上下文或交给用户界面
 
 ---
 
-## 7. OpenClaw 是什么
+### 7. OpenClaw 是什么
 
-### 7.1 它不是一个“会聊天的应用”，而是一种产品理念
+#### 7.1 它不是一个“会聊天的应用”，而是一种产品理念
 
 OpenClaw 官网首页把它定位为：
 
@@ -478,7 +652,7 @@ OpenClaw 官网首页把它定位为：
 
 这是它和很多“把大模型塞进 App”产品的根本差别。
 
-### 7.2 OpenClaw 想解决什么问题
+#### 7.2 OpenClaw 想解决什么问题
 
 它针对的不是“我想和 AI 聊天”，而是下面这类需求：
 
@@ -491,7 +665,7 @@ OpenClaw 官网首页把它定位为：
 
 **一个你自己拥有、始终在线、能接触现实环境的个人代理平台。**
 
-### 7.3 OpenClaw 的核心理念
+#### 7.3 OpenClaw 的核心理念
 
 如果压缩成几个关键词，我会这样概括：
 
@@ -505,7 +679,7 @@ OpenClaw 官网那句很关键的 slogan 是 “The AI that actually does things
 
 **让 AI 从“文本回答器”变成“可操作现实世界的执行代理”。**
 
-### 7.4 OpenClaw 的最小架构图
+#### 7.4 OpenClaw 的最小架构图
 
 根据官方 `Gateway Architecture`、`Agent Runtime`、`Agent Loop` 文档，可以把它压缩成下面这张图：
 
@@ -532,7 +706,7 @@ Tools / Nodes / 外部系统
 
 也就是说，Gateway 负责把各种入口和能力面连起来，但用户真正感受到的是那个长期存在、会记住你、会继续做事的 agent。
 
-### 7.5 OpenClaw 是如何运作的
+#### 7.5 OpenClaw 是如何运作的
 
 这是理解 OpenClaw 的核心。
 
@@ -649,7 +823,7 @@ OpenClaw 官方把 agent loop 定义为：
 
 如果没有这些部分，很多 agent 产品只能演示一次成功路径，无法长期稳定运行。
 
-### 7.6 OpenClaw 为什么会火
+#### 7.6 OpenClaw 为什么会火
 
 这里我不讲传播故事，只讲从产品原理上看，它为什么会让人感到“这东西不一样”。
 
@@ -704,7 +878,7 @@ OpenClaw 官网强调：
 
 **它把个人 agent 从概念演示，推进成了一个可持续运行、可扩展、可自定义的操作平台。**
 
-### 7.7 OpenClaw 不是什么
+#### 7.7 OpenClaw 不是什么
 
 理解一个东西，最重要的方法之一是看它不是什么。
 
@@ -722,7 +896,7 @@ OpenClaw 不是：
 - 一个长期在线的控制平面加运行时
 - 一个把技能、工具、上下文、渠道、设备和会话管理组织到一起的系统
 
-### 7.8 OpenClaw 的边界与风险
+#### 7.8 OpenClaw 的边界与风险
 
 如果只看“它好强”，那理解还是不完整。
 
@@ -777,11 +951,11 @@ OpenClaw 不是：
 
 ---
 
-## 8. 用 playbook 的方法复盘这四个概念
+### 8. 用 playbook 的方法复盘这四个概念
 
 为了符合“真正学会”的标准，我们最后按统一模板压缩一次。
 
-### 8.1 Agent
+#### 8.1 Agent
 
 - 目的：围绕目标持续决策和执行
 - 边界：负责规划与动作选择，不等于底层能力接口
@@ -789,7 +963,7 @@ OpenClaw 不是：
 - 机制：感知 -> 决策 -> 行动 -> 反馈 -> 再决策
 - 失败模式：幻觉规划、误调用工具、长链路累错、权限失控
 
-### 8.2 MCP
+#### 8.2 MCP
 
 - 目的：标准化 AI 应用与外部能力/上下文的连接方式
 - 边界：负责协议与能力发现，不负责任务规划
@@ -797,7 +971,7 @@ OpenClaw 不是：
 - 机制：连接 -> 协商 -> 发现能力 -> 调用 -> 返回结果
 - 失败模式：把 MCP 神化成 Agent、权限设计不清、工具描述不可信
 
-### 8.3 skill
+#### 8.3 skill
 
 - 目的：把某类任务的方法和约束教给模型
 - 边界：偏知识层，不是执行器，也不是统一协议
@@ -805,7 +979,7 @@ OpenClaw 不是：
 - 机制：被发现 -> 被读取 -> 进入模型策略 -> 指导后续动作
 - 失败模式：写成空话、边界模糊、和 tool 职责重叠、知识过期
 
-### 8.4 OpenClaw
+#### 8.4 OpenClaw
 
 - 目的：把个人 AI assistant 做成长期在线、可接入真实世界的代理平台
 - 边界：是平台和运行时，不等于某个单独模型或协议
@@ -815,7 +989,7 @@ OpenClaw 不是：
 
 ---
 
-## 9. 自测题：检验你是否真的理解了
+### 9. 自测题：检验你是否真的理解了
 
 如果你想验证自己是不是已经从“听过”走到了“解释”甚至“应用”层，可以试着回答下面的问题。
 
@@ -833,7 +1007,7 @@ OpenClaw 不是：
 
 ---
 
-## 10. 最后一层压缩
+### 10. 最后一层压缩
 
 把全文再压缩成最短版本：
 
@@ -853,7 +1027,7 @@ OpenClaw 不是：
 
 ---
 
-## 11. 参考资料
+### 11. 参考资料
 
 以下是写作时主要依据的官方资料。涉及“为什么会火”的判断，是我基于这些官方资料做的归纳，不是官方原话。
 
@@ -873,9 +1047,9 @@ OpenClaw 不是：
 
 ---
 
-## 12. 工业 / 现实世界锚点
+### 12. 工业 / 现实世界锚点
 
-### 12.1 编码代理工作台
+#### 12.1 编码代理工作台
 
 一个最典型的现实锚点，就是你现在正在构建的这种“知识库 + 代理式工作流”环境。
 
@@ -893,7 +1067,7 @@ OpenClaw 不是：
 - skill 是否真的能约束行为
 - agent loop 是否能持续稳定工作
 
-### 12.2 企业内部运维 / 业务助手
+#### 12.2 企业内部运维 / 业务助手
 
 另一个高价值场景，是企业内部的 ticket、知识库、文档审批、部署操作或排障助手。
 
@@ -906,9 +1080,9 @@ OpenClaw 不是：
 
 原因很简单：现实系统最怕的不是“不会做事”，而是“做错事还不可追踪”。
 
-## 13. 当前推荐实践、过时路径与替代
+### 13. 当前推荐实践、过时路径与替代
 
-### 13.1 当前更推荐的实践
+#### 13.1 当前更推荐的实践
 
 当前更稳的方向，是把代理系统拆成几层可治理的资产：
 
@@ -917,7 +1091,7 @@ OpenClaw 不是：
 - versioned skill 资产，而不是把所有操作知识堆进一个超长 system prompt
 - 审计、确认和可回放的执行链路，而不是让代理静默完成高风险操作
 
-### 13.2 已经过时或明显不推荐的路径
+#### 13.2 已经过时或明显不推荐的路径
 
 下面这些路径不是“绝对不能用”，但在复杂系统里通常已经不够稳：
 
@@ -935,7 +1109,7 @@ OpenClaw 不是：
 
 替代路径不是“再写一个更长的 prompt”，而是把协议、能力、skill、运行时和产品编排明确分层。
 
-## 14. 迁移入口与继续深挖
+### 14. 迁移入口与继续深挖
 
 以后你再看任何新的 agent 平台、AI coding 产品或企业代理框架，都可以先问四个问题：
 
