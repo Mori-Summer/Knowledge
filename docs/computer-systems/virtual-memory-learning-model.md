@@ -3,8 +3,9 @@ doc_id: computer-systems-virtual-memory
 title: 虚拟内存：地址抽象、访问控制与工作集行为的统一模型
 concept: virtual_memory
 topic: computer-systems
+depth_mode: deep
 created_at: '2026-03-16T00:00:00+08:00'
-updated_at: '2026-03-19T20:45:00+08:00'
+updated_at: '2026-03-20T16:16:02+08:00'
 source_basis:
   - linux_mmap_manpage_checked_2026_03_19
   - linux_fork_manpage_checked_2026_03_19

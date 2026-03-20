@@ -3,8 +3,9 @@ doc_id: computer-systems-cache-coherence
 title: Cache Coherence：同一份数据为什么不会在不同核心缓存里“各说各话”
 concept: cache_coherence
 topic: computer-systems
+depth_mode: deep
 created_at: '2026-03-16T14:16:47+08:00'
-updated_at: '2026-03-19T21:20:00+08:00'
+updated_at: '2026-03-20T16:16:02+08:00'
 source_basis:
   - linux_kernel_lkmm_explanation_2026_03_16
   - intel_xeon_directory_article_2026_03_16
@@ -21,55 +22,59 @@ related_docs:
   - docs/methodology/cognitive-modeling-playbook.md
   - docs/computer-systems/memory-order.md
   - docs/computer-systems/happens-before.md
+  - docs/computer-systems/fence.md
+  - docs/computer-systems/false-sharing.md
 open_questions:
   - 在 CXL、异构加速器和更大规模共享内存系统里，coherence domain 将如何继续分层？
   - 未来哪些系统会进一步把“硬件管理 coherence”和“软件显式同步”重新切分边界？
+  - 对工程师来说，怎样最短地区分“coherence 问题”“ordering 问题”“DMA 可见性问题”？
 ---
 
 # Cache Coherence：同一份数据为什么不会在不同核心缓存里“各说各话”
 
 ## 1. 这份文档要帮你学会什么
 
-这份文档不是为了让你记住 MESI 几个字母，而是为了让你真正理解：  
-为什么多核共享内存系统里，同一个地址不会无限期地在不同核心缓存里各有一套真相。
+这份文档的目标，不是让你背 MESI / MOESI 缩写，而是让你真正拿到一个“单地址一致性”和“多地址顺序”分开思考的模型。
 
 读完后，你应该至少能做到：
 
-- 说清 cache coherence 到底在解决什么问题
-- 说清它和 memory ordering、`happens-before`、atomic、DMA/MMIO 的边界
-- 理解“同一地址一致”为什么不等于“不同地址顺序正确”
-- 看懂 false sharing、非一致 DMA、设备缓存同步为什么会成为真实工程问题
-- 知道现代系统为什么不会再简单依赖“全系统纯广播 snoop”来扩展
+- 说清 cache coherence 真正解决的是什么，不解决的又是什么
+- 把它和 memory order、`happens-before`、atomic、DMA / MMIO 的边界明确分开
+- 看懂为什么“同一地址不会各说各话”不等于“多个地址自动按你想要的顺序可见”
+- 理解 false sharing 为什么是 coherence 粒度副作用，而不是语言层 bug
+- 在多核、驱动、DMA、多插槽系统里快速判断自己碰到的是哪一类问题
 
 一句话先给结论：
 
-**cache coherence 解决的是“同一个 cacheable 位置的写入如何在多个缓存副本之间保持一致观察”；它不自动解决跨地址顺序、线程同步，也不自动覆盖所有设备和内存映射。**
+**cache coherence 解决的是“同一个 cacheable 位置在多个缓存副本之间如何维持一致观察”；它不是线程同步，不自动提供跨地址顺序，也不自动覆盖所有设备和内存映射。**
 
 ## 2. 一句话结论 / 问题定义
 
-如果每个核心都有自己的 cache，而多个核心又共享同一片物理内存，那么一个最基本的问题就会出现：
+如果每个核心都有自己的缓存，而多个核心又共享同一片物理内存，那么系统马上会面临一个根问题：
 
-- 核心 A 改了某个值
-- 核心 B 和 C 的 cache 里还留着旧副本
-- 系统怎么保证它们不会长期各读各的版本
+- 核心 A 改了某个位置
+- 核心 B 和 C 还拿着旧副本
+- 这几个副本到底谁算真，谁必须作废
 
-这就是 cache coherence 要解决的问题。
+如果没有 cache coherence，共享内存编程几乎立刻失效：
 
-如果没有它，共享内存编程会立刻失去基础：
+- 锁和原子变量失去共同含义
+- 同一个地址的“当前值”不再能被稳定讨论
+- 多核机器就不能被当成一个可编程的 shared-memory 系统
 
-- 锁和原子变量无法可靠工作
-- 一个核心看到的“最新值”对另一个核心没有共同含义
-- 同一个地址的行为无法被稳定建模
+cache coherence 就是在解决这个最低层问题：  
+**让同一个 cacheable 位置的多个副本，最终仍能回到一份一致历史上。**
 
 ## 3. 对象边界与相邻概念
 
-### 3.1 cache coherence 管什么
+### 3.1 它真正管什么
 
 它主要管：
 
-- 同一个 cacheable 位置在不同 cache 副本之间的一致观察
-- 某个核心写入该位置后，其他核心未来如何被迫放弃旧副本或拿到更新
-- 对同一位置的写入如何形成可被一致观察的顺序
+- 同一个 cache line / 同一个 cacheable 地址在多个缓存副本之间的一致观察
+- 写入方如何获得修改权限
+- 其他副本何时必须失效、降级或重新取数
+- 对同一位置的写入如何形成可一致观察的顺序
 
 ### 3.2 它不等于什么
 
@@ -78,256 +83,393 @@ open_questions:
 - memory consistency / memory ordering
 - `happens-before`
 - 线程同步
-- “所有内存都天然 coherent”
-- “写完立刻零延迟全系统可见”
+- 所有参与者天然都在同一个 coherence domain
+- “我写完以后全系统零延迟同时看见”
 
 ### 3.3 和几个相邻概念的边界
 
 **cache coherence vs memory order**
 
-- coherence 关心的是“同一个位置”的一致观察
-- memory order 关心的是“多个读写之间”的顺序和同步约束
+- coherence 管的是“同一个位置的副本别长期矛盾”
+- memory order 管的是“多个读写之间的先后、重排序与同步”
 
-所以一个经典误区就是：
-
-- `ready` 这个标志位已经 coherent / atomic
-- 就误以为 `data` 一定也按预期一起被看见
-
-这并不成立。  
-coherence 不会替你发布其他地址上的状态。
+所以“`ready` 这个标志是 coherent 的”并不推出“`data` 也按你想要的顺序可见”。
 
 **cache coherence vs `happens-before`**
 
-- coherence 是硬件/系统层面上针对同一位置的一致性机制
-- `happens-before` 是语言/模型层面用来裁决可见性和 data race 的关系
+- coherence 是硬件 / 系统层的单地址一致性能力
+- `happens-before` 是语言层的可见性和先后关系图
 
-两者相关，但不相互替代。
+coherence 是 shared memory 的底板，但它不是语言级同步证明本身。
+
+**cache coherence vs atomic**
+
+- atomic 依赖底层共享内存能对同一位置形成一致观察
+- 但 atomic 还额外带来语言层原子性、读值规则、顺序语义
+
+coherence 不等于 atomic 语义全包。
 
 **cache coherence vs DMA / MMIO**
 
-这是现实工程里最容易被忽略的边界。
+这条边界在工程里最容易致命。
 
-Linux DMA API 文档明确区分了：
+CPU 之间 coherent，不等于：
 
-- coherent memory
-- streaming DMA
-- 需要显式同步的情形
+- 设备 DMA 访问一定 coherent
+- MMIO 空间也走同一套 cache 规则
+- 设备与 CPU 自动共享一份缓存真相
 
-也就是说，CPU 缓存之间 coherent，不等于设备访问、DMA 缓冲区、MMIO 映射天然都享受同样保证。
+Linux DMA API 之所以存在，就是因为现实世界必须显式区分 coherent 与 non-coherent 路径。
+
+### 3.4 一个最关键的分界句
+
+以后遇到共享内存问题，先问：
+
+- 我现在关心的是**同一地址的一致观察**
+- 还是**多个地址之间的顺序与同步**
+
+如果这个问题没先分开，后面几乎一定会混淆 coherence 与 ordering。
 
 ## 4. 核心结构
 
-理解 cache coherence，至少要抓住下面七个构件。
+理解 cache coherence，最稳的方式是把它拆成八个固定构件。
 
-### 4.1 coherence domain
+### 4.1 coherence domain：谁被这套规则覆盖
 
-不是所有观察者都自动在同一个 coherence domain 里。  
-哪些 CPU、哪些 cache、哪些设备、哪些 interconnect 参与同一套 coherency 规则，是系统设计的一部分。
+第一步永远不是问“coherent 不 coherent”，而是问：
 
-### 4.2 cache line / coherence granularity
+- 哪些 CPU core
+- 哪些 cache 层级
+- 哪些 socket
+- 哪些设备或加速器
 
-coherence 通常不是按“单个变量”管理，而是按 cache line 或类似粒度管理。  
-这正是 false sharing 会发生的根本原因。
+处在同一个 coherence domain 里。
 
-### 4.3 状态机
+如果参与者根本不在同一 domain，再强的 coherence 直觉都不该直接套用。
 
-无论叫 MESI、MOESI 还是 MESIF，本质都是：
+### 4.2 granularity：coherence 管理粒度通常是 cache line
 
-- 谁持有共享副本
-- 谁拥有可写副本
-- 谁需要被失效
+coherence 通常不是按变量粒度管理，而是按 cache line 或类似粒度管理。  
+这意味着：
 
-### 4.4 所有权转移
+- 你以为彼此独立的两个变量
+- 只要物理上落在同一 line
+- 就会被硬件当成一个 coherence 单位处理
 
-一个核心要写某行数据时，系统通常需要先让它拿到独占或修改权限，并让其他副本失效或更新。
+这正是 false sharing 的根本来源。
 
-### 4.5 同一位置的一致观察顺序
+### 4.3 line state：谁是共享副本，谁有写权限
 
-coherence 的核心不是“每个人同时看到变化”，而是：
+不论具体协议叫 MESI、MOESI 还是 MESIF，本质都在回答：
 
-- 对同一位置的写入，系统提供一种一致观察规则
-- 不会让不同核心永久停留在互相矛盾的版本上
+- 这条 line 现在是 shared 还是 modified
+- 哪个核心拥有可写版本
+- 其他副本是有效、共享、失效还是转发态
 
-### 4.6 interconnect / snoop / directory
+缩写重要性不如这组角色关系重要。
 
-coherence 不是抽象凭空成立的，它要靠：
+### 4.4 ownership transfer：写之前通常要先抢独占
+
+一个核心想修改某条 line，往往不能直接在本地缓存里任性写。  
+它通常要先：
+
+- 发起 read-for-ownership 或类似请求
+- 让其他核心的共享副本失效或降级
+- 自己拿到独占 / 修改权限
+
+所以一次写，不只是“写入一字节”，而可能伴随整条 line 的所有权迁移。
+
+### 4.5 visibility rule：同一位置最终要回到一致历史
+
+coherence 真正保证的不是：
+
+- 所有人同一时刻、零延迟看到同一值
+
+而是：
+
+- 对同一位置的写入，系统不会让不同观察者长期停留在互相矛盾的历史里
+- 旧副本最终必须被迫失效、更新或重新取数
+
+### 4.6 interconnect mechanism：snoop、directory、home agent
+
+coherence 不是抽象魔法，必须靠互连与元数据实现。  
+常见实现元素包括：
 
 - snoop
 - directory
 - home agent
 - snoop filter
 
-之类的互连和跟踪机制来实现。
+系统越大，这部分越不可能只是“大家在总线上喊一嗓子”。
 
-### 4.7 非 coherent 访问路径
+### 4.7 non-coherent path：总有一部分世界不在这套自动机制里
 
-一旦某个访问不在这套 coherent 规则覆盖范围内，就要回到：
+一旦涉及：
 
-- DMA API
-- 显式缓存维护
-- 平台特定同步
+- DMA streaming buffer
+- MMIO
+- 某些设备本地缓存
+- 平台特定 uncached / write-combining 映射
 
-而不是假定“反正 CPU cache 都会自己搞定”。
+你就不能再指望 CPU cache coherence 自动兜底。
+
+### 4.8 software contract：coherence 是底板，不是完整协议
+
+coherence 给软件买到的是：
+
+- 同一位置能被稳定观察
+
+它没有替软件买到的是：
+
+- 多位置先后关系
+- 应用层发布 / 订阅语义
+- 线程同步证明
+
+所以真正的系统心智模型应分两层：
+
+- 先有 coherence，shared memory 才站得住
+- 再有 ordering / synchronization，程序语义才站得稳
 
 ## 5. 核心机制 / 主链路 / 因果链
 
-### 5.1 最基本的链：一个核心写，其他核心失效旧副本
+### 5.1 主链路：共享 line -> 一个核心写 -> 其他副本失效
 
-一个典型过程可以先这样理解：
+最小因果链可以这样理解：
 
-1. 多个核心都缓存了同一行数据
-2. 核心 A 想写这行
-3. 系统让 A 获得可写所有权
-4. 其他核心对该行的共享副本被失效、降级或需要重新取数
-5. 后续其他核心再读这行时，不能再一直合法地沿用旧副本
+1. 核心 A、B 都缓存了某条 line 的共享副本
+2. A 想写这条 line
+3. A 必须先拿到独占 / 修改权限
+4. 系统通知或追踪 B 的副本失效、降级或需重取
+5. 之后 B 再读这条 line，不能继续无限期使用旧副本
 
-这就是 cache coherence 的最小直觉。
+这条链解释了“同一位置为什么不会各说各话”。
 
-### 5.2 它保证的是“同一位置别各说各话”，不是“所有位置自动排好队”
+### 5.2 变体链：coherence 解决单地址，不解决多地址顺序
 
-看下面这种模式：
+考虑常见发布代码：
 
 ```cpp
 data = 42;
 ready = 1;
 ```
 
-即使 `ready` 所在的 cache line 本身是 coherent 的，也不等于另一核心只要看到 `ready == 1`，就一定已经按你想象的顺序看到了 `data == 42`。
+很多人会因为 `ready` 所在位置是 coherent 的，就误以为：
 
+- 别的核心看到 `ready == 1`
+- 就必然已经看到 `data == 42`
+
+这不成立。  
 原因是：
 
-- coherence 主要约束的是每个位置自己的观察规则
-- 不同位置之间的顺序问题，要靠 memory order、barrier、锁或语言内存模型来处理
+- `ready` 与 `data` 是两个地址
+- coherence 只管各自地址不要长期矛盾
+- 跨地址顺序要靠 memory order、barrier、锁或语言内存模型
 
-### 5.3 现实里还要面对“不在 coherence 域里”的访问者
+这也是为什么“coherent shared memory”仍然需要原子、锁和屏障。
 
-设备 DMA 就是典型例子。
+### 5.3 性能副作用链：coherence 粒度过粗就变成 false sharing
 
-Linux DMA 文档明确区分：
+再看另一个常见现象：
 
-- 某些 buffer 对 CPU 和设备是 coherent 的
-- 某些场景下必须显式做同步
+1. 线程 1 高频写变量 `a`
+2. 线程 2 高频写变量 `b`
+3. `a` 和 `b` 恰好落在同一 cache line
+4. 硬件会围绕整条 line 做失效与所有权迁移
+5. 逻辑上不共享，硬件上却互相拖慢
 
-这说明工程上必须先问清：
+这说明 coherence 不只是“功能正确性基础”，它的粒度设计还直接塑造性能问题形态。
 
-- 这块内存是不是 coherent
-- 这个设备是不是 coherent participant
-- 我是不是还需要显式 cache maintenance 或 DMA sync
+### 5.4 系统边界链：设备访问可能根本不在同一套 coherence 里
+
+驱动与 DMA 场景里的因果链通常要这样想：
+
+1. CPU 把 buffer 写在自己的 cache 里
+2. 设备通过 DMA 去读同一片物理内存
+3. 如果该设备或该 buffer 不在同一 coherent path 里
+4. 设备看到的可能不是 CPU cache 里那份最新内容
+5. 于是必须调用 DMA API 或做显式同步
+
+这就是为什么“CPU 之间 coherent”这句话，在驱动世界远远不够。
+
+### 5.5 扩展性链：系统越大，越需要 directory 而不是纯广播
+
+在很小的系统里，人们容易形成“写的时候广播一下失效就行了”的直觉。  
+但系统一大，这条链的成本会迅速膨胀：
+
+1. 参与者增多
+2. 广播范围扩大
+3. 无谓 snoop 流量上升
+4. 互连与功耗压力上升
+5. 系统转向 directory、home agent、层次化追踪
+
+这就是现代多插槽平台不再只靠全域 snoop 的原因。
+
+### 5.6 一套最短排查流程
+
+遇到共享内存异常时，先按下面顺序排：
+
+1. 是单地址看法不一致，还是多地址顺序错了？
+2. 参与者都在同一 coherence domain 吗？
+3. 访问粒度是不是落在同一 cache line？
+4. 有没有 false sharing / ownership bouncing？
+5. 有没有设备、DMA、MMIO、uncached 映射把你带出了 coherent path？
+6. 如果 coherence 本身没问题，再去看 ordering / synchronization。
+
+这能把很多“明明加了 atomic 还是不对”的问题快速分层。
 
 ## 6. 关键 tradeoff 与失败模式
 
-### 6.1 tradeoff 的本质
+### 6.1 这套机制真正买到的东西
 
-cache coherence 的核心 tradeoff 是：
+cache coherence 为共享内存编程买到的是：
 
-- 更强、更自动的 coherent 共享语义，换来更高的互连流量、功耗和实现复杂度
-- 更弱或局部的 coherence 覆盖，换来更好的扩展性或异构灵活性，但要把一部分同步成本重新交给软件
+- 同一位置的一致观察基础
+- 锁和原子可以被实现的前提
+- 多核系统仍能被当成 shared-memory machine 使用
 
-### 6.2 常见失败模式
+没有它，绝大多数通用多线程编程模型都站不住。
 
-**失败模式 1：把 coherence 当成线程同步**
+### 6.2 代价：自动一致性不是免费的
 
-同一地址 coherent，不等于不同地址已经排好顺序。  
-这是最经典的并发误判来源之一。
+代价同样非常明确：
+
+- 更多互连流量
+- 更多 snoop / directory 元数据维护
+- 更高延迟、功耗和实现复杂度
+- 更大的扩展性压力
+
+系统越大、越异构，这笔账越明显。
+
+### 6.3 常见失败模式
+
+**失败模式 1：把 coherence 当线程同步**
+
+同一地址 coherent，不代表多地址已经按程序意图排好顺序。
 
 **失败模式 2：忽略 cache line 粒度**
 
-两个无关变量落在同一行上，照样会因为所有权反复转移而互相拖慢，这就是 false sharing。
+两个变量逻辑独立，不代表硬件不会让它们在同一条 line 上一起打架。
 
 **失败模式 3：默认设备访问也 coherent**
 
-这在 DMA、驱动、网卡、GPU、MMIO 场景里非常危险。  
-Linux DMA API 之所以存在，正是因为现实世界不是“所有访问者自动 coherent”。
+这在 DMA、网卡、GPU、驱动、MMIO 场景里非常危险。
 
-**失败模式 4：把小规模系统经验生搬到大规模系统**
+**失败模式 4：把小系统广播直觉生搬到大系统**
 
-小核数或单插槽机器上某些事情“看起来很自然”，不代表多插槽、大核数系统还能用同一套粗糙直觉理解。
+目录、过滤、分层互连不是实现细节边角料，而是系统扩展性的主问题。
+
+**失败模式 5：把“我看到旧值”全部归咎于 coherence**
+
+很多时候真正的问题不是单地址副本不一致，而是 ordering、同步边、设备可见性或缓存维护。
 
 ## 7. 应用场景
 
-### 7.1 多核 CPU 共享内存
+### 7.1 多核 CPU 共享内存编程
 
-锁、原子变量、共享状态、线程池、runtime，全部建立在 coherent shared memory 的基本能力上。
+锁、原子、线程池、runtime、并发容器，全都建立在 coherent shared memory 的基本能力之上。
 
 ### 7.2 false sharing 性能分析
 
-性能问题里，cache coherence 经常不是“功能错”，而是“系统一直在无意义地传 ownership”。
+只要高频写热点落在同一 line 上，coherence 就会从“正确性底板”变成“性能瓶颈来源”。
 
 ### 7.3 DMA / 驱动 / 高性能 I/O
 
-一旦 CPU 与设备共同访问 buffer，你必须先问的是 coherent 不 coherent，而不是默认它们共享同一套 cache 真相。
+一旦 CPU 与设备共同访问 buffer，首要问题就是 coherent domain 和同步路径，而不是先假定“反正都是内存”。
 
-### 7.4 多插槽与大型共享内存系统
+### 7.4 多插槽与大规模共享内存系统
 
-系统越大，coherence 的扩展方式越不是“简单广播一下就好了”。
+系统越大，越要理解 coherence 的层次化实现与扩展性代价。
+
+### 7.5 异构系统与加速器边界
+
+即便今天主流 CPU 世界的 coherent shared memory 看起来“理所当然”，一到 GPU、加速器、CXL 扩展域，这个边界马上重新变得显眼。
 
 ## 8. 工业 / 现实世界锚点
 
 ### 8.1 Intel Xeon Scalable 的目录型 coherency 设计
 
-Intel 官方说明写得很明确：  
-Xeon Scalable 这类现代多插槽系统的 coherency，不再只是纯 snoop-based 设计，而是通过：
+Intel 官方关于 Xeon Scalable 的说明明确写到：
 
-- distributed in-memory directory
-- Home Agent
-- memory controller 侧目录信息
+- modern server coherency 不再只是简单广播 snoop
+- 系统会借助 distributed in-memory directory、Home Agent 等机制减少无效流量
 
-来减少无意义广播并改善扩展性。
-
-这说明现实世界里的 coherence 不是“一个总线大家互相吼一声”就结束了。
+这说明现实世界里的 coherence 扩展，本质上是系统架构问题，不是一个“总线喊话”的小技巧。
 
 ### 8.2 Linux DMA API
 
-Linux 文档把 DMA coherent 与 streaming DMA 分得很清楚，这正是工业里“coherence 不覆盖所有参与者”的最现实锚点。
+Linux DMA 文档明确区分 coherent memory、streaming DMA、DMA 属性与显式同步。  
+这是工程上最直接的现实锚点：
 
-### 8.3 Intel SDM 与架构级文档
+- coherence 有边界
+- 设备与 CPU 的可见性必须按 API 契约处理
+- 不能把 CPU cache 直觉硬套到 DMA 世界
 
-Intel 把 coherency 放在体系结构文档和官方技术材料里持续维护，说明它不是一个微观实现细节，而是多核共享内存平台可编程性的基础契约之一。
+### 8.3 Intel SDM 与 LKMM 解释文档
+
+Intel SDM 提供架构层共享内存语义背景，LKMM 解释文档则提醒软件工程师：  
+单地址一致性与跨地址顺序是两层问题。  
+这两类文档合起来，正好构成硬件直觉与软件语义的双锚点。
 
 ## 9. 当前推荐实践、过时路径与替代
 
 ### 9.1 截至 2026-03-16 更推荐的实践
 
-对大多数工程代码，更稳的实践是：
+当前更稳的实践是：
 
-- 把 coherence 理解为“同一位置的一致观察能力”，不要越界把它当同步原语
-- 需要跨地址建立因果顺序时，显式使用 atomic ordering、锁、barrier 或语言内存模型
-- 一旦涉及设备、DMA、特殊内存映射，优先查平台/OS API，而不是默认仍在同一 coherence domain
-- 性能分析时，把 false sharing 和 ownership 迁移当一等问题看待
+- 把 coherence 理解为“单地址一致观察能力”，不要越界拿它当同步原语
+- 需要跨地址顺序时，显式使用 atomic ordering、锁、barrier 或语言内存模型
+- 只要涉及设备、DMA、特殊映射，先查平台 / OS 文档，再决定是否需要显式同步
+- 性能分析时把 false sharing、ownership bouncing、HITM 当成一等候选
 
-### 9.2 已经过时、明显不够用或必须带语境理解的路径
+### 9.2 今天最稳的决策顺序
 
-**“纯广播 snoop 就能自然扩到很大系统”的旧路径**
+1. 这是单地址一致性问题，还是多地址顺序问题？
+2. 参与者是不是都在同一 coherence domain？
+3. 如果有设备参与，这个 buffer 是 coherent 还是 streaming？
+4. 如果性能差，是 true sharing 还是 false sharing？
+5. 如果 coherence 没问题，再去看 ordering 和同步边。
 
-Intel 官方关于 Xeon Scalable coherency 的说明已经很清楚：  
-现代多插槽系统为了扩展性，会借助 distributed in-memory directory 和 Home Agent，而不是把全系统 coherency 继续押在简单的全域广播 snoop 上。
+### 9.3 已经过时、明显不够用或必须带语境理解的路径
 
-更准确的当前替代理解是：
+**“纯广播 snoop 就能自然扩到很大系统”的旧直觉**
 
-- 小规模 snoop 直觉仍然有教学价值
-- 但大规模系统的现实实现要依赖目录、过滤和层次化互连
+今天这条直觉只能作为教学起点，不能当现代服务器系统现实。  
+更稳的当前理解是：
 
-**“CPU cache coherent，所以设备也一定 coherent”的旧习惯**
+- 小规模系统的 snoop 直觉仍有帮助
+- 但大规模平台实际依赖 directory、home agent、过滤与层次化互连
+
+**“CPU cache coherent，所以设备访问也天然 coherent”的旧习惯**
 
 这条路在驱动和高性能 I/O 里非常危险。  
-当前更稳的替代是：回到 DMA API、平台文档和设备一致性语义，按实际 coherence domain 处理。
+当前更推荐的是：
 
-### 9.3 什么时候别把 coherence 当答案
+- 回到 DMA API
+- 回到平台文档
+- 按真实 coherence domain 处理
 
-如果你在解决的是：
+**“看到旧值就是 coherence 坏了”的粗糙归因**
 
-- 跨多个变量的顺序问题
-- 线程同步问题
-- 发布-订阅问题
-- data race 合法性问题
+很多这类问题真正更像：
 
-那么答案通常不在 coherence 本身，而在：
+- 缺 barrier
+- 缺 release/acquire
+- 读了错误地址
+- 设备同步没做
 
-- `memory order`
-- `happens-before`
-- 锁
-- barrier
-- 更高层同步协议
+### 9.4 替代与配套做法
+
+如果你真正想解决的是程序可见性与顺序，当前更应该转去看：
+
+- [memory-order.md](/Users/maxwell/Knowledge/docs/computer-systems/memory-order.md)
+- [happens-before.md](/Users/maxwell/Knowledge/docs/computer-systems/happens-before.md)
+- [fence.md](/Users/maxwell/Knowledge/docs/computer-systems/fence.md)
+
+如果你真正想解决的是设备可见性，则更应该查：
+
+- Linux DMA API
+- 平台设备一致性文档
+- 驱动栈的 cache maintenance 规则
 
 ## 10. 自测题 / 验证入口
 
@@ -336,23 +478,25 @@ Intel 官方关于 Xeon Scalable coherency 的说明已经很清楚：
 3. false sharing 为什么会发生，它和 coherence 粒度有什么关系？
 4. 为什么 CPU 间 coherent，不等于 DMA / 设备访问也天然 coherent？
 5. 为什么现代大规模系统不会继续只靠“全域广播 snoop”维持 coherency？
-6. 在你分析一个共享内存 bug 时，什么时候该看 coherence，什么时候该看 memory order / `happens-before`？
+6. 当你看到某核心读到旧值时，为什么不能立刻断言是 coherence 出错？
+7. 哪些现象应该把你从“coherence 排查”切换到“ordering / synchronization 排查”？
+8. 如果设备和 CPU 共同访问一块 buffer，你最先应该确认哪几件事？
 
 ## 11. 迁移与关联模型
 
 理解了这篇文档后，你应该能把这套模型迁移到：
 
-- `memory order` 中“同地址原子性”与“跨地址顺序”的拆分
-- `happens-before` 中“可见性关系”与“同地址一致观察”的拆分
-- false sharing 的性能定位
-- DMA / 驱动 / 设备缓存同步
-- 多插槽共享内存系统和异构加速器互连
+- [false-sharing.md](/Users/maxwell/Knowledge/docs/computer-systems/false-sharing.md) 的 line-level 性能分析
+- [memory-order.md](/Users/maxwell/Knowledge/docs/computer-systems/memory-order.md) 的跨地址顺序问题
+- [happens-before.md](/Users/maxwell/Knowledge/docs/computer-systems/happens-before.md) 的语言层同步图
+- 驱动 / DMA / MMIO 的设备可见性判断
+- 多插槽、异构共享内存系统的边界分析
 
-迁移时最关键的问题始终是：
+迁移时最关键的动作是始终先分层：
 
-- 我现在关心的是同一地址的一致观察，还是多个地址的顺序与同步？
-- 参与访问的对象是不是都在同一个 coherence domain 里？
-- 我看到的是功能错误、时序错误，还是纯性能上的所有权抖动？
+- 单地址一致性
+- 多地址顺序
+- 设备 / 域边界
 
 ## 12. 未解问题与继续深挖
 
@@ -360,7 +504,8 @@ Intel 官方关于 Xeon Scalable coherency 的说明已经很清楚：
 
 - CXL 和更大规模异构共享内存会怎样重画 coherence domain 的边界
 - 软件显式 cache maintenance 与硬件 managed coherence 的未来分工
-- false sharing 之外，还有哪些“coherence 成本”值得建立更量化的排查模型
+- 除 false sharing 之外，哪些 coherence 成本最值得建立量化排查模型
+- 当平台支持部分设备一致性时，驱动层最佳实践如何继续细分
 
 ## 13. 参考资料
 

@@ -3,8 +3,9 @@ doc_id: image-processing-fast-guided-filter
 title: 快速导向滤波的数学原理、公式推导与 C++ 对照
 concept: fast_guided_filter
 topic: image-processing
+depth_mode: deep
 created_at: '2026-03-16T00:00:00+08:00'
-updated_at: '2026-03-19T20:45:00+08:00'
+updated_at: '2026-03-20T17:09:33+08:00'
 source_basis:
   - fast_guided_filter_arxiv2015_checked_2026_03_19
   - guided_image_filtering_eccv2010_checked_2026_03_19

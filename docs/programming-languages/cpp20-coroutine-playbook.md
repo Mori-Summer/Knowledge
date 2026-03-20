@@ -3,8 +3,9 @@ doc_id: programming-languages-cpp20-coroutine
 title: C++20 协程：可挂起控制流、语言机制与运行时边界
 concept: cpp20_coroutine
 topic: programming-languages
+depth_mode: deep
 created_at: '2026-03-16T00:00:00+08:00'
-updated_at: '2026-03-19T20:45:00+08:00'
+updated_at: '2026-03-20T17:09:33+08:00'
 source_basis:
   - cpp_draft_coroutines_checked_2026_03_19
   - cpp_draft_coroutine_support_library_checked_2026_03_19

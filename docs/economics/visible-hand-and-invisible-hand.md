@@ -3,8 +3,9 @@ doc_id: economics-visible-hand-and-invisible-hand
 title: 看得见的手与看不见的手：市场、组织与国家如何分工协调资源
 concept: visible_hand_and_invisible_hand
 topic: economics
+depth_mode: deep
 created_at: '2026-03-19T16:40:00+08:00'
-updated_at: '2026-03-19T16:40:00+08:00'
+updated_at: '2026-03-20T17:09:33+08:00'
 source_basis:
   - adam_smith_wealth_of_nations_classic_text
   - hayek_use_of_knowledge_in_society_classic_argument

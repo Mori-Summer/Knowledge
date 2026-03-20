@@ -3,8 +3,9 @@ doc_id: programming-languages-pimpl
 title: PImpl：当你真正想隔离的是 ABI、编译依赖与实现细节
 concept: pimpl
 topic: programming-languages
+depth_mode: deep
 created_at: '2026-03-16T17:45:09+08:00'
-updated_at: '2026-03-16T17:45:09+08:00'
+updated_at: '2026-03-20T17:09:33+08:00'
 source_basis:
   - cpp_core_guidelines_i27_2026_03_16
   - herb_sutter_gotw_100_2026_03_16

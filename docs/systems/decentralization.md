@@ -3,8 +3,9 @@ doc_id: systems-decentralization
 title: 去中心化：不是“没有中心”，而是拆掉单点控制、单点信任与单点故障
 concept: decentralization
 topic: systems
+depth_mode: deep
 created_at: '2026-03-19T17:20:00+08:00'
-updated_at: '2026-03-19T17:24:00+08:00'
+updated_at: '2026-03-20T17:09:33+08:00'
 source_basis:
   - learning_model_and_cognitive_modeling_playbooks
   - vitalik_buterin_meaning_of_decentralization

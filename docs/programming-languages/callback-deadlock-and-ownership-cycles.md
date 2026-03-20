@@ -3,8 +3,9 @@ doc_id: programming-languages-callback-deadlock-and-ownership-cycles
 title: 回调函数中的死锁与强引用泄漏：为什么会“自己等自己”，又为什么会“永远不释放”
 concept: callback_deadlock_and_ownership_cycles
 topic: programming-languages
+depth_mode: deep
 created_at: '2026-03-18T17:07:38+08:00'
-updated_at: '2026-03-19T21:20:00+08:00'
+updated_at: '2026-03-20T17:09:33+08:00'
 source_basis:
   - apple_dispatch_queues_2026_03_18
   - qt_threads_qobject_2026_03_18

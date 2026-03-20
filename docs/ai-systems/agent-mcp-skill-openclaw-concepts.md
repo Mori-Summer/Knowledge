@@ -3,8 +3,9 @@ doc_id: ai-systems-agent-mcp-skill-openclaw-concepts
 title: AI 代理栈分层：Agent、MCP、Skill 与 OpenClaw 的概念边界
 concept: agent_stack_layering
 topic: ai-systems
+depth_mode: deep
 created_at: '2026-03-16T00:00:00+08:00'
-updated_at: '2026-03-19T20:45:00+08:00'
+updated_at: '2026-03-20T17:09:33+08:00'
 source_basis:
   - openclaw_homepage_checked_2026_03_19
   - openclaw_gateway_architecture_checked_2026_03_19
