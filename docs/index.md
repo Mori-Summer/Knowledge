@@ -4,10 +4,10 @@ title: Knowledge Docs Index
 concept: knowledge_docs_index
 topic: root
 created_at: '2026-03-16T00:00:00+08:00'
-updated_at: '2026-03-19T20:45:00+08:00'
+updated_at: '2026-03-20T13:45:40+08:00'
 source_basis:
   - derived_repository_index
-time_context: snapshot_2026_03_19
+time_context: snapshot_2026_03_20
 applicability: repository_navigation
 prompt_version: not_applicable
 template_version: index_v1
@@ -53,10 +53,12 @@ open_questions:
 - [Happens-Before：并发里真正决定“可见”与“成不成 race”的关系](./computer-systems/happens-before.md)
 - [Memory Order：从原子性到可见性与重排序控制](./computer-systems/memory-order.md)
 - [Modification Order：为什么每个原子对象都有自己的修改总序，但整个世界并没有一个总时间线](./computer-systems/modification-order.md)
+- [多线程中的各种锁：不要先问 API 名字，先问所有权、等待方式与读写形状](./computer-systems/multithreaded-locks.md)
 - [Mutex：你真正买到的不是“挡别人一下”，而是互斥区间和同步边](./computer-systems/mutex.md)
 - [Release Sequence：为什么 release 之后的一串 RMW 还能继续“带着发布语义往前走”](./computer-systems/release-sequence.md)
 - [Semaphore：当问题是“还有没有令牌”，而不是“谁拥有锁”](./computer-systems/semaphore.md)
 - [Synchronizes-With：并发关系图里真正跨线程连边的那一下](./computer-systems/synchronizes-with.md)
+- [进程的内存布局：从 ELF 装载到堆、mmap 区、栈与共享库的统一模型](./computer-systems/process-memory-layout.md)
 - [虚拟内存：地址抽象、访问控制与工作集行为的统一模型](./computer-systems/virtual-memory-learning-model.md)
 
 ## image-processing
@@ -67,6 +69,19 @@ open_questions:
 ## economics
 
 - [看得见的手与看不见的手：市场、组织与国家如何分工协调资源](./economics/visible-hand-and-invisible-hand.md)
+
+## governance
+
+- [法利权情理：把复杂冲突拆成规则、利益、权力、情感与法理的五维模型](./governance/fa-li-quan-qing-li.md)
+
+## graphics-systems
+
+- [ANGLE：把 OpenGL ES/EGL 固定为稳定前端的跨后端图形兼容层](./graphics-systems/angle.md)
+- [OpenGL 上下文与 GL 资源释放顺序：大型项目里的生命周期治理模型](./graphics-systems/opengl-context-resource-lifetime-order.md)
+
+## networking
+
+- [DNS：名字解析不是电话簿，而是分层委派、缓存驱动的全球名字控制面](./networking/dns.md)
 
 ## systems
 

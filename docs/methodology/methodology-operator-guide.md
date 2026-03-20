@@ -4,7 +4,7 @@ title: 方法论文档使用说明：怎么读、怎么用、怎么验收
 concept: methodology_operator_guide
 topic: methodology
 created_at: '2026-03-19T18:10:00+08:00'
-updated_at: '2026-03-19T18:10:00+08:00'
+updated_at: '2026-03-20T14:19:46+08:00'
 source_basis:
   - methodology_repository_practice
   - concept_document_generation_workflow_review_2026_03_19
@@ -126,6 +126,19 @@ open_questions:
 
 如果这一步没做，文档最容易退化成漂亮但不可调用的说明文。
 
+### 4.2.1 先判断 `standard` 还是 `deep`
+
+在真正落笔前，先额外判断这篇文档应该采用哪种展开模式。
+
+默认按 `deep` 模式处理的常见信号有：
+
+- 主题同时涉及多层抽象，例如接口层、实现层、运行时层、治理层
+- 主题存在多个后端、多个执行面、多个参与方或多个时间尺度
+- 当前实践与历史路径都重要，不能只讲静态原理
+- 你后续主要拿它做架构判断、选型、排障，而不是只记概念
+
+命中两条及以上时，默认不要写成“每节一小段”的标准档，而应按 `deep` 模式展开。
+
 ### 4.3 第三步：按模板组织输出
 
 写文档时，使用 `concept-document-template` 保证：
@@ -133,6 +146,7 @@ open_questions:
 - 章节齐全
 - frontmatter 齐全
 - 输出目标是“可复用模型”，不是“概念解释”
+- 复杂主题先显式确定 `depth_mode`，不能只按最低密度把章节填满
 
 ### 4.4 第四步：过质量门禁
 
@@ -180,6 +194,7 @@ frontmatter 的最小字段由模板规定。
 
 - `doc_id` 建议稳定对应 `topic + slug`
 - `concept` 建议用稳定、可复用的概念标识，而不是长句标题
+- 对新建或实质升级文档，建议显式填写 `depth_mode: standard|deep`
 - `time_context` 和 `source_basis` 要能反映这篇文档的时效性和证据基础
 
 ## 7. 时间敏感与来源纪律
@@ -206,6 +221,7 @@ frontmatter 的最小字段由模板规定。
 - 工业 / 现实世界锚点具体且真实
 - 当前实践和过时路径写清“为什么旧、局限在哪、现在更推荐什么”
 - 自测题和迁移入口存在
+- 如果主题明显复杂，展开密度与复杂度匹配，而不是只有章节外形
 - `concept-document-quality-gate` 通过
 - `docs/index.md` 已更新
 
@@ -219,6 +235,7 @@ frontmatter 的最小字段由模板规定。
 - 只看 playbook，不看模板，结果写成分析笔记而不是知识库文档
 - 有案例，但案例只是泛泛行业印象，不是真实锚点
 - 有“当前实践”，但没有日期和来源纪律
+- 主题明显复杂，却仍按每节一小段的稀薄密度草草带过
 - 文档写完了，却忘了更新 `docs/index.md`
 
 ## 10. 后续维护建议
