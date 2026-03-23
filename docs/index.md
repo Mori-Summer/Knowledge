@@ -4,7 +4,7 @@ title: Knowledge Docs Index
 concept: knowledge_docs_index
 topic: root
 created_at: '2026-03-16T00:00:00+08:00'
-updated_at: '2026-03-23T16:32:00+08:00'
+updated_at: '2026-03-23T20:06:00+08:00'
 source_basis:
   - derived_repository_index
 time_context: snapshot_2026_03_23
@@ -44,6 +44,9 @@ open_questions:
 
 ## computer-systems
 
+- [AoS / SoA 选型：把访问模式、SIMD、GPU、列式执行与混合布局接到同一判断框架](./computer-systems/aos-soa-layout-selection.md)
+- [Array of Structs：按记录聚合、按对象边界取数的数据布局](./computer-systems/array-of-structs.md)
+- [Struct of Arrays：按字段拆流、按批量同构操作取数的数据布局](./computer-systems/struct-of-arrays.md)
 - [Atomic Wait / Notify：当你只是在等一个原子值变化时，不必先上 condition variable](./computer-systems/atomic-wait-notify.md)
 - [Atomicity：并发里“不可分割”到底解决了什么，又没有解决什么](./computer-systems/atomicity.md)
 - [Cache Coherence：同一份数据为什么不会在不同核心缓存里“各说各话”](./computer-systems/cache-coherence.md)
@@ -74,6 +77,15 @@ open_questions:
 
 - [导向滤波的数学原理、公式推导与 C++ 对照](./image-processing/guided-filter-derivation.md)
 - [快速导向滤波的数学原理、公式推导与 C++ 对照](./image-processing/fast-guided-filter-derivation.md)
+
+## mathematics
+
+- [复数：把标量、平面、旋转与振荡压成同一个代数对象](./mathematics/complex-number.md)
+- [虚数：把“负数开方无解”扩展成可运算的新轴](./mathematics/imaginary-number.md)
+- [虚数的作用：为什么振荡、旋转、频域与线性系统都喜欢复数表示](./mathematics/imaginary-number-uses.md)
+- [四元数：把 3D 旋转、组合次序与姿态状态压进同一个代数对象](./mathematics/quaternion.md)
+- [四元数在 3D 旋转中的应用：姿态状态、组合、插值与时间推进的统一模型](./mathematics/quaternion-in-3d-rotation.md)
+- [四元数与欧拉旋转：局部坐标、全局状态与工程边界的区别](./mathematics/quaternion-vs-euler-rotation.md)
 
 ## economics
 
