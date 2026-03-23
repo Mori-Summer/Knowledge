@@ -74,7 +74,7 @@ docs/
   作用：规定 Hard Fail、评分规则和 `upgraded_v1` 验收标准
 
 - [fixed-concept-generation-prompt.md](/Users/maxwell/Knowledge/docs/methodology/fixed-concept-generation-prompt.md)
-  作用：提供稳定的生成 / 升级触发指令
+  作用：提供稳定的生成 / 升级触发指令，并明确 `standard` / `deep` 两档展开模式的触发方式
 
 如果你第一次进入这个仓库，最稳的阅读顺序是：
 
@@ -85,7 +85,35 @@ docs/
 5. [concept-document-quality-gate.md](/Users/maxwell/Knowledge/docs/methodology/concept-document-quality-gate.md)
 6. [fixed-concept-generation-prompt.md](/Users/maxwell/Knowledge/docs/methodology/fixed-concept-generation-prompt.md)
 
-## 现在支持的 3 种主要工作模式
+## 现在支持的 3 类主要工作流
+
+这套方法论现在有两层判断：
+
+- 第一层：你是在 `新建`、`升级` 还是 `审计 / 审查`
+- 第二层：这篇文档应按 `standard` 还是 `deep` 模式展开
+
+也就是说，`deep` 不是第 4 种工作流，而是新建 / 升级时都要先判断的一档展开密度。
+
+## 写文档前先判断：`standard` 还是 `deep`
+
+- `standard`：更适合单主机制、单时间尺度、边界比较清晰的概念
+- `deep`：更适合多层系统、多后端、多 actor、多时间尺度、多约束同时作用的概念
+
+如果一个主题命中下面两条及以上，默认按 `deep` 模式处理：
+
+- 需要同时解释多层抽象，例如接口层、实现层、运行时层、治理层
+- 存在多个后端、多个执行面、多个参与方或多个时间尺度
+- 当前推荐实践与历史路径都重要，不能只写静态原理
+- 读者后续主要拿它做架构判断、选型、排障，而不是只记定义
+- 失败模式和 tradeoff 本身就比“定义”更重要
+
+`deep` 模式不是单纯把篇幅拉长，而是要求文档具备更强判断支撑力。至少要补强：
+
+- 层次化的核心结构，而不是只列名词
+- 至少一条完整主链路；必要时补一条变体链路
+- 多个有差异的应用场景
+- 多个真实工业 / 现实世界锚点
+- 明确的旧路径、局限和替代路径判断
 
 ### 1. 新建概念文档
 
@@ -97,7 +125,7 @@ docs/
 最短入口参考：
 
 ```text
-按 docs/methodology/methodology-operator-guide.md、docs/methodology/concept-document-template.md、docs/methodology/concept-document-quality-gate.md 和两份 playbook，为概念 {concept} 新建一篇知识库文档。直接写入合适的 docs/{topic}/ 目录，文件名使用 kebab-case，补齐统一 frontmatter，并在完成后更新 docs/index.md。不要写成泛泛解释，必须建立可复用内部模型。
+按 docs/methodology/methodology-operator-guide.md、docs/methodology/concept-document-template.md、docs/methodology/concept-document-quality-gate.md 和两份 playbook，为概念 {concept} 新建一篇知识库文档。直接写入合适的 docs/{topic}/ 目录，文件名使用 kebab-case，补齐统一 frontmatter，并在完成后更新 docs/index.md。不要写成泛泛解释，必须建立可复用内部模型；如果概念明显跨多层系统、多后端、多时间尺度或多类约束，默认按 deep 模式生成，不要只填满章节。
 ```
 
 ### 2. 升级已有文档
@@ -110,7 +138,7 @@ docs/
 最短入口参考：
 
 ```text
-按 docs/methodology/methodology-operator-guide.md、docs/methodology/concept-document-template.md 和 docs/methodology/concept-document-quality-gate.md 升级现有文档 {path}。
+按 docs/methodology/methodology-operator-guide.md、docs/methodology/concept-document-template.md 和 docs/methodology/concept-document-quality-gate.md 升级现有文档 {path}；如果原主题明显复杂但当前文档过短或过稀，按 deep 模式补足展开密度，不要只修补章节名。
 ```
 
 ### 3. 审计 / 审查现有文档
@@ -164,6 +192,7 @@ frontmatter 最少应包含：
 
 - `concept` 现在统一使用稳定的 `snake_case` 标识
 - `topic` 对应 `docs/{topic}/` 目录
+- `depth_mode` 建议在新建或实质升级时显式写成 `standard` 或 `deep`，未填写时默认按 `standard` 审视
 - 时间敏感内容必须有日期语境与相称来源
 
 ## 当前质量线
@@ -172,6 +201,7 @@ frontmatter 最少应包含：
 
 - 问题定义和边界清楚
 - 有结构、有机制、有失效条件
+- 展开密度和主题复杂度匹配；明显复杂的主题不能只写成低密度标准档
 - 有真实、可定位的工业 / 现实世界锚点
 - 当前实践部分写清核对日期、旧路径局限和当前替代
 - 有验证入口和迁移入口

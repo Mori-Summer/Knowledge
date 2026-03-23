@@ -4,10 +4,10 @@ title: Knowledge Docs Index
 concept: knowledge_docs_index
 topic: root
 created_at: '2026-03-16T00:00:00+08:00'
-updated_at: '2026-03-20T13:45:40+08:00'
+updated_at: '2026-03-23T16:32:00+08:00'
 source_basis:
   - derived_repository_index
-time_context: snapshot_2026_03_20
+time_context: snapshot_2026_03_23
 applicability: repository_navigation
 prompt_version: not_applicable
 template_version: index_v1
@@ -37,6 +37,7 @@ open_questions:
 ## programming-languages
 
 - [回调函数中的死锁与强引用泄漏：为什么会“自己等自己”，又为什么会“永远不释放”](./programming-languages/callback-deadlock-and-ownership-cycles.md)
+- [协程：可挂起控制流、运行时恢复与结构化并发的统一模型](./programming-languages/coroutine.md)
 - [C++20 协程：可挂起控制流、语言机制与运行时边界](./programming-languages/cpp20-coroutine-playbook.md)
 - [PImpl：当你真正想隔离的是 ABI、编译依赖与实现细节](./programming-languages/pimpl.md)
 - [回调函数：显式 continuation、异步边界与变量生命周期管理](./programming-languages/callback-lifetime-management.md)
@@ -48,16 +49,24 @@ open_questions:
 - [Cache Coherence：同一份数据为什么不会在不同核心缓存里“各说各话”](./computer-systems/cache-coherence.md)
 - [Condition Variable：你等的不是通知，而是条件何时在同步关系下成立](./computer-systems/condition-variable.md)
 - [Data Race：什么时候程序不是“有点危险”，而是直接掉进未定义行为](./computer-systems/data-race.md)
+- [DLL 注入：把代码带进别的进程时，真正起作用的是装载链、执行触发与权限边界](./computer-systems/dll-injection.md)
+- [DMA 技术：地址可达性、缓冲区所有权与可见性同步的统一模型](./computer-systems/dma.md)
 - [Fence：什么时候需要一堵顺序墙，什么时候这堵墙其实并不会替你同步](./computer-systems/fence.md)
 - [False Sharing：明明线程没抢同一个变量，为什么缓存行还在疯狂打架](./computer-systems/false-sharing.md)
 - [Happens-Before：并发里真正决定“可见”与“成不成 race”的关系](./computer-systems/happens-before.md)
+- [malloc 的底层原理：从用户请求到 size class、arena、mmap 与碎片治理](./computer-systems/malloc-internals.md)
+- [内存池设计：把 free list、arena、slab 放回生命周期、局部性与回收边界的统一模型](./computer-systems/memory-pool-design.md)
 - [Memory Order：从原子性到可见性与重排序控制](./computer-systems/memory-order.md)
 - [Modification Order：为什么每个原子对象都有自己的修改总序，但整个世界并没有一个总时间线](./computer-systems/modification-order.md)
 - [多线程中的各种锁：不要先问 API 名字，先问所有权、等待方式与读写形状](./computer-systems/multithreaded-locks.md)
 - [Mutex：你真正买到的不是“挡别人一下”，而是互斥区间和同步边](./computer-systems/mutex.md)
+- [进程：执行实例、资源容器与隔离边界的统一模型](./computer-systems/process.md)
 - [Release Sequence：为什么 release 之后的一串 RMW 还能继续“带着发布语义往前走”](./computer-systems/release-sequence.md)
 - [Semaphore：当问题是“还有没有令牌”，而不是“谁拥有锁”](./computer-systems/semaphore.md)
 - [Synchronizes-With：并发关系图里真正跨线程连边的那一下](./computer-systems/synchronizes-with.md)
+- [线程：共享地址空间里的调度执行流，不是更轻量的进程，也不是协程](./computer-systems/thread.md)
+- [USB 主机控制器数据路径：从 URB、传输环到 DMA 缓冲区的统一模型](./computer-systems/usb-host-controller-data-path.md)
+- [USB 传输协议：主机调度、端点契约与传输类型取舍的统一模型](./computer-systems/usb-transfer-protocol.md)
 - [进程的内存布局：从 ELF 装载到堆、mmap 区、栈与共享库的统一模型](./computer-systems/process-memory-layout.md)
 - [虚拟内存：地址抽象、访问控制与工作集行为的统一模型](./computer-systems/virtual-memory-learning-model.md)
 
@@ -82,6 +91,8 @@ open_questions:
 ## networking
 
 - [DNS：名字解析不是电话簿，而是分层委派、缓存驱动的全球名字控制面](./networking/dns.md)
+- [TCP：可靠字节流、连接状态机与反馈控制闭环的统一模型](./networking/tcp.md)
+- [UDP：最小报文服务、应用自带控制面与路径现实的统一模型](./networking/udp.md)
 
 ## systems
 
