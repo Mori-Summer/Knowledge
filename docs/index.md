@@ -4,10 +4,10 @@ title: Knowledge Docs Index
 concept: knowledge_docs_index
 topic: root
 created_at: '2026-03-16T00:00:00+08:00'
-updated_at: '2026-03-23T20:06:00+08:00'
+updated_at: '2026-03-30T09:56:10+08:00'
 source_basis:
   - derived_repository_index
-time_context: snapshot_2026_03_23
+time_context: snapshot_2026_03_30
 applicability: repository_navigation
 prompt_version: not_applicable
 template_version: index_v1
@@ -54,10 +54,13 @@ open_questions:
 - [Data Race：什么时候程序不是“有点危险”，而是直接掉进未定义行为](./computer-systems/data-race.md)
 - [DLL 注入：把代码带进别的进程时，真正起作用的是装载链、执行触发与权限边界](./computer-systems/dll-injection.md)
 - [DMA 技术：地址可达性、缓冲区所有权与可见性同步的统一模型](./computer-systems/dma.md)
+- [从 DMA 看程序内存：虚拟地址、物理页与设备可达窗口的统一模型](./computer-systems/dma-view-of-program-memory.md)
+- [DMA 缓冲区生命周期与地址稳定性：pin、映射、同步、完成与回收的统一模型](./computer-systems/dma-buffer-lifetime-and-address-stability.md)
 - [Fence：什么时候需要一堵顺序墙，什么时候这堵墙其实并不会替你同步](./computer-systems/fence.md)
 - [False Sharing：明明线程没抢同一个变量，为什么缓存行还在疯狂打架](./computer-systems/false-sharing.md)
 - [Happens-Before：并发里真正决定“可见”与“成不成 race”的关系](./computer-systems/happens-before.md)
 - [malloc 的底层原理：从用户请求到 size class、arena、mmap 与碎片治理](./computer-systems/malloc-internals.md)
+- [内存地址构建与转换：命名空间、锚点、偏移与授权链的统一模型](./computer-systems/memory-address-construction-and-translation.md)
 - [内存池设计：把 free list、arena、slab 放回生命周期、局部性与回收边界的统一模型](./computer-systems/memory-pool-design.md)
 - [Memory Order：从原子性到可见性与重排序控制](./computer-systems/memory-order.md)
 - [Modification Order：为什么每个原子对象都有自己的修改总序，但整个世界并没有一个总时间线](./computer-systems/modification-order.md)
@@ -105,6 +108,13 @@ open_questions:
 - [DNS：名字解析不是电话簿，而是分层委派、缓存驱动的全球名字控制面](./networking/dns.md)
 - [TCP：可靠字节流、连接状态机与反馈控制闭环的统一模型](./networking/tcp.md)
 - [UDP：最小报文服务、应用自带控制面与路径现实的统一模型](./networking/udp.md)
+
+## security
+
+- [未授权程序观测逻辑：把 DMA、进程内存与抓包放回同一状态获取模型](./security/program-observation-surfaces.md)
+- [DMA 作为越权观测面：带外内存可见性、权限边界与防御判断](./security/dma-memory-observation-boundaries.md)
+- [进程内存观测：从地址空间投影到状态重建的统一模型](./security/process-memory-observation-and-state-reconstruction.md)
+- [抓包与状态推断：网络投影能看到什么、看不到什么](./security/packet-capture-and-state-inference.md)
 
 ## systems
 
