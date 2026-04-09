@@ -1,15 +1,16 @@
 ---
 doc_id: methodology-learning-new-things-playbook
 title: 学习新事物的方法手册：从陌生到可理解、可操作、可迁移
-concept: 学习新事物的方法
+concept: learning_new_things_playbook
 topic: methodology
 created_at: '2026-03-16T00:00:00+08:00'
-updated_at: '2026-03-19T18:35:00+08:00'
+updated_at: '2026-04-01T20:26:38+08:00'
 source_basis:
   - legacy_repository_document
   - personal_synthesis
   - methodology_operator_guide
   - concept_document_quality_gate
+  - document_generation_methodology
 time_context: evergreen_methodology
 applicability: personal_learning_and_model_building
 prompt_version: not_applicable
@@ -20,6 +21,8 @@ related_docs:
   - docs/methodology/concept-document-template.md
   - docs/methodology/methodology-operator-guide.md
   - docs/methodology/concept-document-quality-gate.md
+  - docs/methodology/fixed-concept-generation-prompt.md
+  - docs/methodology/document-generation-methodology.md
   - docs/computer-systems/virtual-memory-learning-model.md
   - docs/ai-systems/agent-mcp-skill-openclaw-concepts.md
 open_questions:
@@ -1242,6 +1245,33 @@ open_questions:
 
 这组模板不是替代 [concept-document-template.md](/Users/maxwell/Knowledge/docs/methodology/concept-document-template.md)，而是提醒你：  
 **概念文档本质上是“学习产出物”，所以它必须带着学习目标、验证路径和迁移入口一起落地。**
+
+## 12.6 面向当前知识库工作流的落地顺序
+
+如果你是在当前仓库里写正式知识文档，这份 playbook 最核心的作用，是把“我要学什么、为什么学、打算拿它做什么、当前卡在哪里”这些输入先定义清楚，避免后续写作直接滑向泛泛解释。
+
+推荐按下面顺序把它落到当前工作流里：
+
+1. 先用本手册明确学习目标、目标掌握层级、未来用途和当前困惑。
+2. 把这些结果直接填进 [fixed-concept-generation-prompt.md](/Users/maxwell/Knowledge/docs/methodology/fixed-concept-generation-prompt.md) 的补充上下文字段，而不是临场随手发挥。
+3. 再用 [cognitive-modeling-playbook.md](/Users/maxwell/Knowledge/docs/methodology/cognitive-modeling-playbook.md) 把边界、变量、机制、约束、时间尺度和证据层补齐。
+4. 再按 [concept-document-template.md](/Users/maxwell/Knowledge/docs/methodology/concept-document-template.md) 组织正式输出。
+5. 初稿完成后，用 [concept-document-quality-gate.md](/Users/maxwell/Knowledge/docs/methodology/concept-document-quality-gate.md) 做验收。
+6. 进入正式仓库集成前，再按 [document-generation-methodology.md](/Users/maxwell/Knowledge/docs/methodology/document-generation-methodology.md) 检查索引、元数据和交付完成状态。
+
+可以把这份手册产出的内容，直接映射到固定入口里最关键的输入位：
+
+- `我要学什么` -> 概念名与学习目标
+- `我为什么要学` -> 遇到语境与任务背景
+- `我要拿它分析什么` -> `future_use_case`
+- `我当前最不理解什么` -> `what_confuses_me`
+- `我要达到哪一层掌握` -> 需要写成 `standard` 还是 `deep`
+- `我如何验证自己学会了` -> 文档里的自测题 / 验证入口
+
+如果这一步没有显式做，后续最容易出现两种退化：
+
+- 文档写得很顺，但没有明确的学习目标和使用场景
+- 文档结构完整，但读完后仍然不知道该拿它分析什么问题
 
 ---
 

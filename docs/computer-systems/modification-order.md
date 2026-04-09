@@ -1,511 +1,273 @@
 ---
 doc_id: computer-systems-modification-order
-title: Modification Order：为什么每个原子对象都有自己的修改总序，但整个世界并没有一个总时间线
+title: Modification Order：每个原子对象各有一条修改总序，不是全局时间线
 concept: modification_order
 topic: computer-systems
 depth_mode: deep
 created_at: '2026-03-16T14:56:22+08:00'
-updated_at: '2026-03-20T16:16:02+08:00'
+updated_at: '2026-04-09T11:20:00+08:00'
 source_basis:
   - cxx_draft_basic_exec_2026_03_16
   - cxx_draft_atomics_order_2026_03_16
   - cxx_draft_intro_races_2026_03_16
-  - gcc_atomic_builtins_docs_2026_03_16
-  - llvm_atomics_guide_2026_03_16
-time_context: current_practice_checked_2026_03_16
-applicability: personal_concept_learning_and_atomic_reasoning
-prompt_version: concept_generation_prompt_v1
-template_version: concept_doc_v1
+  - pure_concept_doc_split_review_2026_04_09
+  - methodology_document_generation_methodology
+time_context: current_cxx_memory_model_boundary_checked_2026_03_16
+applicability: concept_boundary_discrimination_for_single_atomic_histories_read_from_judgment_and_release_sequence_entry
+prompt_version: concept_generation_prompt_v3
+template_version: unified_spec_v1
 quality_status: upgraded_v1
 related_docs:
-  - docs/methodology/learning-new-things-playbook.md
-  - docs/methodology/cognitive-modeling-playbook.md
-  - docs/computer-systems/memory-order.md
+  - docs/methodology/document-generation-methodology.md
   - docs/computer-systems/release-sequence.md
+  - docs/computer-systems/synchronizes-with.md
   - docs/computer-systems/happens-before.md
-  - docs/computer-systems/cache-coherence.md
   - docs/computer-systems/atomic-wait-notify.md
 open_questions:
-  - 如何把 modification order 与可见写集合、读值约束压缩成更短的推理模板？
-  - 在 mixed-order litmus tests 里，哪些违反直觉的结果最值得单独整理成案例库？
-  - 如何把 per-object modification order 与实际硬件 cache coherence 之间的“相像但不等价”关系讲得更不容易误导？
+  - 如何把 `modification order`、读值候选和 coherence 约束压成更短的推理模板？
+  - 在 mixed-order litmus tests 里，哪些最反直觉的现象最值得单独整理成案例库？
+  - 如何把 per-object 修改总序与硬件 coherence 的“相像但不等价”关系讲得更不容易误导？
 ---
 
-# Modification Order：为什么每个原子对象都有自己的修改总序，但整个世界并没有一个总时间线
+# Modification Order：每个原子对象各有一条修改总序，不是全局时间线
 
 ## 1. 这份文档要帮你学会什么
 
-这份文档的目标，不是让你复述一句“每个 atomic 都有 modification order”，而是让你以后分析并发代码时，脑子里能先自动长出一张“单对象账本”。
+这篇文档的重点，不是继续把 `modification order` 写成一篇机制推导，而是先把这个概念本体讲清。
 
 读完后，你应该至少能做到：
 
-- 把任意一个 atomic object 的修改历史画成一条单独总序
-- 说清为什么这条总序只属于这个对象，不属于整个程序
-- 分析某次 atomic load 理论上可以读到哪些 side effect，为什么不一定是“墙钟时间最新”
-- 看懂 `release sequence`、`atomic_wait`、coherence requirements 为什么都必须先站在 modification order 之上
-- 避免把多对象并发协议误判成“反正原子都有顺序，所以整体也该有顺序”
+- 说清 `modification order` 为什么首先是一份“单对象修改账本”，而不是全局时间线
+- 区分“哪些修改点会进账本”“哪些访问根本不在账本里”
+- 不再把多个 atomic object 的历史偷偷拼成一条共同时间线
+- 看懂为什么 `release sequence`、读值来源、`atomic_wait` 都要先站在这份账本之上
+- 知道这篇文档停在概念边界，跨对象联系要去接 `synchronizes-with` 和 `happens-before`
 
-一句话先给结论：
+## 2. 一句话结论 / 概念结论
 
-**`modification order` 是某一个 atomic object 上全部修改组成的单独总序；它给了这个对象一份一致可讨论的写入历史，但绝不自动把多个对象拼成一条全局时间线。**
+**`modification order` 首先不是程序的全局时间线，而是某一个 atomic object 上全部修改组成的单独总序；它给这个对象一份一致可讨论的写入历史，但不会自动把别的对象并进来。**
 
-## 2. 一句话结论 / 问题定义
+如果只记一句最稳的话：
 
-并发里一个特别根本的问题是：
+**讨论 `modification order` 时，先不要说“程序里谁更晚”，而要先说“这是哪个 atomic object 自己的账本”。**
 
-- 同一个 atomic object 被多个线程修改时
-- 这些修改到底按什么顺序算数
-- 某次读取又到底能从哪次修改那里拿值
+## 3. 这个概念试图解决什么命名或分类问题
 
-如果语言层不给出这层规则，那么：
+并发原子推理里，最容易混在一起的是下面几件事：
 
-- 单个 atomic 的读值来源无法稳定讨论
-- `release sequence` 这种机制无从定义
-- `atomic_wait` 何时该醒、读到了谁写的值，也都会失去清晰基础
+- 某个 atomic object 自己的修改历史
+- load 最终读到了哪一次写
+- 多个 atomic object 之间的关系
+- 更大的 `happens-before` 图
 
-所以 `modification order` 解决的不是“宏大的全局时间问题”，而是更具体也更重要的事情：  
-**给每个 atomic object 一份自己的、可一致推理的修改历史。**
+如果没有 `modification order` 这个概念，下面这些说法会一直混不清：
 
-## 3. 对象边界与相邻概念
+- “原子变量都有顺序，所以整体应该也有顺序”
+- “这个 load 肯定读最近那次写”
+- “既然 `y` 已经看到新值，`x` 也应该早就更新完了”
+- “release sequence 只是看源码上谁写在后面”
 
-### 3.1 它真正管的对象
+所以，这个概念首先解决的不是“怎样完整分析所有并发协议”，而是更基础的一层对象分类：
 
-它只管：
+- 哪些历史只属于单个 atomic object
+- 哪些历史是以后才会被别的关系图连起来的
+- 读值分析到底是先贴账本，还是先谈同步
 
-- 某一个 atomic object
-- 这个对象上的所有修改
-- 这些修改如何排成一个 total order
+## 4. 概念边界与相邻概念
 
-它不直接管：
+### 4.1 这篇文档直接处理什么
 
-- 另一个 atomic object 的历史
-- 多对象之间的因果关系
-- 普通非原子对象的写入合法性
+这篇文档直接处理的是：
 
-### 3.2 它不等于什么
+- `modification order` 作为单对象修改总序的本体
+- 哪些修改会出现在这条总序里
+- 哪些访问不属于这条总序
+- 单对象账本和相邻概念的边界
 
-它不等于：
+这篇文档不负责系统展开：
 
-- 全程序统一时间线
-- `happens-before`
-- `synchronizes-with`
-- `seq_cst` 的全局总序
-- 硬件 cache coherence 的全部语义
+- 多对象同步如何闭合成整张图
+- 最终跨线程正式边如何成立
+- `seq_cst` 的更强全局排序网
 
-### 3.3 和几个相邻概念的边界
+这些内容分别交给：
 
-**`modification order` vs `happens-before`**
+- [Synchronizes-With：并发图里一条正式成立的跨线程同步边](/Users/maxwell/Knowledge/docs/computer-systems/synchronizes-with.md)
+- [Happens-Before：并发里真正决定“可见”与“成不成 race”的关系](/Users/maxwell/Knowledge/docs/computer-systems/happens-before.md)
 
-- `modification order` 是单对象的写历史
-- `happens-before` 是跨语句、跨线程的可见性与先后关系图
+### 4.2 它不等于什么
 
-两者相关，但层次不同。
+`modification order` 不等于：
 
-**`modification order` vs `seq_cst`**
+- **全程序统一时间线。**
+  它只属于某一个 atomic object。
 
-- `modification order` 是每个对象各自一条总序
-- `seq_cst` 额外试图给所有 `seq_cst` 操作再盖上一张更强的全局顺序网
+- **`happens-before`。**
+  前者是单对象写历史，后者是更大的关系图。
 
-不要把“某对象有 modification order”错听成“所有 atomic 共享一个 seq_cst 式全序”。
+- **`synchronizes-with`。**
+  前者不是跨线程边，只是某些边判断时的账本背景。
 
-**`modification order` vs cache coherence**
+- **`seq_cst` 的全局顺序网。**
+  `modification order` 是 per-object，`seq_cst` 讨论的是更强的跨对象排序约束。
 
-- cache coherence 是硬件层“同一内存位置如何不各说各话”的直觉锚点
-- `modification order` 是语言层对 atomic object 写历史的正式承诺
+- **全部访问日志。**
+  这份账本记录的是修改，不是所有 load / store / fence 事件。
 
-二者相像，但不等价。  
-语言规则能比某些硬件直觉更强，也可能有不同抽象边界。
+### 4.3 最容易混淆的相邻对象
 
-### 3.4 最危险的误判
+| 对象 | 它是什么 | 和 `modification order` 的关系 |
+| --- | --- | --- |
+| atomic store | 会写出新的 side effect | 会在账本里留下新的修改点 |
+| 成功 RMW | 既读旧值又写新值的修改 | 也会在账本里留下新的修改点 |
+| load | 读取已有历史 | 不会作为新修改点进入账本 |
+| 失败 CAS | 只走读路径，没有新 side effect | 不会在账本里新增修改点 |
+| `release sequence` | 从某个 release 头部开始的一段特殊链 | 它贴着这份单对象账本往前切片 |
+| `happens-before` | 更大的可见性关系图 | 它会约束读值候选，但不等于账本本体 |
+| 另一个 atomic object 的历史 | 另一份账本 | 不会自动和这份账本并成一条线 |
 
-最常见的错法是：
+### 4.4 最关键的边界句
 
-- 看见两个 atomic，就在脑中偷偷把它们排成一条共同时间线
-- 看见某个对象读到了“较晚值”，就误以为别的对象上的写也都“较晚”
-- 直接拿 `seq_cst` 直觉覆盖所有 mixed-order 原子推理
+**看到 “modification order” 时，先追问“这是哪个 atomic object 自己的修改账本”，而不要立刻把它听成“全程序已经有了一条统一时间线”。**
 
-这三种误判都来自同一个根问题：  
-**忘了 modification order 是 per-object，不是 global。**
+## 5. 什么算它，什么不算它
 
-## 4. 核心结构
+下面这张表是最实用的判别模板。
 
-理解 modification order，最稳的方式是把它当成“单对象账本模型”。
+| 情形 | 在本文里怎么处理 | 为什么 |
+| --- | --- | --- |
+| 初始值写入 | 算账本里的起点 | 单对象历史总要有起点 |
+| atomic store | 算新的修改点 | 它产生新的 side effect |
+| 成功 `fetch_add` / 成功 CAS | 算新的修改点 | 成功 RMW 也会写出新的 side effect |
+| atomic load | 不算修改点 | 它只读，不写 |
+| 失败 CAS | 不算新的修改点 | 失败时没有新的写 side effect |
+| 另一个 atomic object 上的修改 | 不算这本账的一部分 | 每个对象各有自己的账本 |
+| 普通非原子对象的写 | 不算这本账的一部分 | 本文讨论的是 atomic object 的修改总序 |
 
-### 4.1 账本粒度：一份账本只对应一个 atomic object
+最值得反复提醒的一点是：
 
-对每个 atomic object，都有一份自己的修改账本。  
-账本里记录的是：
+**`modification order` 是“写账本”，不是“所有事件日志”；load 会参考它，但不进入它。**
 
-- 初始写入
-- 普通 atomic store
-- 成功的 RMW
+## 6. 代表性例子、反例与常见误读
 
-失败 CAS 不写 side effect，因此不该被记成账本里的新写点。
+### 6.1 代表性例子
 
-### 4.2 账本内容：记录的是“修改 side effect”，不是所有访问
+最有代表性的例子有三个。
 
-modification order 里排的是修改，而不是所有访问。  
-这意味着：
+- **同一个 `x` 上的两次 atomic store。**
+  不管它们来自哪个线程，都必须能进入 `x` 自己那条总序。
 
-- load 本身不出现在这份“修改总序”里
-- 但 load 的读值合法性，必须回到这份账本去判断
+- **同一个 `x` 上的一次成功 RMW。**
+  它说明账本里会出现“既读取旧历史、又写出新修改点”的节点。
 
-所以它是一张“写账本”，不是“全部事件日志”。
+- **`release sequence` 贴着同一对象往后切一段连续链。**
+  这说明很多更高层机制都站在单对象账本之上。
 
-### 4.3 账本性质：单对象 total order，而不是近似顺序
+### 6.2 反例
 
-标准不是说“差不多有个顺序”，而是说对这个对象的所有修改存在 total order。  
-也就是：
+最值得记住的反例有下面这些。
 
-- 任意两个修改都能比较先后
-- 这个先后对该对象来说必须一致
+- **把 `x` 和 `y` 的修改排成一条共同线。**
+  这正是最常见的全局时钟幻觉。
 
-这给了原子对象一个非常重要的性质：  
-你可以稳定讨论“某个写是在另一个写之前还是之后”。
+- **把 load 当成账本里的新修改点。**
+  load 会参考账本，但不会新增账本条目。
 
-### 4.4 读值约束：load 不能随便从账本里乱挑
+- **把失败 CAS 当成“也参与写历史”。**
+  失败 CAS 没有写 side effect，不该被记进这本修改账。
 
-账本存在，不等于 load 可以从任何一笔历史里取值。  
-读值还要受这些约束：
+- **看见 `y` 读到新值，就推断 `x` 也应该已经是新值。**
+  这是把两本账偷偷并成一本的典型错误。
 
-- 不能读来自未来的写
-- 不能读违反 `happens-before` 的写
-- 不能读破坏 coherence requirements 的写
+### 6.3 常见误读
 
-所以更准确的模型是：
+最常见的误读有下面几类：
 
-- modification order 给出候选历史轴
-- `happens-before` 和 coherence 再把不合法候选剪掉
+- **“原子变量都有顺序，所以整个程序就有全局顺序。”**
+  错。每个对象各有一条总序，不等于世界只有一条线。
 
-### 4.5 四类 coherence requirements：把单对象推理钉牢
+- **“load 也属于 `modification order`。”**
+  错。它参考账本，不新增账本。
 
-当前草案列出四类 coherence requirements：
+- **“读到了一个较晚值，别的对象上的写也就跟着较晚了。”**
+  错。那是把单对象账本偷换成跨对象时间线。
 
-- write-write coherence
-- read-read coherence
-- read-write coherence
-- write-read coherence
+- **“失败 CAS 也算在账本里，因为它确实执行过。”**
+  错。执行过不等于产生了新的写 side effect。
 
-它们的价值在于防止你把单对象原子读写想成“只要没有 data race 就能任意跳历史”。  
-实际上，语言模型对同一对象的原子读写顺序有更严格的约束。
+- **“`modification order` 和硬件 coherence 就是一回事。”**
+  不稳。它们相像，但抽象边界和语言层约束并不完全相同。
 
-### 4.6 `happens-before` 会影响账本先后
+## 7. 它会进入哪些更大的模型或判断框架
 
-如果对同一个 atomic object 的修改 `A` happens before 修改 `B`，那么 `A` 也必须早于 `B` 出现在这个对象的 modification order 中。  
-这说明：
+`modification order` 这个概念本体，最重要的下游去向有四个。
 
-- per-object 账本不是和同步图毫无关系的平行世界
-- 它会受到更高层同步关系的约束
+### 7.1 读值来源判断
 
-### 4.7 `release sequence`、`atomic_wait` 都是建在这份账本上的
+load 到底能读到哪次写，首先就要回到这份单对象账本上谈候选来源。
 
-两个最直接的依赖例子：
+### 7.2 `release sequence`
 
-- `release sequence`：本质上是在这份单对象账本里切一段特殊连续区间
-- `atomic_wait`：waiter 是否看到“新值”，也要看该对象的 modification order 是否已经向后推进
-
-所以不理解 modification order，后面很多概念都会只剩术语壳。
-
-### 4.8 一套最短可调用框架
-
-以后分析任何 atomic 协议，先做下面三步：
-
-1. 把涉及的每个 atomic object 分开，各画一份修改账本。
-2. 只在单对象内部讨论读值候选和先后顺序。
-3. 只有在需要跨对象联系时，再引入 `synchronizes-with`、`happens-before`、`seq_cst` 等更高层关系。
-
-做不到这三步，后面的推理大概率会偷换对象粒度。
-
-## 5. 核心机制 / 主链路 / 因果链
-
-### 5.1 主链路：同一个对象的写必须先排成一条线
-
-```cpp
-std::atomic<int> x{0};
-
-// Thread A
-x.store(1, std::memory_order_relaxed);
-
-// Thread B
-x.store(2, std::memory_order_relaxed);
-```
-
-即使这里只有 relaxed store，标准也要求：
-
-- `x` 的这两次修改必须能进入同一条 total order
-- 不允许出现“它们对 x 来说完全没法比较先后”的语义真空
-
-这就是 modification order 的最小作用：  
-它先把单对象写历史钉成一条线。
-
-### 5.2 第二步：读值必须贴着这条线判断
-
-```cpp
-std::atomic<int> x{0};
-
-// Thread A
-x.store(1, std::memory_order_relaxed);
-
-// Thread B
-int r = x.load(std::memory_order_relaxed);
-```
-
-这里真正该问的不是“B 墙钟时间上离 A 多近”，而是：
-
-- `r` 可能从 `x` 的哪一笔 side effect 读值
-- 哪些候选会被 `happens-before` 或 coherence 排除
-
-也就是说，单对象读值分析的起点总是：
-
-- 先贴到账本
-- 再谈候选过滤
-
-### 5.3 第三步：不同对象的账本不能自动拼起来
-
-```cpp
-std::atomic<int> x{0};
-std::atomic<int> y{0};
-
-// Thread A
-x.store(1, std::memory_order_relaxed);
-y.store(1, std::memory_order_relaxed);
-
-// Thread B
-int ry = y.load(std::memory_order_relaxed);
-int rx = x.load(std::memory_order_relaxed);
-```
-
-这里最容易犯的错是：
-
-- 既然 `y` 读到了 1
-- 那么 `x` 也该已经是 1
-
-这个推理没有 modification order 支撑。  
-因为：
-
-- `x` 有自己的账本
-- `y` 有自己的账本
-- 两份账本不会自动合并成一条全局线
-
-如果没有额外同步，`ry == 1 && rx == 0` 这类结果并不能仅凭“它们都是 atomic”就被排除。
-
-### 5.4 第四步：RMW 在账本里占的是“一个修改点”，但它兼具读写角色
-
-像 `fetch_add`、成功 `compare_exchange` 这类 RMW 很特别：
-
-- 它在 modification order 里是一个新的修改点
-- 但它又会先观察旧值、再写出新值
-
-这也是为什么它能在 `release sequence` 里承担“接力棒”角色。  
-从账本角度看，它既消费历史，又把历史向后推进一格。
-
-### 5.5 第五步：`release sequence` 就是在账本里切连续片段
-
-如果某个 release 操作是头部，那么 release sequence 实际做的事情是：
-
-- 在该对象 modification order 上
-- 从这个头部开始
-- 向后取一段连续成功 RMW 子序列
-
-所以 release sequence 的底板不是“线程时序”，而是“单对象账本结构”。
-
-### 5.6 第六步：`atomic_wait` 也是在问“账本有没有往后翻页”
-
-`atomic_wait` 的本质不是神秘睡眠原语，而是：
-
-- waiter 记住自己观察到的是哪一笔 side effect
-- 后续如果该对象账本里出现了更晚的 side effect
-- 且满足相应 happens-before / notify 条件
-- waiter 才有意义地被唤醒去重新判断
-
-所以 wait/notify 场景并没有绕开 modification order，反而更直接暴露它的必要性。
-
-### 5.7 一套稳定的读值判断流程
-
-以后遇到“这个 load 为什么能读到这个值”时，先按下面七步走：
-
-1. 先说清你讨论的是哪个 atomic object。
-2. 把这个对象的初始写和后续修改列出来。
-3. 把成功 RMW 记成新的修改点，失败 CAS 不记。
-4. 先得到该对象的一条 modification order。
-5. 再用 `happens-before` 排除不可能的来源。
-6. 再用 coherence requirements 排除违背单对象一致性的来源。
-7. 剩下的才是这次 load 的合法候选。
-
-这比直接用直觉说“它大概读最近的写”稳得多。
-
-## 6. 关键 tradeoff 与失败模式
-
-### 6.1 它真正带来的好处
-
-modification order 的好处非常明确：
-
-- 单对象原子推理终于有了稳定底板
-- RMW、release sequence、atomic wait 这些机制都能被正式定义
-- 工具、编译器、运行时都可以围绕同一对象历史做一致建模
-
-### 6.2 它的代价：很容易诱发“全局时钟幻觉”
-
-只要脑中出现一条清晰时间线，人就很容易偷懒把所有对象都塞进去。  
-这正是 modification order 最常见的副作用：
-
-- 你有了 per-object ledger
-- 却不知不觉把它想成了 whole-program ledger
-
-这一步一旦错，后面的多对象推理几乎都会漂。
-
-### 6.3 常见失败模式
-
-**失败模式 1：把 per-object 总序误当 global 总序**
-
-这是最危险也最常见的错。
-
-**失败模式 2：看到一个对象读到“较晚值”，就推断其他对象上的写也都较晚**
-
-这会直接把多对象协议分析带偏。
-
-**失败模式 3：忘记初始值也是账本的一部分**
-
-很多读值场景里，初始 side effect 仍可能是候选来源。  
-忽略它，会让你误判哪些结果应被允许。
-
-**失败模式 4：把失败 CAS 也记成 modification**
-
-失败 CAS 没有新的写 side effect，不该在账本里多画一个节点。
-
-**失败模式 5：把 `seq_cst` 直觉生搬到 relaxed / acquire / release 混合场景**
-
-更强的 order 覆盖面有限，不能替代先分对象建账本。
-
-**失败模式 6：离开对象粒度空谈“顺序”**
-
-只要一句讨论里没先说清“是哪个对象的顺序”，大概率已经开始偷换概念。
-
-## 7. 应用场景
-
-### 7.1 lock-free 状态字与 CAS 协议
-
-只要多个线程都在同一个状态字上成功 CAS 或 RMW，modification order 就是协议读值推理的底盘。
-
-### 7.2 `release sequence` 判断
-
-不先落在单对象账本上，release sequence 根本没法被精确定义。
+这是最直接的下游之一。  
+`release sequence` 本质上就是在这份账本里切一段特殊连续链。
 
 ### 7.3 `atomic_wait` / `notify`
 
-waiter 是否真的等到了“新值”，本质上是在判断同一 atomic object 的 modification order 是否已经向后推进。
+等待者到底是不是看到了“更晚的一笔写”，本质上也要回到同一对象账本有没有向后翻页。
 
-### 7.4 多原子对象协议拆解
+### 7.4 coherence 约束与更高层同步图
 
-像无锁队列里的 head / tail、发布标志与数据指针分离等协议，都必须先分开讨论各自对象的账本，再谈跨对象同步。
+单对象账本给出“候选历史轴”，更高层关系再去裁剪不合法读值、连接跨对象历史。  
+这两层不分开，后面很容易漂。
 
-### 7.5 race 分析与工具建模
+## 8. 自测题 / 验证入口
 
-ThreadSanitizer、编译器原子语义、runtime 审查都离不开“单对象历史”这个最低层抽象。
+如果你真的理解了这篇文档，至少应该能回答：
 
-## 8. 工业 / 现实世界锚点
+1. 为什么 `modification order` 应该被理解成“单对象账本”，而不是“全局时间线”？
+2. 为什么 load 会参考这份账本，却不作为新修改点进入账本？
+3. 为什么失败 CAS 不该被记成账本里的新条目？
+4. 为什么 `x` 的账本和 `y` 的账本不能自动拼成一条共同历史？
+5. 为什么很多更高层概念都必须先站在这份账本上？
 
-### 8.1 LLVM IR 与 GCC 原子内建
+一个最实用的自测动作是：
 
-LLVM 把 `atomicrmw`、`cmpxchg` 单独建模，GCC 暴露 `__atomic_*` builtins，不是偶然。  
-工业编译器必须对“某个特定 atomic object 的修改历史”做正式处理，否则根本无法正确降低和优化原子代码。
+拿下面五种事件各写一句判断：
 
-### 8.2 `std::atomic::wait` 的库实现
+- `x.store(...)`
+- `x.fetch_add(...)`
+- `x.load(...)`
+- 失败 CAS on `x`
+- `y.store(...)`
 
-libstdc++、libc++、MSVC STL 在实现 `atomic::wait` 时，都要围绕“等待某个特定 atomic 对象的值变化”工作，再落到 futex、WaitOnAddress 等 OS 机制。  
-这类实现为什么能成立，前提就是该对象的修改历史可以被稳定讨论。
+如果你能稳定分清哪些进入 `x` 的账本、哪些只是参考或属于别的账本，这篇文档的核心目标就达到了。
 
-### 8.3 主流 CPU 的 cache coherence 协议
+## 9. 迁移与关联模型
 
-MESI / MOESI 这一类硬件协议，是 modification order 的现实直觉锚点：  
-同一位置不能让不同核心永远各说各话。  
-但语言层 modification order 不是对硬件名词的简单转述，而是更高层、面向程序语义的正式约束。
+理解了 `modification order` 之后，最值得迁移出去的不是某条 litmus test，而是这组判断：
 
-## 9. 当前推荐实践、过时路径与替代
+- 这是哪一个 atomic object 的账本？
+- 这是账本里的修改点，还是账本之外的读取动作？
+- 这里需要的是“单对象历史”判断，还是“跨对象同步”判断？
 
-### 9.1 截至 2026-03-16 更推荐的实践
+最值得连着看的文档是：
 
-当前更稳的实践是：
+- [Release Sequence：同一原子对象上延续发布语义的特殊修改链](/Users/maxwell/Knowledge/docs/computer-systems/release-sequence.md)
+- [Synchronizes-With：并发图里一条正式成立的跨线程同步边](/Users/maxwell/Knowledge/docs/computer-systems/synchronizes-with.md)
+- [Happens-Before：并发里真正决定“可见”与“成不成 race”的关系](/Users/maxwell/Knowledge/docs/computer-systems/happens-before.md)
 
-- 所有并发推理先按对象拆分，再分别建立 modification order
-- 只有在完成单对象读值分析后，才把不同对象通过 `synchronizes-with`、`happens-before`、`seq_cst` 连起来
-- 代码审查时先问“这个读是哪个对象上的读”，再问“它为什么能读到这个值”
-- 遇到复杂 litmus test，先画 per-object ledger，再谈系统级结论
+最值得保留的迁移句是：
 
-### 9.2 今天最需要主动避免的旧路径
+**“有顺序”从来都要先问“是哪一个对象的顺序”；不先守住对象粒度，后面的并发推理几乎一定会偷换。**
 
-**把所有 atomic 想成共享一个修改总序**
+## 10. 未解问题与继续深挖
 
-这不是当前草案支持的模型。  
-它的问题不是“有点粗糙”，而是会在多对象协议里直接导出错误结论。
+- 如何把 `modification order`、读值候选和 coherence 约束压成更短的推理模板？
+- 在 mixed-order litmus tests 里，哪些最反直觉的现象最值得单独整理成案例库？
+- 如何把 per-object 修改总序与硬件 coherence 的“相像但不等价”关系讲得更不容易误导？
 
-**拿 `seq_cst` 的全局时钟直觉去替代一般原子推理**
+## 11. 参考资料
 
-`seq_cst` 是更强语义，但不是理解所有原子行为的起点。  
-当前更推荐的顺序是：
-
-1. 先做 per-object modification order
-2. 再看是否还有 `seq_cst` 额外约束
-
-**把 `volatile` 或普通内存观察经验误当 atomic 历史模型**
-
-这条路既无法提供正式单对象账本，也无法给后续同步证明打底。
-
-### 9.3 替代与配套做法
-
-如果协议主要关心的是跨对象可见性，而不是单对象读值来源，真正该重点学习的是：
-
-- [synchronizes-with.md](/Users/maxwell/Knowledge/docs/computer-systems/synchronizes-with.md)
-- [happens-before.md](/Users/maxwell/Knowledge/docs/computer-systems/happens-before.md)
-- [memory-order.md](/Users/maxwell/Knowledge/docs/computer-systems/memory-order.md)
-
-也就是说：
-
-- modification order 不是终点
-- 它是单对象推理的起点
-
-## 10. 自测题 / 验证入口
-
-1. 为什么每个 atomic object 都有 modification order，但整个程序没有天然统一总时间线？
-2. 为什么 `ry == 1` 不能单独推出 `rx == 1`，即便 `x` 和 `y` 都是 atomic？
-3. 为什么失败 CAS 不应被算成 modification order 里的一个新节点？
-4. 读值分析里，为什么不能只用“最近执行完的写”这种墙钟时间直觉？
-5. `release sequence` 为什么必须建立在 modification order 之上？
-6. `atomic_wait` 为什么本质上是在等待“这个对象的账本往后翻页”？
-7. 如果 reviewer 一上来就画全局时间线，而没有先按对象拆账本，最可能在哪类 bug 上出错？
-8. 什么时候你应该从 modification order 切换到 `happens-before` / `synchronizes-with` 视角？
-
-## 11. 迁移与关联模型
-
-理解了这篇文档后，你应该能把这套模型迁移到：
-
-- [release-sequence.md](/Users/maxwell/Knowledge/docs/computer-systems/release-sequence.md) 里的链路判断
-- [atomic-wait-notify.md](/Users/maxwell/Knowledge/docs/computer-systems/atomic-wait-notify.md) 里的等待条件判断
-- [memory-order.md](/Users/maxwell/Knowledge/docs/computer-systems/memory-order.md) 里的读值与重排序约束分析
-- [cache-coherence.md](/Users/maxwell/Knowledge/docs/computer-systems/cache-coherence.md) 里的硬件直觉边界
-- 多对象 lock-free 协议、ring buffer、head/tail 拆账本分析
-
-迁移时要重复执行的核心动作只有三个：
-
-- 先分对象
-- 再建账本
-- 最后才跨对象连边
-
-## 12. 未解问题与继续深挖
-
-后续值得继续深挖的点包括：
-
-- mixed-order litmus tests 中，哪些“违反直觉”的读值组合最适合作为固定案例库
-- modification order 与 `seq_cst` 全局总序重叠时，怎样压成更短的教学图式
-- 如何把语言层 modification order 与硬件 cache coherence 的区别再讲得更抗误解
-- 工具如 ThreadSanitizer 对单对象历史的近似，和真实语言语义之间最值得提醒的偏差有哪些
-
-## 13. 参考资料
-
-以下链接均为本次写作时实际参考的一手资料；涉及“当前状态”的地方，均以 `2026-03-16` 为核对日期。
-
-- C++ draft `basic.exec`: https://eel.is/c++draft/basic.exec
-- C++ draft `atomics.order`: https://eel.is/c++draft/atomics.order
-- C++ draft `intro.races`: https://eel.is/c++draft/intro.races
-- GCC `__atomic` builtins: https://gcc.gnu.org/onlinedocs/gcc/_005f_005fatomic-Builtins.html
-- LLVM Atomic Instructions and Concurrency Guide: https://llvm.org/docs/Atomics.html
+- ISO C++ Working Draft, `basic.exec`, `atomics.order`, `intro.races`
+- LLVM Atomics Guide
+- [统一概念文档规范：新建、升级、审查与仓库集成](/Users/maxwell/Knowledge/docs/methodology/document-generation-methodology.md)

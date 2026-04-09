@@ -1,570 +1,277 @@
 ---
 doc_id: computer-systems-release-sequence
-title: Release Sequence：为什么 release 之后的一串 RMW 还能继续“带着发布语义往前走”
+title: Release Sequence：同一原子对象上延续发布语义的特殊修改链
 concept: release_sequence
 topic: computer-systems
 depth_mode: deep
 created_at: '2026-03-16T14:16:47+08:00'
-updated_at: '2026-03-20T16:16:02+08:00'
+updated_at: '2026-04-09T11:20:00+08:00'
 source_basis:
   - cxx_draft_intro_races_2026_03_16
   - cxx_draft_atomics_order_2026_03_16
   - cxx_draft_diff_cpp17_2026_03_16
-  - gcc_atomic_builtins_docs_2026_03_16
-  - llvm_atomics_guide_2026_03_16
   - wg21_p3475r2_2025
-time_context: current_practice_checked_2026_03_16
-applicability: personal_concept_learning_and_lock_free_modeling
-prompt_version: concept_generation_prompt_v1
-template_version: concept_doc_v1
+  - pure_concept_doc_split_review_2026_04_09
+  - methodology_document_generation_methodology
+time_context: current_cxx_memory_model_boundary_checked_2026_03_16
+applicability: concept_boundary_discrimination_for_release_sequence_atomic_state_words_and_sync_chain_review
+prompt_version: concept_generation_prompt_v3
+template_version: unified_spec_v1
 quality_status: upgraded_v1
 related_docs:
-  - docs/methodology/learning-new-things-playbook.md
-  - docs/methodology/cognitive-modeling-playbook.md
-  - docs/computer-systems/memory-order.md
+  - docs/methodology/document-generation-methodology.md
   - docs/computer-systems/modification-order.md
   - docs/computer-systems/synchronizes-with.md
   - docs/computer-systems/happens-before.md
-  - docs/computer-systems/fence.md
+  - docs/computer-systems/memory-order.md
 open_questions:
-  - 如何把 release sequence 与 fence、`atomic_wait`/`notify`、mixed-order litmus tests 一起压缩成统一判断模板？
-  - 在真实 lock-free 内存回收机制里，哪些 release sequence 最容易被误判成“只是普通原子更新”？
-  - 如果未来标准继续收束 `consume` 相关历史包袱，release sequence 在教学和工具提示里应如何被更早暴露出来？
+  - 如何把 `release sequence` 与 fence、`atomic_wait` / `notify`、mixed-order litmus tests 压缩成统一判断模板？
+  - 在真实 lock-free 协议里，哪些状态字最容易被误写成会断链的普通 store？
+  - 如果未来标准继续收束 `consume` 相关历史包袱，`release sequence` 在教学和工具提示里应如何被更早暴露？
 ---
 
-# Release Sequence：为什么 release 之后的一串 RMW 还能继续“带着发布语义往前走”
+# Release Sequence：同一原子对象上延续发布语义的特殊修改链
 
 ## 1. 这份文档要帮你学会什么
 
-这份文档的目标，不是让你记住一句“release sequence 是 release 后面的一段东西”，而是让你真正拿到一套能用于代码审查和协议验证的判断流程。
+这篇文档的重点，不是继续把 `release sequence` 写成一篇机制推导演练，而是先把这个概念本体讲清。
 
 读完后，你应该至少能做到：
 
-- 说清 `release sequence` 试图补的到底是哪一类同步缺口
-- 把它和 `release`、`acquire`、`modification order`、`synchronizes-with`、`happens-before` 分层区分
-- 看懂“最终 acquire 没读到头部写下的值，为什么仍可能同步回头部”
-- 在 CAS、`fetch_add`、状态字推进、引用计数这类代码里识别它到底有没有成立
-- 在重构并发代码时识别“把一个 RMW 改成普通 store”是否会偷偷把同步链剪断
+- 说清 `release sequence` 为什么首先是一段“特殊修改链”，而不是整个同步图
+- 区分 release 头部、carrier atomic object、后继 RMW、最终 acquire 着陆这几个层次
+- 判断一段状态字推进代码里，到底有没有形成 `release sequence`
+- 不再把“同一个原子对象上的后继写”误当成都会自动续上这条链
+- 知道这篇文档停在概念边界，最终跨线程同步边要去接 `synchronizes-with`
 
-一句话先给结论：
+## 2. 一句话结论 / 概念结论
 
-**`release sequence` 是沿着“同一原子对象的 modification order”传播发布语义的一段连续链；只要 acquire 读到了这条链上某个 side effect 写出的值，它就可能同步回链头那次 release。**
+**`release sequence` 首先不是一条同步边，而是同一原子对象的 `modification order` 上，从某个 release 头部出发、沿连续成功 RMW 延续下去的一段特殊修改链；如果后面的 acquire 读到了这条链上的值，它就可能同步回头部。**
 
-## 2. 一句话结论 / 问题定义
+如果只记一句最稳的话：
 
-它要解决的核心问题是：
+**讨论 `release sequence` 时，先不要问“最终读到了哪个状态”，而要先问“这个值是不是还落在同一对象、同一账本、同一条连续 RMW 链上”。**
 
-- 发布者 A 已经把普通数据准备好了
-- A 用一次 `store(release)` 或 release 型 RMW 把“状态可见”发布出去
-- 之后这个状态字又被别的线程继续用 RMW 往前推进
-- 最终观察者 C 读到的已经不是头部 release 写下的原值
+## 3. 这个概念试图解决什么命名或分类问题
 
-这时 C 还能不能合法看到 A 在 release 之前写的那些普通数据？
-
-如果没有 `release sequence`，很多现实里的 lock-free 状态机都只能退回更重的同步手段。  
-有了它，语言模型就允许“发布语义”沿着同一原子对象的连续 RMW 链继续往后传。
-
-## 3. 对象边界与相邻概念
-
-### 3.1 它真正管的对象
-
-`release sequence` 只管一件事：
-
-- **同一个原子对象**上
-- 从某个 release 头部开始
-- 往后连续延伸的一段特殊修改链
-
-它不管多个原子对象之间的全局顺序，也不管任意后来的普通写。
-
-### 3.2 它不等于什么
-
-它不等于：
-
-- 整个 `modification order`
-- 整个 `happens-before`
-- 任意“后来的写入”
-- 任意 acquire / release 关键字组合
-- “我感觉这个状态已经经过很多线程了，所以应该算同步了”
-
-### 3.3 和相邻概念的边界
-
-**`release sequence` vs `modification order`**
-
-- `modification order` 是某个 atomic object 的全部修改总序
-- `release sequence` 是从某个 release 头部出发、在这条总序上切出来的一段连续特殊子序列
-
-**`release sequence` vs `synchronizes-with`**
-
-- `release sequence` 不是最终那条跨线程同步边
-- 它只是 release / acquire 建边时的中间桥梁
-- 真正的跨线程边叫 `synchronizes-with`
-
-**`release sequence` vs `happens-before`**
-
-- `happens-before` 是关系图结果
-- `release sequence` 是关系图里某类边成立所依赖的中间结构
-
-**`release sequence` vs fence**
-
-- fence 也能参与 release/acquire 风格的同步
-- 但 fence 不是 release sequence
-- fence 往往还需要借某个 carrier atomic object 落地
-
-### 3.4 最容易搞错的边界
-
-最危险的误解有三个：
-
-- 误以为“同线程后续普通 store 也还能自动留在 release sequence 里”
-- 误以为“只要最后读到的是同一个 atomic，就一定能同步回头部”
-- 误以为“所有后继 RMW 自己都必须写成 `release` 或 `acq_rel` 才能继续这条链”
-
-这三条都不对，至少都需要更精确的条件。
-
-## 4. 核心结构
-
-理解 `release sequence`，最稳的方式不是背标准句子，而是把它拆成六个固定构件。
-
-### 4.1 头部：一次 release 操作
-
-这条链必须有头，头必须是 release 操作：
-
-- `store(memory_order_release)`
-- 成功的 RMW，且该 RMW 具备 release 语义，例如 `memory_order_acq_rel`
-
-没有 release 头部，就没有后面的 release sequence。
-
-### 4.2 载体：同一个 atomic object
-
-这条链只沿着**同一个原子对象**前进。  
-换对象，链就断了。
-
-这意味着如果你的协议语义分散在两个 atomic 上，那么 release sequence 本身并不会替你跨对象传递同步。
-
-### 4.3 地板：该对象的 modification order
-
-release sequence 不是按墙钟时间排，也不是按“哪个线程先执行完”排。  
-它是沿着该对象的 `modification order` 切出来的一段连续区间。
-
-所以判断它成不成立，第一步不是看源码位置，而是：
-
-- 先找 carrier atomic object
-- 再沿这个对象的 modification order 看后继修改
-
-### 4.4 延续条件：连续的成功 RMW 链
-
-按当前工作草案语义，头部之后继续留在 release sequence 里的，关键是：
-
-- 必须仍是对同一 atomic object 的修改
-- 必须是连续的原子 RMW
-- 失败的 CAS 不算，因为它没有写 side effect
-
-这点极关键：  
-**release sequence 看的不是“后面是不是还在写这个对象”，而是“后面是不是一段连续成功 RMW”。**
-
-### 4.5 着陆条件：最终 acquire 读到了链上的值
-
-链本身还不够。  
-最终还要有一个 acquire 操作去“接住”它：
-
-- 这个 acquire 必须读到 release sequence 中某个 side effect 写出的值
-- 如果没读到链上的值，这条链对它就没有同步意义
-
-### 4.6 推导结果：同步边回到头部，而不是停在尾部
-
-一旦 acquire 读到了这条链上的某个值：
-
-- 它建立的不是“只和最后那个尾部 RMW 有点关系”
-- 而是允许同步回**头部 release**
-
-然后再通过线程内顺序与传递性，把头部之前发布出去的普通写一起带到 acquire 之后。
-
-### 4.7 一张最短判断图
-
-判断某段代码是不是在依赖 release sequence，可以固定问这七个问题：
-
-1. 头部 release 是谁？
-2. 载体 atomic object 是哪个？
-3. 头部之后有哪些后继修改？
-4. 这些后继里哪些是真正成功的 RMW？
-5. 其中是否出现普通 store、失败 CAS、换对象等断链点？
-6. 最终 acquire 到底读到了哪个值？
-7. 这个值是不是来自这条连续链上的某个 side effect？
-
-七问走完，结论通常就很难再漂。
-
-## 5. 核心机制 / 主链路 / 因果链
-
-### 5.1 主链路：release 头部 -> RMW 接力 -> acquire 着陆
-
-```cpp
-std::atomic<int> state{0};
-int payload = 0;
-
-// Thread A
-payload = 42;
-state.store(1, std::memory_order_release);   // 头部
-
-// Thread B
-state.fetch_add(1, std::memory_order_relaxed); // 1 -> 2，成功 RMW
-
-// Thread C
-if (state.load(std::memory_order_acquire) == 2) {
-    use(payload);
-}
-```
-
-这段代码里真正值钱的因果链是：
-
-1. A 先写普通数据 `payload = 42`
-2. A 再把 `state` 写成 `1`，并带 release 语义
-3. B 在同一个 atomic object `state` 上做一次成功 RMW，把值推进到 `2`
-4. 这次成功 RMW 处在以 A 为头部的 release sequence 里
-5. C 的 acquire load 读到了值 `2`
-6. 因为 `2` 来自 release sequence 上的 side effect，C 可以同步回 A 的头部 release
-7. A 在头部 release 之前写入的 `payload` 对 C 可见
-
-这就是 release sequence 最典型的价值：  
-**观察者不必直接读到“最初发布值”，仍可能合法继承那次发布。**
-
-### 5.2 变体链路：中间人做的是 CAS 状态迁移
-
-```cpp
-enum : int { kInit = 0, kReady = 1, kClaimed = 2 };
-
-std::atomic<int> state{kInit};
-Job* job = nullptr;
-
-// Thread A
-job = prepare_job();
-state.store(kReady, std::memory_order_release);   // 头部
-
-// Thread B
-int expected = kReady;
-state.compare_exchange_strong(
-    expected,
-    kClaimed,
-    std::memory_order_acq_rel,
-    std::memory_order_relaxed);                   // 成功 CAS，属于 RMW
-
-// Thread C
-if (state.load(std::memory_order_acquire) == kClaimed) {
-    run(job);
-}
-```
-
-这里最容易被忽视的是：
-
-- C 并没有看到 `kReady`
-- 它看到的是 B CAS 成功后写出的 `kClaimed`
-
-但只要这次 CAS 成功，并且它正好是头部后续的连续 RMW，C 仍可能同步回 A 的头部 release。  
-这就是很多“阶段推进型状态字”能成立的关键。
-
-### 5.3 断链案例 1：后继普通 store 不自动续上去
-
-```cpp
-// Thread A
-payload = 42;
-state.store(1, std::memory_order_release);   // 头部
-
-// Thread B
-state.store(2, std::memory_order_relaxed);   // 普通 store，不是 RMW
-
-// Thread C
-if (state.load(std::memory_order_acquire) == 2) {
-    use(payload); // 不能仅凭这段推出安全
-}
-```
-
-为什么这段不能靠 release sequence 自证？
-
-- 因为 B 的这次写只是普通 atomic store
-- 它不是成功 RMW
-- 所以它不属于从 A 头部延续出来的那段 release sequence
-
-换句话说，C 虽然读到了同一个 atomic 的后继值，但这个值不是从 release sequence 链上掉下来的。
-
-### 5.4 断链案例 2：失败的 CAS 不写 side effect
-
-```cpp
-int expected = 1;
-state.compare_exchange_strong(
-    expected,
-    2,
-    std::memory_order_acq_rel,
-    std::memory_order_relaxed); // 如果失败，没有写 side effect
-```
-
-失败 CAS 的危险在于它“看起来参与了竞争”，但并没有形成修改 side effect。  
-对 release sequence 来说：
-
-- 成功 CAS 是链上的一个写点
-- 失败 CAS 只是一次读路径，不是链上的写点
-
-所以代码审查时不能把“执行过 CAS”与“向前延续了 release sequence”混为一谈。
-
-### 5.5 断链案例 3：换 carrier object，链立刻失效
-
-如果协议是这样：
-
-- A 在 `flag1` 上 release
-- B 在 `flag2` 上做一串 RMW
-- C 在 `flag2` 上 acquire
-
-那 release sequence 根本不适用。  
-因为它从头到尾都只沿着一个 atomic object 的 modification order 前进。
-
-### 5.6 为什么尾部 RMW 不必自己也是 release
-
-这是最反直觉、但最值得单独记住的一条：
-
-- release sequence 的延续条件，核心看“是不是连续成功 RMW”
-- 不是看“尾部 RMW 自己有没有 release 语义”
-
-但这不等于工程上可以把尾部一律写成 `relaxed`。  
-原因是尾部 RMW 可能还承担别的职责：
-
-- 它自己可能既要消费上游状态，又要发布下游状态
-- 它可能还要约束本线程前后的普通读写
-- 它可能还要给其他观察者提供更直接的同步语义
-
-所以“能延续 release sequence”只是最低条件，不是完整选型依据。
-
-### 5.7 一套可执行的审查流程
-
-以后看到类似代码，不要直接问“这里是不是有 release sequence”。  
-按下面顺序走更稳：
-
-1. 找出真正承载状态推进的 carrier atomic object。
-2. 标出头部 release。
-3. 沿该对象的 modification order 排出后继修改。
-4. 划掉所有普通 store、失败 CAS、不同对象上的操作。
-5. 检查剩下的是不是一段连续成功 RMW。
-6. 再看最终 acquire 的确切 read-from 来源。
-7. 如果 acquire 没读到这条链上的 side effect，就不要再借 release sequence 给自己加同步边。
-
-## 6. 关键 tradeoff 与失败模式
-
-### 6.1 这套机制真正买到的东西
-
-release sequence 让你买到的是：
-
-- 在一个共享状态字被多个线程持续 RMW 推进时
-- 不必要求最终观察者直接读到“最初发布值”
-- 仍能把最初发布出去的普通数据合法带过来
-
-这对 lock-free 状态机是非常值钱的表达能力。
-
-### 6.2 代价：推理难度显著上升
-
-代价也同样明确：
-
-- 正确性严重依赖“最终读到谁写的值”
-- 一个看似无害的重构就可能断链
-- 协议正确性不再从单行代码可读性里直接显现
-
-所以它适合底层协议，不适合作为普通业务代码的默认同步手段。
-
-### 6.3 常见失败模式
-
-**失败模式 1：把整个 modification order 都当成 release sequence**
-
-不是所有后继修改都在链里。  
-当前主路径下，关键是连续成功 RMW。
-
-**失败模式 2：把“同线程后续普通 store”沿用成老时代直觉**
-
-这是最常见的历史包袱误判。  
-今天更稳的理解是：普通 store 不该被默认视为仍在这条链里。
-
-**失败模式 3：没搞清 acquire 实际读到了谁**
-
-release sequence 的成立不是“有个 acquire 就够了”。  
-必须追到 read-from 来源。
-
-**失败模式 4：把失败 CAS 也记成状态推进**
-
-失败 CAS 很可能让你在脑中画出一条并不存在的链。
-
-**失败模式 5：把 release sequence 当万能同步保险**
-
-它只解决“单 carrier atomic 上的发布语义延续”。  
-跨对象顺序、睡眠唤醒语义、复杂生命周期约束，仍要单独设计。
-
-**失败模式 6：为了省一点开销，把 RMW 悄悄改成普通 store**
-
-这类“优化”极危险。  
-它看起来只改了一条机器指令，却可能把整个同步证明基础拆掉。
-
-## 7. 应用场景
-
-### 7.1 多阶段状态字
-
-典型模式是：
-
-- `init -> ready -> claimed -> done`
-- 每个阶段都写在同一个原子状态字里
-- 不同线程通过成功 CAS 或 `fetch_or` / `fetch_add` 往前推进
-
-如果最终观察者读到的是后继阶段值，但仍需要看到最初发布的 payload，release sequence 往往就是关键一环。
-
-### 7.2 引用计数与控制块生命周期
-
-在引用计数或控制块设计里，多个线程可能都在对同一个计数做 RMW。  
-虽然每个实现的内存序策略不完全相同，但代码审查常常要追问：
-
-- 最终看到“最后一个引用”这一状态的线程
-- 是否还能合法看见对象发布时写下的元数据
-
-这种分析经常要落到同一原子计数的连续 RMW 链上。
-
-### 7.3 lock-free 队列、栈和任务调度状态机
-
-在真正的 lock-free 结构里，状态通常不是“写一次就结束”，而是：
-
-- 被多个线程竞争性推进
-- 最终消费者看到的是中间人更新过的状态
-
-此时 release sequence 就不再是边缘知识，而是协议成败点。
-
-### 7.4 轻量级 hand-off 协议
-
-如果系统想避免 mutex，希望用一个状态字表达：
-
-- 数据已准备
-- 某线程已接手
-- 工作已完成或回收
-
-那这个状态字经常会成为 release sequence 的 carrier。
-
-## 8. 工业 / 现实世界锚点
-
-### 8.1 LLVM IR 与 GCC `__atomic` builtins
-
-LLVM IR 里有专门的 `atomicrmw`、`cmpxchg`；GCC 也提供 `__atomic_fetch_add`、`__atomic_compare_exchange_n` 这类一等内建。  
-这不是语法装饰，而是现实世界里确实存在大量“同一原子对象上的 RMW 接力”协议。
-
-release sequence 之所以重要，正是因为这些 RMW 不是孤立存在，而是经常承担发布链中继角色。
-
-### 8.2 `std::shared_ptr` 控制块与工业级引用计数实现
-
-libstdc++、libc++、MSVC STL 的共享所有权控制块，以及 Chromium / Folly / Abseil 体系里常见的 intrusive refcount 设计，都会围绕同一原子计数反复做 RMW。  
-它们的细节实现不完全相同，但审查这些代码时经常会遇到同一类问题：
-
-- 哪个线程真正接住了“最后一个状态”
-- 这个线程是否还能安全看到对象先前发布的数据
-
-这正是 release sequence 擅长解决的地带。
-
-### 8.3 Boost.Lockfree、Folly 等无锁状态字设计
-
-工业级 lock-free 容器和调度组件里，状态不是“单写单读”，而是被多线程 CAS 接力推进。  
-这些项目里不一定处处写出“release sequence”这个词，但它们依赖的正是这套语义。
-
-## 9. 当前推荐实践、过时路径与替代
-
-### 9.1 截至 2026-03-16 更推荐的实践
-
-当前更稳的实践不是“尽量多用 release sequence”，而是：
-
-- 只有在协议确实存在“头部发布 + 中间 RMW 接力 + 尾部 acquire 着陆”时才主动依赖它
-- 一旦依赖，就在设计说明或代码注释里明确写出 `head / carrier / relay / landing read`
-- 对每次把 RMW 改成 store 的优化，都重新证明同步链
-- 如果某个中继 RMW 还承担本地顺序职责，就按职责选 `acq_rel`、`acquire`、`release` 或 `relaxed`，不要只盯“能不能留在链里”
-
-### 9.2 当前最稳的选型分界
-
-更适合主动依赖 release sequence 的情况：
-
-- 单 carrier atomic 已经是协议中心
-- 中间确实存在多个成功 RMW 接力
-- 最终观察者大概率读到的是中继值而不是头部原值
-
-更适合退回直接同步原语的情况：
-
-- 只是一次性发布，没有多跳状态推进
-- 协议跨多个 atomic object
-- 维护者未必熟悉 read-from / release sequence 推理
-- 正确性比极限性能更重要
-
-### 9.3 已经过时或必须带历史语境理解的路径
-
-**把“同线程后续普通 store 还能继续 release sequence”当今天的默认规则**
-
-这条理解必须带 C++20 之前的历史语境。  
-在今天的主路径里，更稳的做法是把 release sequence 收窄为：
+在 lock-free 状态机、CAS 状态推进、引用计数和阶段字协议里，最容易混在一起的是下面几件事：
 
 - 头部 release
-- 后续连续成功 RMW
+- 后续状态推进
+- acquire 最终读到的值
+- 真正跨线程成立的同步边
 
-不要再把普通 store 默认纳入。
+如果没有 `release sequence` 这个概念，下面这些说法会一直漂：
 
-**拿 `memory_order_consume` 或依赖顺序魔法去替代清晰的 acquire/release 推理**
+- “最终读到的不是头部 release 写的值，所以应该同步不到头部”
+- “同一个状态字后来又被别人改了，所以原先发布的历史已经断了”
+- “后面只要还有写这个对象，就都算发布语义继续往前走”
+- “release/acquire 边直接连就行，不用单独关心中间链条”
 
-这条路径在当前 WG21 方向里已经明显退居历史边缘。  
-更推荐的是显式 acquire/release 或更高层同步原语。
+所以，这个概念首先解决的不是“怎样完整证明协议”，而是更细的一层命名问题：
 
-**用“全写成 `seq_cst` 就不用想了”替代正确建模**
+- 头部 release 和尾部 acquire 之间，那段特殊的中间链条到底叫什么
+- 哪些后继修改还在链上，哪些已经把链剪断
+- 最终 acquire 究竟是在同步回头部，还是只是在读某个后来的状态
 
-更强的 order 不会替你修复“读到的不是这条链上的值”这种根本问题。  
-它可能更重，但不自动更对。
+## 4. 概念边界与相邻概念
 
-### 9.4 替代方案
+### 4.1 这篇文档直接处理什么
 
-如果你不想让维护者背这套细粒度模型，当前更稳的替代通常是：
+这篇文档直接处理的是：
 
-- 直接的 `release` / `acquire` flag
-- `mutex`
-- `condition_variable`
-- `atomic_wait` / `notify`
-- 更高层并发抽象
+- `release sequence` 作为特殊修改链的本体
+- 头部 release
+- 同一 carrier atomic object
+- 连续成功 RMW 的延续条件
+- acquire 最终如何“着陆”到链上
 
-这些路径的同步边更显式，审查成本更低。
+这篇文档不负责系统展开：
 
-## 10. 自测题 / 验证入口
+- 最终的跨线程正式边如何命名
+- 整张 `happens-before` 图如何闭合
+- 多对象协议的全部设计
 
-1. 某线程对 `state.store(1, release)` 之后，另一个线程执行 `state.fetch_add(1, relaxed)`，第三个线程 `load(acquire)` 读到 `2`。为什么这里可能仍能看到头部 release 之前的普通写？
-2. 如果中间那步不是 `fetch_add`，而是 `state.store(2, relaxed)`，结论为什么变了？
-3. 为什么失败的 `compare_exchange` 不能被算进 release sequence？
-4. 一个尾部 RMW 明明可以写成 `relaxed` 也留在链里，为什么工程上仍可能应该写成 `acq_rel`？
-5. 协议里如果中间换了另一个 atomic object，为什么 release sequence 立刻失效？
-6. 如果 reviewer 只看到了“这里有 release、那里有 acquire”，却没追 read-from 来源，最可能漏掉什么 bug？
-7. 你能不能把某段状态机代码里的 `head / carrier / relay / landing read` 四个角色各自标出来？
-8. 在什么情况下，宁可放弃 release sequence，也要退回 mutex 或更直接的 release/acquire？
+这些内容分别交给：
 
-## 11. 迁移与关联模型
+- [Synchronizes-With：并发图里一条正式成立的跨线程同步边](/Users/maxwell/Knowledge/docs/computer-systems/synchronizes-with.md)
+- [Happens-Before：并发里真正决定“可见”与“成不成 race”的关系](/Users/maxwell/Knowledge/docs/computer-systems/happens-before.md)
 
-理解了这篇文档后，你应该能把这套模型迁移到：
+### 4.2 它不等于什么
 
-- [memory-order.md](/Users/maxwell/Knowledge/docs/computer-systems/memory-order.md) 里的 release/acquire 传播判断
-- [modification-order.md](/Users/maxwell/Knowledge/docs/computer-systems/modification-order.md) 里的单对象写历史分析
-- [synchronizes-with.md](/Users/maxwell/Knowledge/docs/computer-systems/synchronizes-with.md) 里的跨线程建边判断
-- [happens-before.md](/Users/maxwell/Knowledge/docs/computer-systems/happens-before.md) 里的传递性分析
-- CAS 循环、状态字推进、引用计数、无锁 hand-off 协议
+`release sequence` 不等于：
 
-迁移时最关键的不是重复背术语，而是重复执行同一套检查：
+- **最终那条 `synchronizes-with` 边。**
+  它是某些同步边成立时的中间桥梁，不是最后那条边本身。
 
-- 哪个 atomic 在当 carrier？
-- 哪个写是头部 release？
-- 中间是不是连续成功 RMW？
-- 结尾 acquire 到底读到了谁？
+- **整个 `modification order`。**
+  它只是单对象账本里的一段特殊子链，不是整本账。
 
-## 12. 未解问题与继续深挖
+- **同一对象上的任意后继写。**
+  普通 store 不会自动续上这条链。
 
-后续值得继续深挖的点包括：
+- **任意 acquire / release 关键字的并列出现。**
+  关键不只在关键字，还在链条是否真的成立、最终 acquire 是否读到了链上值。
 
-- release sequence 与 `atomic_thread_fence` 三种建边模式混用时的最短判断模板
-- `atomic_wait` / `notify` 背后的“值变化 + 唤醒”模型如何和 release sequence 拼在一起
-- 引用计数、hazard pointer、epoch reclamation 中，哪些协议真的依赖 release sequence，哪些只是看起来像
-- sanitizer 和代码审查工具是否值得直接把“release sequence 断链点”做成专门提示
+- **跨多个 atomic object 的同步传播。**
+  一旦换对象，这条链就结束。
 
-## 13. 参考资料
+### 4.3 最容易混淆的相邻对象
 
-以下链接均为本次写作时实际参考的一手资料；涉及“当前状态”的地方，均以 `2026-03-16` 为核对日期。
+| 对象 | 它是什么 | 和 `release sequence` 的关系 |
+| --- | --- | --- |
+| 头部 release | 链的起点 | 没有头部 release，就没有这条链 |
+| `modification order` | 单个 atomic object 的全部修改总序 | `release sequence` 是其中一段特殊连续区间 |
+| 成功 RMW | 会在链上继续接力的后继修改 | 它们是延续条件的重要组成 |
+| 普通 atomic store | 也是修改，但不是链上自动延续者 | 它常常是断链点 |
+| acquire 读到链上值 | 最终的着陆动作 | 它让同步得以回到头部 |
+| `synchronizes-with` | 最终正式成立的跨线程边 | `release sequence` 帮它搭桥，但不等于它 |
 
-- C++ draft `intro.races`: https://eel.is/c++draft/intro.races
-- C++ draft `atomics.order`: https://eel.is/c++draft/atomics.order
-- C++ draft `diff.cpp17`: https://eel.is/c++draft/diff.cpp17
-- WG21 P3475R2, *Defang and deprecate memory_order::consume*: https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2025/p3475r2.pdf
-- GCC `__atomic` builtins: https://gcc.gnu.org/onlinedocs/gcc/_005f_005fatomic-Builtins.html
-- LLVM Atomic Instructions and Concurrency Guide: https://llvm.org/docs/Atomics.html
+### 4.4 最关键的边界句
+
+**看到 “release sequence” 时，先追问“它是不是同一原子对象的连续成功 RMW 链”，而不要先把“后续任何写状态字”都想成链还在继续。**
+
+## 5. 什么算它，什么不算它
+
+下面这张表是最实用的判别模板。
+
+| 情形 | 在本文里怎么处理 | 为什么 |
+| --- | --- | --- |
+| `store(memory_order_release)` 作为头部 | 算链头 | 它提供发布起点 |
+| 头部之后，对同一 atomic object 的连续成功 RMW | 继续留在链上 | 这是本文采用的当前工作基线 |
+| 头部之后的普通 atomic store | 不自动留在链上 | 它会把这条特殊链剪断 |
+| 失败的 CAS | 不算链上的新修改点 | 失败 CAS 没有写 side effect |
+| 换到另一个 atomic object 做状态推进 | 不算 | 这条链从头到尾只沿一个对象前进 |
+| acquire 最终读到链上某个值 | 能借此同步回头部 | 这是这条链真正有价值的着陆方式 |
+| acquire 没读到链上值 | 不能借这条链自证同步 | 着陆条件没满足 |
+
+最值得反复提醒的一点是：
+
+**能否延续 `release sequence`，关键看“是不是同一对象上的连续成功 RMW”，而不是看代码看起来是否仍在推进同一个状态概念。**
+
+## 6. 代表性例子、反例与常见误读
+
+### 6.1 代表性例子
+
+最有代表性的例子有三个。
+
+- **头部 release 后，别人用 `fetch_add` 把状态从 `1` 推到 `2`，最后 acquire 读到 `2`。**
+  这就是最典型的“尾部读值仍能同步回头部”的场景。
+
+- **头部 release 后，别人用成功 CAS 把 `ready` 推成 `claimed`。**
+  这说明链条可以由成功 RMW 接力，不要求最终 acquire 直接看见头部原值。
+
+- **状态字长期被不同线程接力推进，但始终没换 carrier object。**
+  这说明这个概念首先服务于“同一状态字的接力式发布”。
+
+### 6.2 反例
+
+最值得记住的反例有下面这些。
+
+- **头部 release 后，后续只是普通 store。**
+  这会断链，最终 acquire 不能再仅凭 `release sequence` 同步回头部。
+
+- **CAS 执行了，但失败了。**
+  失败 CAS 没有写 side effect，不是链上的修改点。
+
+- **后面推进的是另一个 atomic object。**
+  这不叫“同一条链传过去了”，而是对象已经换了。
+
+- **最终 acquire 没读到链上的值。**
+  就算链在那儿，也没有被这个 acquire 接住。
+
+### 6.3 常见误读
+
+最常见的误读有下面几类：
+
+- **“只要后面还在写同一个状态概念，链就还在。”**
+  错。链看的是同一 atomic object 与特定修改类型，不看你口头上的“状态概念”。
+
+- **“后继普通 store 也能帮忙把发布语义往前带。”**
+  错。普通 store 正是最容易被忽略的断链点之一。
+
+- **“尾部 RMW 必须自己也写成 release，才能留在链上。”**
+  不稳。留在链上的最低条件不是“尾部也带 release”，而是“它仍是链上连续成功 RMW”；但工程上尾部是否要更强语义，还要看别的职责。
+
+- **“最终 acquire 读到的是后人写的值，所以最多只和后人有关。”**
+  不稳。若那个值仍在链上，它可以同步回头部 release。
+
+- **“`release sequence` 就等于同步已经证明完了。”**
+  错。它只是中间桥梁，最后还要落到正式同步边和更大的 `happens-before` 图。
+
+## 7. 它会进入哪些更大的模型或判断框架
+
+`release sequence` 这个概念本体，最重要的下游去向有四个。
+
+### 7.1 `synchronizes-with` 边
+
+这是它最直接的下游。  
+`release sequence` 本身不是边，但它会帮助某些 acquire 合法同步回头部 release。
+
+### 7.2 lock-free 状态字与 CAS 协议
+
+只要协议依赖“头部发布一次，后面由别人继续接力推进状态字”，就很容易进入 `release sequence` 的判断框架。
+
+### 7.3 `modification order` 账本思维
+
+理解了 `release sequence` 之后，就更容易看清：
+
+- 它为什么只沿一个对象前进
+- 它为什么要贴着单对象账本判断
+- 它为什么不能被误读成全局传播链
+
+### 7.4 fence、`atomic_wait` / `notify` 等更复杂边界
+
+这些主题更难的地方，不是 API 数量，而是它们经常会和 `release sequence` 混在一起。  
+先把这个概念本体分清，后面才不容易漂。
+
+## 8. 自测题 / 验证入口
+
+如果你真的理解了这篇文档，至少应该能回答：
+
+1. 为什么 `release sequence` 不应该被理解成“整条同步边”？
+2. 为什么它必须始终贴着同一个 atomic object 的 `modification order` 判断？
+3. 为什么普通 store 和失败 CAS 都是高风险断链点？
+4. 为什么最终 acquire 读到链尾值时，仍可能同步回头部 release？
+5. 为什么“后继 RMW 不必自己也带 release 才能留在链上”和“工程上尾部可一律 relaxed”不是同一结论？
+
+一个最实用的自测动作是：
+
+拿下面四种后继修改各写一句判断：
+
+- 成功 `fetch_add`
+- 成功 CAS
+- 普通 store
+- 失败 CAS
+
+如果你能稳定分清哪些还在链上、哪些已经断链，这篇文档的核心目标就达到了。
+
+## 9. 迁移与关联模型
+
+理解了 `release sequence` 之后，最值得迁移出去的不是某条 litmus test，而是这组判断：
+
+- 这是链头、链身，还是链尾着陆？
+- 这是同一对象上的连续成功 RMW，还是已经断链？
+- 这里需要的是“中间桥梁”判断，还是最终同步边判断？
+
+最值得连着看的文档是：
+
+- [Modification Order：每个原子对象各有一条修改总序，不是全局时间线](/Users/maxwell/Knowledge/docs/computer-systems/modification-order.md)
+- [Synchronizes-With：并发图里一条正式成立的跨线程同步边](/Users/maxwell/Knowledge/docs/computer-systems/synchronizes-with.md)
+- [Happens-Before：并发里真正决定“可见”与“成不成 race”的关系](/Users/maxwell/Knowledge/docs/computer-systems/happens-before.md)
+
+最值得保留的迁移句是：
+
+**“release 之后还有人继续推进状态”这件事，本身不自动成立为同步；你最终总要回到‘链有没有断、值是不是落在链上’来判断。**
+
+## 10. 未解问题与继续深挖
+
+- 如何把 `release sequence` 与 fence、`atomic_wait` / `notify`、mixed-order litmus tests 压缩成统一判断模板？
+- 在真实 lock-free 协议里，哪些状态字最容易被误写成会断链的普通 store？
+- 如果未来标准继续收束 `consume` 相关历史包袱，`release sequence` 在教学和工具提示里应如何被更早暴露？
+
+## 11. 参考资料
+
+- ISO C++ Working Draft, `atomics.order`, `intro.races`
+- WG21 P3475R2
+- [统一概念文档规范：新建、升级、审查与仓库集成](/Users/maxwell/Knowledge/docs/methodology/document-generation-methodology.md)

@@ -1,15 +1,16 @@
 ---
 doc_id: methodology-cognitive-modeling-playbook
 title: 认知规范与问题建模手册
-concept: 认知规范与问题建模
+concept: cognitive_modeling_playbook
 topic: methodology
 created_at: '2026-03-16T00:00:00+08:00'
-updated_at: '2026-03-19T18:35:00+08:00'
+updated_at: '2026-04-01T20:24:04+08:00'
 source_basis:
   - legacy_repository_document
   - personal_synthesis
   - methodology_operator_guide
   - concept_document_quality_gate
+  - document_generation_methodology
 time_context: evergreen_methodology
 applicability: personal_learning_and_model_building
 prompt_version: not_applicable
@@ -20,6 +21,8 @@ related_docs:
   - docs/methodology/concept-document-template.md
   - docs/methodology/methodology-operator-guide.md
   - docs/methodology/concept-document-quality-gate.md
+  - docs/methodology/fixed-concept-generation-prompt.md
+  - docs/methodology/document-generation-methodology.md
   - docs/computer-systems/virtual-memory-learning-model.md
   - docs/ai-systems/agent-mcp-skill-openclaw-concepts.md
 open_questions:
@@ -796,6 +799,32 @@ open_questions:
 - 真实对象：
 - 这个对象为何能说明该概念：
 - 它体现的是成功路径、失败路径，还是边界条件：
+
+## 6.7 面向当前知识库工作流的落地顺序
+
+如果你是在当前仓库里写正式知识文档，这份 playbook 最有价值的地方，不是“提供更多概念”，而是把后续写作前必须补齐的建模动作前置完成。
+
+推荐按下面顺序把它落到当前工作流里：
+
+1. 先用 [learning-new-things-playbook.md](/Users/maxwell/Knowledge/docs/methodology/learning-new-things-playbook.md) 定义学习目标，明确“这份文档要帮我学会什么”。
+2. 再用本手册完成：问题定义、目标函数、系统边界、关键变量、反馈回路、约束、时间尺度、证据与时效。
+3. 再把建模结果映射到 [concept-document-template.md](/Users/maxwell/Knowledge/docs/methodology/concept-document-template.md) 的正式章节，而不是直接从空白页开始写 prose。
+4. 如果主题同时涉及多层抽象、多 actor、多时间尺度或强 tradeoff，显式判定为 `deep`，不要默认按低密度标准档处理。
+5. 初稿完成后，用 [concept-document-quality-gate.md](/Users/maxwell/Knowledge/docs/methodology/concept-document-quality-gate.md) 检查是否真的形成了可调用模型。
+6. 进入正式仓库集成前，再按 [document-generation-methodology.md](/Users/maxwell/Knowledge/docs/methodology/document-generation-methodology.md) 检查元数据、索引更新和交付完成状态。
+
+可以把本手册产出的内容，直接映射到概念文档的关键栏目：
+
+- `问题定义 + 目标函数` -> `这份文档要帮你学会什么` 与 `一句话结论 / 问题定义`
+- `系统边界 + 相邻对象` -> `对象边界与相邻概念`
+- `关键变量 + 存量流量 + 反馈回路` -> `核心结构` 与 `核心机制 / 主链路 / 因果链`
+- `约束 + 杠杆点 + 二阶效应` -> `关键 tradeoff 与失败模式`
+- `证据与时效 + 旧路径与替代 + 真实锚点` -> `工业 / 现实世界锚点` 与 `当前推荐实践、过时路径与替代`
+
+如果这一步没有显式做，文档最容易退化成两种东西：
+
+- 结构齐全但机制空心的说明文
+- 语言流畅但不能支持判断、迁移和排障的“伪优秀稿”
 
 ---
 

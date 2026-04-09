@@ -23,16 +23,20 @@
 
 ## 开始前先读什么
 
-在开始任何贡献之前，先读下面这些文件：
+在开始任何贡献之前，默认先读下面这一份主规范：
 
-- [docs/methodology/methodology-operator-guide.md](/Users/maxwell/Knowledge/docs/methodology/methodology-operator-guide.md)
-- [docs/methodology/learning-new-things-playbook.md](/Users/maxwell/Knowledge/docs/methodology/learning-new-things-playbook.md)
-- [docs/methodology/cognitive-modeling-playbook.md](/Users/maxwell/Knowledge/docs/methodology/cognitive-modeling-playbook.md)
+- [docs/methodology/document-generation-methodology.md](/Users/maxwell/Knowledge/docs/methodology/document-generation-methodology.md)
+
+只有在主规范不足以支撑具体任务时，再进入对应参考件：
+
+- [docs/methodology/fixed-concept-generation-prompt.md](/Users/maxwell/Knowledge/docs/methodology/fixed-concept-generation-prompt.md)
 - [docs/methodology/concept-document-template.md](/Users/maxwell/Knowledge/docs/methodology/concept-document-template.md)
 - [docs/methodology/concept-document-quality-gate.md](/Users/maxwell/Knowledge/docs/methodology/concept-document-quality-gate.md)
-- [docs/methodology/fixed-concept-generation-prompt.md](/Users/maxwell/Knowledge/docs/methodology/fixed-concept-generation-prompt.md)
+- [docs/methodology/learning-new-things-playbook.md](/Users/maxwell/Knowledge/docs/methodology/learning-new-things-playbook.md)
+- [docs/methodology/cognitive-modeling-playbook.md](/Users/maxwell/Knowledge/docs/methodology/cognitive-modeling-playbook.md)
+- [docs/methodology/methodology-operator-guide.md](/Users/maxwell/Knowledge/docs/methodology/methodology-operator-guide.md)
 
-如果不先读这些文件，后面很容易写出“结构看着完整，但没有形成可调用模型”的文档。
+默认不再要求每次都把整套方法论文档完整读一遍。
 
 ## 目录与主题选择
 
@@ -102,20 +106,20 @@ frontmatter 最少应包含：
 - 你是在什么语境下遇到它的
 - 你当前最不理解的点
 
-### 第二步：按方法论栈执行
+### 第二步：按主规范执行
 
 新建时的推荐顺序：
 
-1. 用 `learning-new-things-playbook` 明确学习目标
-2. 用 `cognitive-modeling-playbook` 先建模
-3. 用 `concept-document-template` 组织输出
-4. 用 `concept-document-quality-gate` 做验收
+1. 先按 `document-generation-methodology` 判断任务类型与 `standard` / `deep`
+2. 再建立边界、结构、主链路和 tradeoff
+3. 再按统一合同组织输出
+4. 再按质量门禁验收
 5. 写入合适目录并更新 `docs/index.md`
 
 ### 推荐指令
 
 ```text
-按 docs/methodology/methodology-operator-guide.md、docs/methodology/concept-document-template.md、docs/methodology/concept-document-quality-gate.md 和两份 playbook，为概念 {concept} 新建一篇知识库文档。直接写入合适的 docs/{topic}/ 目录，文件名使用 kebab-case，补齐统一 frontmatter，并在完成后更新 docs/index.md。不要写成泛泛解释，必须建立可复用内部模型。
+按 docs/methodology/document-generation-methodology.md，为概念 {concept} 新建一篇知识库文档。先判断 standard 或 deep，建立可复用内部模型，直接写入合适的 docs/{topic}/ 目录，文件名使用 kebab-case，补齐统一 frontmatter，并在完成后更新 docs/index.md。
 ```
 
 ## 工作流 2：升级已有文档
@@ -124,9 +128,9 @@ frontmatter 最少应包含：
 
 推荐顺序：
 
-1. 先用 `concept-document-quality-gate` 找 Hard Fail 和低分项
-2. 再用 `concept-document-template` 对照缺失栏目
-3. 必要时回到两份 playbook 补边界、机制、验证入口和迁移模型
+1. 先用主规范或质量门禁找 Hard Fail 和低分项
+2. 再补缺失栏目、主链路、tradeoff、验证入口和迁移模型
+3. 必要时回到参考 playbook 补边界、机制和约束
 4. 更新 `updated_at`、`source_basis`、`time_context`
 5. 若文档标题变更或新增正式文档，更新 `docs/index.md`
 
@@ -144,7 +148,7 @@ frontmatter 最少应包含：
 ### 推荐指令
 
 ```text
-按 docs/methodology/methodology-operator-guide.md、docs/methodology/concept-document-template.md 和 docs/methodology/concept-document-quality-gate.md 升级现有文档 {path}。
+按 docs/methodology/document-generation-methodology.md 升级现有文档 {path}。
 ```
 
 ## 工作流 3：审计 / 审查现有文档
@@ -169,17 +173,18 @@ frontmatter 最少应包含：
 
 ## 工作流 4：方法论文档维护
 
-`docs/methodology/` 下的文档不是普通概念文档，它们共同组成仓库的执行合同。
+`docs/methodology/` 下的文档不是普通概念文档，它们共同组成仓库的规范层。
 
-维护这部分内容时，优先遵守下面的分层：
+维护这部分内容时，优先遵守下面这条新分层：
 
-- playbook：负责思想与方法
-- template：负责输出合同
-- quality gate：负责验收
-- prompt：负责触发
-- operator guide：负责编排与使用顺序
+- 主规范：`document-generation-methodology.md`
+- 参考件：playbook、template、quality gate、prompt、operator guide
 
-不要把这几层重新混成一篇超长总文档。
+判断原则：
+
+- 任何每次新建、升级、审查都必须遵守的稳定规则，优先写进主规范
+- 只有在需要保留更深背景、完整模板、完整评分细则或快捷触发词时，才写进参考件
+- 默认先收束入口，而不是继续增加并列主入口
 
 ## 正式概念文档的最小信息位点
 

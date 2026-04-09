@@ -5,19 +5,21 @@ concept: atomic_wait_notify
 topic: computer-systems
 depth_mode: deep
 created_at: '2026-03-16T14:56:22+08:00'
-updated_at: '2026-03-20T15:37:08+08:00'
+updated_at: '2026-04-08T15:51:00+08:00'
 source_basis:
   - cxx_draft_atomics_wait_2026_03_16
   - cxx_draft_atomics_order_2026_03_16
   - cxx_draft_intro_races_2026_03_16
   - linux_futex_man_2026_03_16
   - cxx_draft_thread_condition_2026_03_16
+  - methodology_document_generation_methodology
 time_context: current_practice_checked_2026_03_16
 applicability: personal_concept_learning_and_wait_notify_modeling
-prompt_version: concept_generation_prompt_v1
-template_version: concept_doc_v1
+prompt_version: concept_generation_prompt_v3
+template_version: unified_spec_v1
 quality_status: upgraded_v1
 related_docs:
+  - docs/methodology/document-generation-methodology.md
   - docs/methodology/learning-new-things-playbook.md
   - docs/methodology/cognitive-modeling-playbook.md
   - docs/computer-systems/condition-variable.md
@@ -119,7 +121,20 @@ open_questions:
 - notify 只是唤醒动作
 - 真正被等待和检查的是 atomic object 的值
 
-### 3.4 最关键的边界句
+### 3.4 本文的时间边界
+
+这篇文档的大部分内容是在建立一个可复用的等待模型，因此主体判断是偏 evergreen 的。
+
+但下面这些内容带有明确时间边界：
+
+- 当前标准草案中的措辞与章节位置
+- “当前推荐实践、过时路径与替代”里的结论
+- 现实世界锚点里对标准库与系统接口的定位
+
+这些时间敏感内容在本篇文档里统一以 `2026-03-16` 为核对日期。  
+本次升级主要是按统一规范补强结构、时间纪律和表达方式，不把它伪装成一次更晚日期的外部资料重验。
+
+### 3.5 最关键的边界句
 
 可以把它压成一句话：
 
@@ -451,6 +466,8 @@ Linux `futex(2)` 文档把 futex 描述为：
 - 都强调用户态快路径
 - 都在“只等单对象状态变化”这类问题上特别贴题
 
+如果你把这个锚点误读成“任何等待都能压成一个状态字”，就会高估 `atomic_wait` 的适用边界，并把复杂 predicate 等待错误地往单对象协议里压。
+
 ### 8.2 C++ 把 atomic waiting / notifying 正式纳入标准库
 
 当前草案把 atomic waiting / notifying 正式纳入 `<atomic>`，说明这类等待已经不是平台私货，而是主流并发模型的一部分。
@@ -459,6 +476,8 @@ Linux `futex(2)` 文档把 futex 描述为：
 
 - “等待单个状态位变化”已经被认为是足够常见、足够独立的一类问题
 - 这类问题不必默认都回退到 condition variable
+
+理解错这一点，常见后果是继续沿用 polling，或者用更重的 condition variable 包装一个本来只需要围绕单个 atomic 值建模的问题。
 
 ### 8.3 `atomics.wait` 明确把它定位成“比 polling 更高效”的路径
 
@@ -470,17 +489,32 @@ Linux `futex(2)` 文档把 futex 描述为：
 
 - 如果你现在还在为单 atomic 状态写轮询，说明模型大概率还没升级到当前更稳路径
 
+这个锚点的价值不在于“某个平台内部可能怎么实现”，而在于它把默认选型基线直接往“阻塞式等待单对象值变化”推了一步。
+
 ## 9. 当前推荐实践、过时路径与替代
 
-### 9.1 截至 2026-03-16 更推荐的实践
+### 9.1 截至 2026-03-16 的事实、推断与建议
 
-当前更稳的工程实践是：
+先把这部分拆开看。
 
-- 只要等待目标真的是“单个 atomic 值变化”，优先考虑 `atomic_wait` / `notify`
-- 先更新状态，再 notify
-- wait 醒来后继续按“重新检查值”的方式建模
-- 一旦条件变成复杂 predicate，就升级到 condition variable + mutex
-- 对可能 ABA 的协议，优先使用 generation / sequence 方案，而不是依赖“中间态一定可见”
+**事实**
+
+- C++ 标准草案已经把 atomic waiting / notifying 纳入 `<atomic>` 的正式模型。
+- `atomics.wait` 明确把它定位成一种比 polling 更高效的等待 atomic object 值变化的机制。
+- Linux `futex(2)` 仍然是理解这类“围绕共享状态字阻塞/唤醒”问题的强现实锚点。
+
+**推断**
+
+- 当等待目标确实可以压成“单个 atomic 值不再等于 old”时，语言级等待原语已经足够独立，不该再默认把这类问题视为 condition variable 的变体。
+- 当协议正确性依赖“观察到所有中间态”时，单纯的 `atomic_wait` 模型并不够，因为 ABA 与 transient value 不可见的问题仍然存在。
+
+**建议**
+
+- 只要等待目标真的是“单个 atomic 值变化”，优先考虑 `atomic_wait` / `notify`。
+- 先更新状态，再 notify。
+- wait 醒来后继续按“重新检查值”的方式建模。
+- 一旦条件变成复杂 predicate，就升级到 condition variable + mutex。
+- 对可能 ABA 的协议，优先使用 generation / sequence 方案，而不是依赖“中间态一定可见”。
 
 ### 9.2 已经过时、明显不推荐或需要带语境理解的路径
 
@@ -567,8 +601,8 @@ Linux `futex(2)` 文档把 futex 描述为：
 
 以下链接均为本次写作时实际参考的一手资料；涉及“当前状态”的地方，均以 `2026-03-16` 为核对日期。
 
-- C++ draft `atomics.wait`: https://eel.is/c++draft/atomics.wait
-- C++ draft `atomics.order`: https://eel.is/c++draft/atomics.order
-- C++ draft `intro.races`: https://eel.is/c++draft/intro.races
-- C++ draft `thread.condition`: https://eel.is/c++draft/thread.condition
-- `futex(2)` Linux manual page: https://man7.org/linux/man-pages/man2/futex.2.html
+- [C++ draft `atomics.wait`](https://eel.is/c++draft/atomics.wait)
+- [C++ draft `atomics.order`](https://eel.is/c++draft/atomics.order)
+- [C++ draft `intro.races`](https://eel.is/c++draft/intro.races)
+- [C++ draft `thread.condition`](https://eel.is/c++draft/thread.condition)
+- [`futex(2)` Linux manual page](https://man7.org/linux/man-pages/man2/futex.2.html)

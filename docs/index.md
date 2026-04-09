@@ -4,10 +4,10 @@ title: Knowledge Docs Index
 concept: knowledge_docs_index
 topic: root
 created_at: '2026-03-16T00:00:00+08:00'
-updated_at: '2026-03-30T09:56:10+08:00'
+updated_at: '2026-04-09T12:20:00+08:00'
 source_basis:
   - derived_repository_index
-time_context: snapshot_2026_03_30
+time_context: snapshot_2026_04_09
 applicability: repository_navigation
 prompt_version: not_applicable
 template_version: index_v1
@@ -23,16 +23,21 @@ open_questions:
 
 ## methodology
 
-- [方法论文档使用说明：怎么读、怎么用、怎么验收](./methodology/methodology-operator-guide.md)
+- [统一概念文档规范：新建、升级、审查与仓库集成](./methodology/document-generation-methodology.md)
 - [固定概念文档生成 Prompt](./methodology/fixed-concept-generation-prompt.md)
 - [统一概念文档模板](./methodology/concept-document-template.md)
 - [统一概念文档质量门禁](./methodology/concept-document-quality-gate.md)
 - [认知规范与问题建模手册](./methodology/cognitive-modeling-playbook.md)
 - [学习新事物的方法手册：从陌生到可理解、可操作、可迁移](./methodology/learning-new-things-playbook.md)
+- [方法论文档使用说明：旧版编排说明，已并入主规范](./methodology/methodology-operator-guide.md)
 
 ## ai-systems
 
-- [AI 代理栈分层：Agent、MCP、Skill 与 OpenClaw 的概念边界](./ai-systems/agent-mcp-skill-openclaw-concepts.md)
+- [AI 代理栈分层：Agent、MCP、Skill、Prompt 与 OpenClaw 的概念边界](./ai-systems/agent-mcp-skill-openclaw-concepts.md)
+- [Agent：目标驱动执行闭环，不是会聊天的模型](./ai-systems/agent.md)
+- [Prompt：从一次性提问到系统指令栈的输入控制面](./ai-systems/prompt.md)
+- [Skill：把 SOP、约束与操作策略沉淀成可复用行为资产](./ai-systems/skill.md)
+- [MCP：把工具、资源与提示接成标准能力面的协议层](./ai-systems/mcp.md)
 
 ## programming-languages
 
@@ -48,28 +53,28 @@ open_questions:
 - [Array of Structs：按记录聚合、按对象边界取数的数据布局](./computer-systems/array-of-structs.md)
 - [Struct of Arrays：按字段拆流、按批量同构操作取数的数据布局](./computer-systems/struct-of-arrays.md)
 - [Atomic Wait / Notify：当你只是在等一个原子值变化时，不必先上 condition variable](./computer-systems/atomic-wait-notify.md)
-- [Atomicity：并发里“不可分割”到底解决了什么，又没有解决什么](./computer-systems/atomicity.md)
+- [Atomicity：单次访问不可分割，不等于整体同步](./computer-systems/atomicity.md)
 - [Cache Coherence：同一份数据为什么不会在不同核心缓存里“各说各话”](./computer-systems/cache-coherence.md)
 - [Condition Variable：你等的不是通知，而是条件何时在同步关系下成立](./computer-systems/condition-variable.md)
-- [Data Race：什么时候程序不是“有点危险”，而是直接掉进未定义行为](./computer-systems/data-race.md)
+- [Data Race：冲突访问何时越过语言模型的合法边界](./computer-systems/data-race.md)
 - [DLL 注入：把代码带进别的进程时，真正起作用的是装载链、执行触发与权限边界](./computer-systems/dll-injection.md)
 - [DMA 技术：地址可达性、缓冲区所有权与可见性同步的统一模型](./computer-systems/dma.md)
 - [从 DMA 看程序内存：虚拟地址、物理页与设备可达窗口的统一模型](./computer-systems/dma-view-of-program-memory.md)
 - [DMA 缓冲区生命周期与地址稳定性：pin、映射、同步、完成与回收的统一模型](./computer-systems/dma-buffer-lifetime-and-address-stability.md)
 - [Fence：什么时候需要一堵顺序墙，什么时候这堵墙其实并不会替你同步](./computer-systems/fence.md)
 - [False Sharing：明明线程没抢同一个变量，为什么缓存行还在疯狂打架](./computer-systems/false-sharing.md)
-- [Happens-Before：并发里真正决定“可见”与“成不成 race”的关系](./computer-systems/happens-before.md)
+- [Happens-Before：把线程内顺序和跨线程同步边拼成可见性总图](./computer-systems/happens-before.md)
 - [malloc 的底层原理：从用户请求到 size class、arena、mmap 与碎片治理](./computer-systems/malloc-internals.md)
 - [内存地址构建与转换：命名空间、锚点、偏移与授权链的统一模型](./computer-systems/memory-address-construction-and-translation.md)
 - [内存池设计：把 free list、arena、slab 放回生命周期、局部性与回收边界的统一模型](./computer-systems/memory-pool-design.md)
 - [Memory Order：从原子性到可见性与重排序控制](./computer-systems/memory-order.md)
-- [Modification Order：为什么每个原子对象都有自己的修改总序，但整个世界并没有一个总时间线](./computer-systems/modification-order.md)
+- [Modification Order：每个原子对象各有一条修改总序，不是全局时间线](./computer-systems/modification-order.md)
 - [多线程中的各种锁：不要先问 API 名字，先问所有权、等待方式与读写形状](./computer-systems/multithreaded-locks.md)
 - [Mutex：你真正买到的不是“挡别人一下”，而是互斥区间和同步边](./computer-systems/mutex.md)
 - [进程：执行实例、资源容器与隔离边界的统一模型](./computer-systems/process.md)
-- [Release Sequence：为什么 release 之后的一串 RMW 还能继续“带着发布语义往前走”](./computer-systems/release-sequence.md)
+- [Release Sequence：同一原子对象上延续发布语义的特殊修改链](./computer-systems/release-sequence.md)
 - [Semaphore：当问题是“还有没有令牌”，而不是“谁拥有锁”](./computer-systems/semaphore.md)
-- [Synchronizes-With：并发关系图里真正跨线程连边的那一下](./computer-systems/synchronizes-with.md)
+- [Synchronizes-With：并发图里一条正式成立的跨线程同步边](./computer-systems/synchronizes-with.md)
 - [线程：共享地址空间里的调度执行流，不是更轻量的进程，也不是协程](./computer-systems/thread.md)
 - [USB 主机控制器数据路径：从 URB、传输环到 DMA 缓冲区的统一模型](./computer-systems/usb-host-controller-data-path.md)
 - [USB 传输协议：主机调度、端点契约与传输类型取舍的统一模型](./computer-systems/usb-transfer-protocol.md)
@@ -83,10 +88,10 @@ open_questions:
 
 ## mathematics
 
-- [复数：把标量、平面、旋转与振荡压成同一个代数对象](./mathematics/complex-number.md)
+- [复数：把实轴与虚轴接成一个完整可运算的数系](./mathematics/complex-number.md)
 - [虚数：把“负数开方无解”扩展成可运算的新轴](./mathematics/imaginary-number.md)
 - [虚数的作用：为什么振荡、旋转、频域与线性系统都喜欢复数表示](./mathematics/imaginary-number-uses.md)
-- [四元数：把 3D 旋转、组合次序与姿态状态压进同一个代数对象](./mathematics/quaternion.md)
+- [四元数：一种带非交换乘法的四维实代数对象](./mathematics/quaternion.md)
 - [四元数在 3D 旋转中的应用：姿态状态、组合、插值与时间推进的统一模型](./mathematics/quaternion-in-3d-rotation.md)
 - [四元数与欧拉旋转：局部坐标、全局状态与工程边界的区别](./mathematics/quaternion-vs-euler-rotation.md)
 
