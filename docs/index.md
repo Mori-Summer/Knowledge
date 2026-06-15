@@ -3,11 +3,12 @@ doc_id: docs-index
 title: Knowledge Docs Index
 concept: knowledge_docs_index
 topic: root
+depth_mode: standard
 created_at: '2026-03-16T00:00:00+08:00'
-updated_at: '2026-04-09T12:20:00+08:00'
+updated_at: '2026-06-15T14:34:30+08:00'
 source_basis:
   - derived_repository_index
-time_context: snapshot_2026_04_09
+time_context: phase_5_epic_5_network_boundary_decay_prevention_2026_06_01
 applicability: repository_navigation
 prompt_version: not_applicable
 template_version: index_v1
@@ -24,9 +25,14 @@ open_questions:
 ## methodology
 
 - [统一概念文档规范：新建、升级、审查与仓库集成](./methodology/document-generation-methodology.md)
+- [方法论资产边界：主规范、模板、质量门禁、playbook 与固定 Prompt 的职责分工](./methodology/governance-asset-boundary-policy.md)
+- [概念文档生成合同：输入、输出、边界与必需信息位点](./methodology/concept-document-contract.md)
+- [输入摄入与任务意图判定：任务类型、文档路径、深度与缺失输入处理](./methodology/intake-and-intent-classification.md)
+- [来源纪律与真实世界锚点政策：当前实践、历史路径与不可验证声明处理](./methodology/source-discipline-and-real-world-anchor-policy.md)
 - [固定概念文档生成 Prompt](./methodology/fixed-concept-generation-prompt.md)
 - [统一概念文档模板](./methodology/concept-document-template.md)
 - [统一概念文档质量门禁](./methodology/concept-document-quality-gate.md)
+- [概念文档样例目录：合格、不合格与质量门禁证据](./methodology/concept-document-example-catalog.md)
 - [认知规范与问题建模手册](./methodology/cognitive-modeling-playbook.md)
 - [学习新事物的方法手册：从陌生到可理解、可操作、可迁移](./methodology/learning-new-things-playbook.md)
 - [方法论文档使用说明：旧版编排说明，已并入主规范](./methodology/methodology-operator-guide.md)
@@ -101,7 +107,33 @@ open_questions:
 
 ## governance
 
+- [Agent 行为约束：文档治理任务必须先判边界、再执行、可验证](./governance/agent-behavior-constraints.md)
+- [文档生命周期状态：草稿、审查、验证、废弃与归档转换规则](./governance/lifecycle-states.md)
+- [Prompt、模板与质量规则版本治理：规则演进、字段语义与渐进迁移](./governance/prompt-template-quality-version-governance.md)
+- [治理资产导航、索引与入口归属政策](./governance/governance-asset-navigation-policy.md)
+- [批量治理 Readiness Checklist：范围、冲突、停止条件与恢复策略](./governance/batch-readiness-checklist.md)
+- [Frontmatter schema 与 doc_id 身份规则：正式 docs 资产的元数据基线](./governance/frontmatter-schema.md)
+- [Topic、文件命名与路径归属策略：正式 docs 资产的位置、命名与一致性规则](./governance/topic-path-naming-policy.md)
+- [候选文档晋升 Checklist：从工作流输出到正式 docs 资产的治理门禁](./governance/candidate-promotion-checklist.md)
+- [docs/index.md 同步与导航治理规则：正式导航入口的更新、排除与证据要求](./governance/index-synchronization-rules.md)
+- [重命名、路径迁移与废弃治理：身份连续性、旧内容处理、继任入口与链接索引影响](./governance/rename-migration-policy.md)
+- [重复概念与同主题共存治理：合并、相邻链接、窄化、保留与拒绝决策](./governance/duplicate-and-coexistence-policy.md)
+- [文档决策政策：accept/promote、revision、regenerate、reject、deprecate/archive、hold/defer、status impact 与 evidence requirements](./governance/document-decision-policy.md)
+- [失败案例与返工闭环：failure categories、repair instructions、regeneration rationale 与 resubmission checks](./governance/rework-loop-examples.md)
+- [修订、重生成与版本连续性策略：更新模式、旧内容处理、身份连续性与引用有效性](./governance/revision-regeneration-continuity-policy.md)
+- [Sidecar 与补充材料边界政策：主文档权威、支持资产分类与过期处理](./governance/sidecar-boundary-policy.md)
+- [旧文档渐进迁移与兼容策略：缺口分类、保留规则、批量风险判定与剩余缺口处理](./governance/legacy-migration-guide.md)
+- [related docs 与相邻概念关系分类：关系类型、边界区分、meaningful-link evidence 与 unresolved target handling](./governance/related-docs-taxonomy.md)
+- [跨文档链接维护政策：existence/path/topic/meaning checks、inbound/outbound review、one-way reason 与 boundary conflict handling](./governance/link-maintenance-policy.md)
+- [可复用模型入口政策：core model、boundary rule、decision frame、failure pattern 与 verification method](./governance/reusable-model-entry-points.md)
+- [既有文档复用流程：new-problem scan、exact/adjacent/prereq/contrast results 与 reuse evidence](./governance/existing-doc-reuse-procedure.md)
+- [知识网络主题边界与退化防护政策：topic health、weak links、overlap handling 与 navigation relevance evidence](./governance/network-boundary-and-decay-prevention.md)
 - [法利权情理：把复杂冲突拆成规则、利益、权力、情感与法理的五维模型](./governance/fa-li-quan-qing-li.md)
+
+## templates
+
+- [审查记录模板：任务分类、Hard Fail、评分证据、未验证项与决策记录](./templates/review-record-template.md)
+- [完成汇报模板：质量状态、入库决策证据、验证证据、未解决风险与非软件边界](./templates/completion-report-template.md)
 
 ## graphics-systems
 

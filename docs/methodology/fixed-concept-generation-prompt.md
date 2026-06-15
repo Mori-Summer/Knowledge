@@ -3,18 +3,20 @@ doc_id: methodology-fixed-concept-generation-prompt
 title: 固定概念文档生成 Prompt
 concept: fixed_concept_doc_generation_prompt
 topic: methodology
+depth_mode: standard
 created_at: '2026-03-16T10:12:00+08:00'
-updated_at: '2026-04-08T16:09:09+08:00'
+updated_at: '2026-05-27T10:29:56+08:00'
 source_basis:
   - architecture_rules
   - concept_template
   - methodology_operator_guide
   - concept_document_quality_gate
   - document_generation_methodology
+  - docs/methodology/intake-and-intent-classification.md
   - pure_concept_doc_split_review_2026_04_08
-time_context: prompt_updated_2026_04_08
+time_context: phase_4_epic_1_intake_classification_2026_05_25
 applicability: concept_doc_generation_upgrade_review_and_index_maintenance
-prompt_version: concept_generation_prompt_v3
+prompt_version: concept_generation_prompt_v4
 template_version: concept_doc_v1
 quality_status: maintained_asset
 related_docs:
@@ -24,13 +26,14 @@ related_docs:
   - docs/methodology/methodology-operator-guide.md
   - docs/methodology/concept-document-quality-gate.md
   - docs/methodology/document-generation-methodology.md
+  - docs/methodology/intake-and-intent-classification.md
 open_questions:
   - 未来是否需要把这四段固定入口进一步拆成四个独立文件，并补上 machine-readable 版本？
 ---
 
 # 固定概念文档生成 Prompt
 
-这份文件把概念文档的高频动作固定成四段入口：
+这份文件把正式概念文档的高频动作固定成四段入口：
 
 - 新建文档
 - 升级旧文档
@@ -39,6 +42,8 @@ open_questions:
 
 目标不是“让 AI 解释一个词”，而是让它按你已经定下的知识库规则，产出、修订、审查和集成正式概念文档。
 
+完整的 Knowledge 任务类型、资产层级、缺失输入、`_bmad-output/` 边界和 batch routing 判定，由 `docs/methodology/intake-and-intent-classification.md` 负责。本文只提供四个高频概念文档 prompt 入口，不是完整 intake 分类器，也不覆盖方法论维护、BMad skill/workflow 维护、规划产物、废弃归档或批量治理。
+
 从这次版本开始，固定入口默认要求先判断：
 
 - 这篇文档是模型型概念文档，还是纯概念文档
@@ -46,7 +51,7 @@ open_questions:
 
 ## 1. 使用前先判断你要做什么
 
-先把需求归到下面四类，再选对应入口：
+如果请求已经明确属于正式概念文档工作，先把需求归到下面四类，再选对应入口：
 
 - 仓库里还没有对应正式文档：走“新建文档”
 - 仓库里已有文档，但质量、结构或时效不足：走“升级旧文档”
@@ -55,11 +60,12 @@ open_questions:
 
 建议配套使用顺序仍然是：
 
-1. 先看 [document-generation-methodology.md](/Users/maxwell/Knowledge/docs/methodology/document-generation-methodology.md)
-2. 新建或升级时，先判断走模型型概念文档还是纯概念文档路径
-3. 需要更深背景时，再用两份 playbook 补建模或补边界纪律
-4. 再按 [concept-document-template.md](/Users/maxwell/Knowledge/docs/methodology/concept-document-template.md) 组织输出
-5. 最后用 [concept-document-quality-gate.md](/Users/maxwell/Knowledge/docs/methodology/concept-document-quality-gate.md) 做验收
+1. 先看 [document-generation-methodology.md](./document-generation-methodology.md)
+2. 任务意图、资产层级或缺失输入不清时，先看 [intake-and-intent-classification.md](./intake-and-intent-classification.md)
+3. 新建或升级时，先判断走模型型概念文档还是纯概念文档路径
+4. 需要更深背景时，再用两份 playbook 补建模或补边界纪律
+5. 再按 [concept-document-template.md](./concept-document-template.md) 组织输出
+6. 最后用 [concept-document-quality-gate.md](./concept-document-quality-gate.md) 做验收
 
 ## 2. 固定入口一：新建文档
 
@@ -178,7 +184,7 @@ open_questions:
 
 ## 8. 推荐使用习惯
 
-以后建议把触发稳定分成四类：
+以后建议把正式概念文档触发稳定分成四类：
 
 - 新建文档：`为概念 X 新建一篇知识库文档`
 - 升级旧文档：`按统一模板升级现有文档 Y`
@@ -187,7 +193,34 @@ open_questions:
 
 这样“生成”“修订”“验收”“仓库集成”就不会再混在一起。
 
-## 9. 一个新建示例：`memory order`
+如果请求超出这四类，例如方法论维护、BMad skill/workflow 维护、规划产物、废弃归档或批量治理，先回到 `docs/methodology/intake-and-intent-classification.md` 判定任务类型和停止条件。
+
+## 9. 版本治理记录
+
+Story 1.2 将本 fixed prompt 从 `concept_generation_prompt_v3` 提升为 `concept_generation_prompt_v4`。最小版本变更记录如下：
+
+```yaml
+version_change_record:
+  changed_asset: docs/methodology/fixed-concept-generation-prompt.md
+  old_value: concept_generation_prompt_v3
+  new_value: concept_generation_prompt_v4
+  change_type: prompt
+  reason: Story 1.2 保留四个高频正式概念文档入口，但新增 intake routing、资产层级不清时的读取顺序，以及超出四类任务时回到 intake asset 的停止/路由语义
+  affected_docs_or_assets:
+    - docs/methodology/fixed-concept-generation-prompt.md
+    - docs/methodology/intake-and-intent-classification.md
+    - docs/methodology/document-generation-methodology.md
+  expected_generation_impact: 使用固定 prompt 前，只有请求已经明确属于正式概念文档工作时才直接选择四段入口；任务意图、资产层级或缺失输入不清时先读 intake asset
+  expected_review_impact: 审查 fixed prompt 使用时需确认任务是否仍在四个高频概念文档入口内；超出范围的请求不应由本文直接承接
+  migration_plan: targeted_review
+  index_navigation_impact: none
+  lifecycle_quality_status_impact: none
+  approved_deviations: []
+  unresolved_risks:
+    - "Epic 2 尚未定义更细的 prompt asset schema；当前继续使用 prompt_version 表达 fixed prompt 行为版本"
+```
+
+## 10. 一个新建示例：`memory order`
 
 ```text
 为概念 memory order 新建一篇知识库文档。

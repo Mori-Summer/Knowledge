@@ -3,8 +3,9 @@ doc_id: methodology-document-generation-methodology
 title: 统一概念文档规范：新建、升级、审查与仓库集成
 concept: unified_concept_document_spec
 topic: methodology
+depth_mode: standard
 created_at: '2026-04-01T20:02:19+08:00'
-updated_at: '2026-04-08T16:09:09+08:00'
+updated_at: '2026-05-27T10:29:56+08:00'
 source_basis:
   - methodology_repository_practice
   - methodology_operator_guide
@@ -15,10 +16,17 @@ source_basis:
   - fixed_concept_generation_prompt
   - consolidation_review_2026_04_01
   - pure_concept_doc_split_review_2026_04_08
-time_context: unified_spec_updated_2026_04_08
+  - docs/methodology/concept-document-quality-gate.md
+  - docs/methodology/concept-document-contract.md
+  - docs/methodology/intake-and-intent-classification.md
+  - docs/methodology/concept-document-example-catalog.md
+  - docs/methodology/source-discipline-and-real-world-anchor-policy.md
+  - docs/governance/lifecycle-states.md
+  - docs/governance/prompt-template-quality-version-governance.md
+time_context: phase_4_epic_1_source_discipline_2026_05_25
 applicability: concept_doc_creation_upgrade_review_and_repository_integration
 prompt_version: concept_generation_prompt_v3
-template_version: unified_spec_v1
+template_version: unified_spec_v2
 quality_status: maintained_asset
 related_docs:
   - docs/methodology/methodology-operator-guide.md
@@ -26,6 +34,10 @@ related_docs:
   - docs/methodology/cognitive-modeling-playbook.md
   - docs/methodology/concept-document-template.md
   - docs/methodology/concept-document-quality-gate.md
+  - docs/methodology/concept-document-contract.md
+  - docs/methodology/intake-and-intent-classification.md
+  - docs/methodology/concept-document-example-catalog.md
+  - docs/methodology/source-discipline-and-real-world-anchor-policy.md
   - docs/methodology/fixed-concept-generation-prompt.md
 open_questions:
   - 是否需要把本规范再压成 machine-readable checklist 与 prompt snippet 两个衍生件？
@@ -42,6 +54,10 @@ open_questions:
 - 需要更深入的建模纪律时，看 `cognitive-modeling-playbook.md`
 - 需要看完整模板骨架时，看 `concept-document-template.md`
 - 需要看完整评分细则时，看 `concept-document-quality-gate.md`
+- 需要确认候选稿的输入、输出、必需信息位点和出界边界时，看 `concept-document-contract.md`
+- 需要先判断任务类型、资产层级、文档路径、深度、缺失输入和 `_bmad-output/` 边界时，看 `intake-and-intent-classification.md`
+- 需要用合格/不合格样例校准 reviewer 证据判断时，看 `concept-document-example-catalog.md`
+- 需要判断来源类型、当前实践、历史/废弃路径、不可验证声明和真实世界锚点是否合格时，看 `source-discipline-and-real-world-anchor-policy.md`
 - 需要复制固定触发词时，看 `fixed-concept-generation-prompt.md`
 - 需要看旧版编排说明时，看 `methodology-operator-guide.md`
 
@@ -119,7 +135,7 @@ open_questions:
 
 ## 3. 先判断你在做什么
 
-开始前，先把任务归到四类之一：
+开始前，先判断请求是否属于正式概念文档工作。完整的 Knowledge 任务意图分类由 `docs/methodology/intake-and-intent-classification.md` 负责；如果请求已经明确属于正式概念文档工作，再把它归到四类之一：
 
 - `新建`：仓库里还没有对应正式文档
 - `升级`：仓库里已有文档，但结构、模型、时效或证据不足
@@ -390,51 +406,72 @@ flowchart TD
 
 ## 9. 质量门禁的统一基线
 
+完整门禁以 `docs/methodology/concept-document-quality-gate.md` 为准。
+本节只保留主规范中的执行摘要，避免主流程和完整门禁互相矛盾。
+
+正式审查必须先输出前置分类，再执行 Hard Fail，再评分，最后给出审查结论和允许状态。前置分类至少包括：
+
+- 任务类型：新建、升级、审查、仅更新索引、迁移/废弃或规范维护
+- 资产层级：普通概念文档、方法论资产、治理资产、模板、索引、runbook、workflow output 或报告
+- 文档路径类型：模型型概念文档、纯概念文档或不适用
+- 展开密度：`standard`、`deep` 或不适用
+
+缺少前置分类时，审查结论无效。
+
 ### 9.1 Hard Fail
 
-命中任意一条，就不能视为正式合格稿：
+命中任意一条，就不能视为正式合格稿，也不得宣称 ready、accepted、validated、`upgraded_v1`、`maintained_asset` 或等价通过状态。
 
-- 没有放到正确的 `docs/{topic}/` 目录
-- 文件名不是 `kebab-case`
-- frontmatter 缺失必需字段
-- 新增正式文档后没有更新 `docs/index.md`
-- 缺少对应文档类型要求的核心章节或核心信息位点
-- 主要内容仍然只是定义复述，没有形成内部模型，也没有形成概念辨识力
-- 模型型文档没有对象边界、核心机制或关键 tradeoff
-- 纯概念文档没有概念边界、例子 / 反例、常见混淆或下游使用位置
-- 为了套模板而硬造伪机制、伪 tradeoff 或伪工业锚点
-- 工业锚点泛泛而谈，无法定位
-- 时间敏感结论没有日期或来源纪律
-- frontmatter 与正文明显不一致
+Hard Fail 至少覆盖：
+
+- 仓库集成：canonical 路径、`kebab-case` 文件名、稳定 `doc_id`、索引影响、changed-file links、`related_docs` 与正文链接
+- 必需 frontmatter：必填字段、数组字段、`depth_mode`、source/time/version/status 与正文一致性
+- 文档类型结构：模型型文档的问题定义、对象边界、核心结构、机制链、tradeoff/失败模式、验证入口和迁移入口；纯概念文档的命名/分类问题、什么算/不算、相邻概念、例子/反例/误读、验证入口和迁移入口
+- 边界清晰度：对象边界、相邻概念、误等价、适用条件、失效条件和可判别性
+- 来源依据与真实世界锚点：真实可定位对象、当前实践、历史路径、来源限制和事实/推断区分
+- 时间语境与一致性：`updated_at`、`time_context`、`source_basis`、正文、索引、链接和审查结论互相一致
+
+每个 Hard Fail 输出都必须包含失败条件、证据位置、为什么阻塞和修复指导。
 
 ### 9.2 六项评分
 
-没有 Hard Fail 的前提下，再按 `0-2` 分评分：
+没有 Hard Fail 的前提下，再按 `0-2` 分评分。分数不能抵消 Hard Fail。对治理、方法论、模板、索引、runbook 或 workflow output 等非概念资产，跳过概念文档六项评分，改用角色、权威、范围、frontmatter、来源/时间语境、索引/链接、版本记录和 workflow contract fit 的等价治理检查。
 
 - 问题定义与边界
 - 结构与因果 / 判别框架
 - Tradeoff / 失败模式 / 误读纠偏
-- 工业锚点与当前实践
-- 验证与迁移
-- 元数据与仓库纪律
+- 真实世界锚点 / 当前实践
+- 验证 / 迁移
+- 元数据 / 仓库纪律
 
 评分解释：
 
-- `10-12` 分且无 Hard Fail：可标 `upgraded_v1`
-- `7-9` 分且无 Hard Fail：可保留，但不建议标 `upgraded_v1`
+- `10-12` 分且无 Hard Fail：可通过当前质量门禁，并可考虑 `upgraded_v1` 或相应通过结论
+- `7-9` 分且无 Hard Fail：可保留或进入受控修订，但不建议标 `upgraded_v1`、`validated` 或强通过状态
 - `0-6` 分或有 Hard Fail：应退回补强
+
+`standard` 要求稳定理解和最小复用；`deep` 要求更强的信息密度、判断支撑、来源纪律、失败模式和迁移能力，不是只要求篇幅更长。
+
+### 9.3 质量状态与审查结论
+
+`quality_status`、生命周期状态和 BMad story 状态必须分开理解。
+
+当前兼容的 `quality_status` 值包括 `draft`、`reviewed`、`validated`、`maintained_asset`、`upgraded_v1`、`deprecated` 和 `archived`。其中 `upgraded_v1` 是既有概念文档质量信号，不是完整生命周期状态；`maintained_asset` 适用于 active methodology/governance/template/index/support asset，前提是角色、权威、版本、来源/时间语境、链接和维护触发点仍当前。
+
+审查结论应单独表达，例如 `blocked_by_hard_fail`、`needs_revision`、`accepted_for_current_use`、`validated_candidate` 或 `hold_for_maxwell_confirmation`。本规范不授权批量改写既有文档的 `quality_status`。
 
 ## 10. 审查输出必须长成什么样
 
 每次正式审查，输出结构保持稳定：
 
-- `Hard Fail`：是否命中，命中哪几条
+- `前置分类`：任务类型、资产层级、模型型/纯概念/不适用路径、`standard`/`deep`/不适用及依据
+- `Hard Fail`：是否命中；每项必须包含失败条件、证据位置、为什么阻塞和修复指导
 - `文档类型判定`：模型型概念文档还是纯概念文档，以及依据
 - `复杂度判定`：按 `standard` 还是 `deep` 审视，以及依据
-- `六项评分`：逐项 `0-2`
+- `六项评分`：逐项 `0-2`；非概念资产写明不适用，并输出等价治理检查
 - `必改项`：不改就不能过门禁
 - `可改进项`：不影响过门禁，但能显著提高复用性
-- `最终结论`：是否可视为正式接受资产，是否可标 `upgraded_v1`
+- `最终结论`：审查决策、是否允许通过状态、是否允许改 `quality_status`、index/link/version/lifecycle 影响、approved deviations 与 unresolved risks
 
 不要只给“整体不错”或“建议更完整”这类软评价。
 
@@ -450,35 +487,61 @@ flowchart TD
 - 新增正式文档后是否更新 `docs/index.md`
 - 若路径、标题或 topic 改变，是否同步更新索引
 
-## 12. 固定触发词
+## 12. 版本治理记录
+
+Story 1.2 将本主规范从 `unified_spec_v1` 提升为 `unified_spec_v2`。最小版本变更记录如下：
+
+```yaml
+version_change_record:
+  changed_asset: docs/methodology/document-generation-methodology.md
+  old_value: unified_spec_v1
+  new_value: unified_spec_v2
+  change_type: methodology
+  reason: Story 1.2 将正式概念文档入口接到 intake and intent classification，并同步审查前置分类与等价治理检查摘要
+  affected_docs_or_assets:
+    - docs/methodology/document-generation-methodology.md
+    - docs/methodology/intake-and-intent-classification.md
+    - docs/methodology/concept-document-quality-gate.md
+    - docs/methodology/fixed-concept-generation-prompt.md
+  expected_generation_impact: 正式概念文档新建、升级、审查或索引动作前，先确认请求属于正式概念文档工作；任务意图、资产层级或缺失输入不清时转入 intake asset
+  expected_review_impact: 正式审查必须输出前置分类；非概念资产使用等价治理检查而不是概念文档六项评分
+  migration_plan: targeted_review
+  index_navigation_impact: none
+  lifecycle_quality_status_impact: none
+  approved_deviations: []
+  unresolved_risks:
+    - "Epic 2 尚未定义独立 methodology_version/frontmatter schema；当前用 template_version 表达主规范规则集"
+```
+
+## 13. 固定触发词
 
 如果你只是想直接执行任务，默认用这四段入口：
 
-### 12.1 新建文档
+### 13.1 新建文档
 
 ```text
 为概念 {concept} 新建一篇知识库文档。按 docs/methodology/document-generation-methodology.md 执行：先判断它应走模型型概念文档还是纯概念文档路径，再判断 standard 或 deep；如果是模型型，建立可复用内部模型；如果是纯概念，建立稳定的概念辨识资产，不要硬造机制链。写入合适的 docs/{topic}/ 目录，补齐 frontmatter，并在完成后更新 docs/index.md。
 ```
 
-### 12.2 升级旧文档
+### 13.2 升级旧文档
 
 ```text
 按 docs/methodology/document-generation-methodology.md 升级现有文档 {path}。保留原有高价值内容，先找 Hard Fail 和低分项，再判断它应走模型型概念文档还是纯概念文档路径；补对应结构、自测题、迁移入口和仓库集成，并删除那些只是为了套模板而硬写出来的伪机制、伪 tradeoff 或伪锚点。
 ```
 
-### 12.3 审查 / 验收
+### 13.3 审查 / 验收
 
 ```text
-按 docs/methodology/document-generation-methodology.md 审查文档 {path}。先判断它属于模型型概念文档还是纯概念文档，再判断该主题按 standard 还是 deep 审视，然后输出 Hard Fail、六项评分、必改项、可改进项和是否可标 upgraded_v1 的结论。
+按 docs/methodology/document-generation-methodology.md 审查文档 {path}。先输出前置分类：任务类型、资产层级、模型型概念文档/纯概念文档/不适用、standard/deep/不适用。再按 docs/methodology/concept-document-quality-gate.md 输出 Hard Fail 证据与修复指导、六项评分或等价治理检查、必改项、可改进项、最终审查决策、允许的 quality_status、index/link/version/lifecycle 影响和未解决风险。任意 Hard Fail 存在时，不得宣称 ready、accepted、validated、upgraded_v1 或 maintained_asset。
 ```
 
-### 12.4 仅更新索引
+### 13.4 仅更新索引
 
 ```text
 检查 docs/index.md 是否已经正确收录 {path}。如果没有，按现有 topic 分组补入，并保持标题、路径和主题一致。
 ```
 
-## 13. 参考件如何使用
+## 14. 参考件如何使用
 
 如果主规范已经能满足任务，不必强制回读所有参考文件。  
 只有在下面这些场景里，再进入参考件：
@@ -487,6 +550,10 @@ flowchart TD
 - 你需要更强的建模约束时，读 `cognitive-modeling-playbook.md`
 - 你要看完整章节骨架或分型规则时，读 `concept-document-template.md`
 - 你要看完整 Hard Fail 与评分细则时，读 `concept-document-quality-gate.md`
+- 你要确认候选稿生成的输入、输出、必需信息位点或出界输出时，读 `concept-document-contract.md`
+- 你要判断任务类型、资产层级、缺失输入、`_bmad-output/` 边界或 batch routing 时，读 `intake-and-intent-classification.md`
+- 你要用 passing/failing examples 校准 Hard Fail、六项评分证据和 reviewer action 倾向时，读 `concept-document-example-catalog.md`
+- 你要细查 current-practice claim、historical/deprecated practice、source labels、unverifiable claims 或 real-world anchor adequacy 时，读 `source-discipline-and-real-world-anchor-policy.md`
 - 你要复制固定入口原文时，读 `fixed-concept-generation-prompt.md`
 
 默认路径应该是：
