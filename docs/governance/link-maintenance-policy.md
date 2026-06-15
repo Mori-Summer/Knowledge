@@ -5,7 +5,7 @@ concept: link_maintenance_policy
 topic: governance
 depth_mode: standard
 created_at: '2026-05-29T14:00:16+08:00'
-updated_at: '2026-06-15T16:56:49+08:00'
+updated_at: '2026-06-15T17:21:39+08:00'
 source_basis:
   - _bmad-output/project-context.md
   - _bmad-output/planning-artifacts/prd.md
@@ -33,11 +33,12 @@ source_basis:
   - docs/methodology/source-discipline-and-real-world-anchor-policy.md
   - docs/methodology/intake-and-intent-classification.md
   - _bmad-output/implementation-artifacts/deferred-work.md
-time_context: stabilization_deferred_triage_2026_06_15
+  - _bmad-output/implementation-artifacts/stabilization-status-2026-06-15.md
+time_context: stabilization_key_draft_review_2026_06_15
 applicability: formal_docs_cross_document_link_maintenance_and_inbound_outbound_review_governance
 prompt_version: not_applicable
 template_version: governance_asset_v1
-quality_status: draft
+quality_status: reviewed
 related_docs:
   - docs/index.md
   - docs/governance/related-docs-taxonomy.md
@@ -102,7 +103,7 @@ open_questions:
 
 本文的 owner entry point 是 [docs/index.md](../index.md) 的 `governance` 分组。Navigation treatment 是 `listed_in_docs_index`，index treatment 是在 `docs/index.md` 的 `## governance` 下列出 `docs/governance/link-maintenance-policy.md`。这些归属信息写在正文中，不是新的全局 frontmatter 字段。
 
-当前 `quality_status: draft` 是保守治理状态。原因是本文是 Epic 5 首版 link maintenance policy；reusable model entry points policy、existing-doc reuse procedure 和 network boundary / decay prevention policy 已落地，Epic 6 后续仍会细化 batch link governance。
+当前 `quality_status: reviewed` 表示本文已完成 Epic 6 前置稳定化审查：changed-file link checks、inbound/outbound review scope、one-way reason、Link Maintenance Record、相邻治理依赖、链接/索引边界和非软件边界已检查。未解决项保留在 `open_questions` 和维护触发点中；本文不声明 `validated`，因为 Epic 6 batch governance runbook、batch review record 和 batch completion report 仍未落地。
 
 本文自身的 Index Impact Decision Record 是：
 
@@ -363,7 +364,7 @@ This policy relies on adjacent governance assets instead of replacing them:
 | [review record template](../templates/review-record-template.md), [completion report template](../templates/completion-report-template.md), [document decision policy](./document-decision-policy.md) | review/completion/decision evidence. | This policy does not create actual review or completion reports. |
 | [revision/regeneration continuity](./revision-regeneration-continuity-policy.md), [sidecar boundary](./sidecar-boundary-policy.md), [legacy migration guide](./legacy-migration-guide.md) | reference validity, supporting asset boundaries, legacy/successor and remaining-gap boundaries. | This policy records link impact without performing migration, sidecar extraction or legacy cleanup. |
 
-Future story boundaries:
+Adjacent and future boundaries:
 
 - [reusable model entry points policy](./reusable-model-entry-points.md) owns reusable model entry point classification and callable model anchors.
 - [existing-doc reuse procedure](./existing-doc-reuse-procedure.md) owns existing-doc scan procedure and exact/adjacent/prereq/contrast/no-asset results.

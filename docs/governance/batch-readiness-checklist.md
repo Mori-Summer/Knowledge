@@ -5,7 +5,7 @@ concept: batch_readiness_checklist
 topic: governance
 depth_mode: standard
 created_at: '2026-05-25T09:34:08+08:00'
-updated_at: '2026-05-28T15:29:36+08:00'
+updated_at: '2026-06-15T17:21:39+08:00'
 source_basis:
   - _bmad-output/project-context.md
   - _bmad-output/planning-artifacts/prd.md
@@ -28,11 +28,19 @@ source_basis:
   - docs/methodology/document-generation-methodology.md
   - docs/index.md
   - docs/governance/revision-regeneration-continuity-policy.md
-time_context: phase_4_epic_4_revision_regeneration_continuity_policy_2026_05_28
+  - docs/governance/frontmatter-schema.md
+  - docs/governance/index-synchronization-rules.md
+  - docs/governance/related-docs-taxonomy.md
+  - docs/governance/link-maintenance-policy.md
+  - docs/governance/reusable-model-entry-points.md
+  - docs/governance/existing-doc-reuse-procedure.md
+  - docs/governance/network-boundary-and-decay-prevention.md
+  - _bmad-output/implementation-artifacts/stabilization-status-2026-06-15.md
+time_context: stabilization_key_draft_review_2026_06_15
 applicability: batch_governance_readiness_scope_conflict_and_stop_criteria
 prompt_version: not_applicable
 template_version: governance_asset_v1
-quality_status: draft
+quality_status: reviewed
 related_docs:
   - docs/governance/agent-behavior-constraints.md
   - docs/methodology/governance-asset-boundary-policy.md
@@ -43,8 +51,15 @@ related_docs:
   - docs/methodology/document-generation-methodology.md
   - docs/index.md
   - docs/governance/revision-regeneration-continuity-policy.md
+  - docs/governance/frontmatter-schema.md
+  - docs/governance/index-synchronization-rules.md
+  - docs/governance/related-docs-taxonomy.md
+  - docs/governance/link-maintenance-policy.md
+  - docs/governance/reusable-model-entry-points.md
+  - docs/governance/existing-doc-reuse-procedure.md
+  - docs/governance/network-boundary-and-decay-prevention.md
 open_questions:
-  - Epic 2 Story 2.4 定义详细 index synchronization rules 后，是否需要细化批量索引更新的 sample/review 规则？
+  - index synchronization rules 已建立后，是否需要细化批量索引更新的 sample/review 规则？
   - 如果 completion-report template 后续调整 Batch Readiness Record summary 字段，是否需要同步本文的 readiness record 汇总方式？
   - Epic 6 建立 batch governance runbook 后，是否需要把本文中的 readiness decision 与 runbook 执行步骤拆分得更严格？
 ---
@@ -65,13 +80,13 @@ open_questions:
 - `docs/methodology/concept-document-quality-gate.md`
 - `docs/governance/governance-asset-navigation-policy.md`
 
-本资产不替代主方法论、质量门禁、生命周期政策、版本治理、导航政策、未来 Epic 2 index synchronization rules，也不替代未来 Epic 6 batch runbook、batch review template 或 batch completion template。它只规定批量动作写入前的 readiness 判定基线。
+本资产不替代主方法论、质量门禁、生命周期政策、版本治理、导航政策、`docs/governance/index-synchronization-rules.md`，也不替代未来 Epic 6 batch runbook、batch review template 或 batch completion template。它只规定批量动作写入前的 readiness 判定基线。
 
 本资产不授权实际批量生成、批量迁移、批量 normalization、批量状态重写、批量重命名、批量删除、批量废弃、批量归档、index-wide restructuring 或 executable validation tooling。完成 readiness 只表示该次命名批量动作具备进入下一步确认或执行的依据；它不是后续无关批量工作的长期授权。
 
 本文自身的 owner entry point 是 `docs/index.md` 的 `governance` 分组；navigation treatment 是 `listed_in_docs_index`。本文的权威范围限于 batch readiness、scope judgment、conflict exposure、stop criteria、downstream impact analysis 和 recovery evidence，不覆盖具体批量执行步骤。
 
-当前 `quality_status: draft` 是保守治理状态。原因是本文是新的 Foundation baseline；Epic 2 和 Epic 3 已细化 schema、review record、document decision、rework loop 和 completion report 形态，Epic 6 后续仍会细化 batch runbook 与 batch records。
+当前 `quality_status: reviewed` 表示本文已完成 Epic 6 前置稳定化审查：batch readiness 范围判定、冲突暴露、停止条件、恢复策略、owner decision、相关治理依赖、链接/索引边界和非软件边界已检查。未解决项保留在 `open_questions` 和维护触发点中；本文不声明 `validated`，因为 Epic 6 batch governance runbook、batch review record 和 batch completion report 仍未落地。
 
 ## 什么算批量治理
 
@@ -314,11 +329,11 @@ This policy is a Foundation baseline. It must be revisited when later governance
 
 Known maintenance triggers:
 
-- Epic 2 frontmatter schema、`doc_id`、topic/path/naming、candidate promotion 和 index synchronization rules 落地后，复核 readiness record 是否需要 schema 化或更细的 index sample/review rules。
-- Epic 3 review record、document decision policy、rework loop 或 completion report template 发生实质字段或 vocabulary 变更时，复核 readiness record、owner decision 和 conflict evidence 是否应同步。
+- Frontmatter schema、`doc_id`、topic/path/naming、candidate promotion 和 index synchronization rules 更新后，复核 readiness record 是否需要 schema 化或更细的 index sample/review rules。
+- Review record、document decision policy、rework loop 或 completion report template 发生实质字段或 vocabulary 变更时，复核 readiness record、owner decision 和 conflict evidence 是否应同步。
 - Story 4.1 已建立 revision/regeneration continuity policy；后续若该政策更新，复核 recovery approach、old version preservation、batch regeneration 和 Continuity Record stop conditions。
 - `docs/governance/sidecar-boundary-policy.md` 或 `docs/governance/legacy-migration-guide.md` 更新后，复核 sidecar/legacy migration stop conditions。
-- Story 5.1 related docs taxonomy、Story 5.2 link maintenance 和 Story 5.3 reusable model entry points 落地或更新后，复核 related docs、入链/出链、successor 和 navigation evidence。
+- Related docs taxonomy、link maintenance、reusable model entry points、existing-doc reuse procedure 或 network boundary / decay prevention policy 更新后，复核 related docs、入链/出链、successor 和 navigation evidence。
 - Epic 6 batch governance runbook、batch change review record 和 batch completion report template 落地后，复核本文中的 readiness decision 与具体 batch execution steps 的边界。
 
 This policy should not be maintained by silently expanding scope during unrelated batch work. If future work needs a stronger record format, automation, schema field or runbook step, it must be authorized by the relevant story or Maxwell confirmation.

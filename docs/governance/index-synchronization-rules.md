@@ -5,7 +5,7 @@ concept: index_synchronization_rules
 topic: governance
 depth_mode: standard
 created_at: '2026-05-26T11:48:58+08:00'
-updated_at: '2026-06-15T16:56:49+08:00'
+updated_at: '2026-06-15T17:21:39+08:00'
 source_basis:
   - _bmad-output/project-context.md
   - _bmad-output/planning-artifacts/prd.md
@@ -16,10 +16,20 @@ source_basis:
   - docs/governance/frontmatter-schema.md
   - docs/governance/topic-path-naming-policy.md
   - docs/governance/candidate-promotion-checklist.md
+  - docs/governance/rename-migration-policy.md
   - docs/governance/duplicate-and-coexistence-policy.md
   - docs/governance/governance-asset-navigation-policy.md
   - docs/governance/lifecycle-states.md
   - docs/governance/batch-readiness-checklist.md
+  - docs/governance/revision-regeneration-continuity-policy.md
+  - docs/governance/related-docs-taxonomy.md
+  - docs/governance/link-maintenance-policy.md
+  - docs/governance/reusable-model-entry-points.md
+  - docs/governance/existing-doc-reuse-procedure.md
+  - docs/governance/network-boundary-and-decay-prevention.md
+  - docs/templates/review-record-template.md
+  - docs/templates/completion-report-template.md
+  - docs/governance/document-decision-policy.md
   - docs/governance/agent-behavior-constraints.md
   - docs/methodology/governance-asset-boundary-policy.md
   - docs/methodology/document-generation-methodology.md
@@ -27,20 +37,31 @@ source_basis:
   - docs/methodology/concept-document-quality-gate.md
   - docs/methodology/concept-document-contract.md
   - _bmad-output/implementation-artifacts/deferred-work.md
-time_context: stabilization_deferred_triage_2026_06_15
+  - _bmad-output/implementation-artifacts/stabilization-status-2026-06-15.md
+time_context: stabilization_key_draft_review_2026_06_15
 applicability: docs_index_synchronization_and_navigation_governance
 prompt_version: not_applicable
 template_version: governance_asset_v1
-quality_status: draft
+quality_status: reviewed
 related_docs:
   - docs/index.md
   - docs/governance/frontmatter-schema.md
   - docs/governance/topic-path-naming-policy.md
   - docs/governance/candidate-promotion-checklist.md
+  - docs/governance/rename-migration-policy.md
   - docs/governance/duplicate-and-coexistence-policy.md
   - docs/governance/governance-asset-navigation-policy.md
   - docs/governance/lifecycle-states.md
   - docs/governance/batch-readiness-checklist.md
+  - docs/governance/revision-regeneration-continuity-policy.md
+  - docs/governance/related-docs-taxonomy.md
+  - docs/governance/link-maintenance-policy.md
+  - docs/governance/reusable-model-entry-points.md
+  - docs/governance/existing-doc-reuse-procedure.md
+  - docs/governance/network-boundary-and-decay-prevention.md
+  - docs/templates/review-record-template.md
+  - docs/templates/completion-report-template.md
+  - docs/governance/document-decision-policy.md
   - docs/governance/agent-behavior-constraints.md
   - docs/methodology/governance-asset-boundary-policy.md
   - docs/methodology/document-generation-methodology.md
@@ -48,7 +69,7 @@ related_docs:
   - docs/methodology/concept-document-quality-gate.md
   - docs/methodology/concept-document-contract.md
 open_questions:
-  - Story 2.5 建立 rename、migration、split、merge、deprecation、successor 和 link-impact policy 后，是否需要把本文中的 rename/move/deprecation 处理改为更细的迁移记录入口？
+  - rename、migration、split、merge、deprecation、successor 和 link-impact policy 已建立后，是否需要把本文中的 rename/move/deprecation 处理改为更细的迁移记录入口？
   - Story 2.6 已建立 duplicate/coexistence policy 后，是否还需要为 secondary reference 和 duplicate-entry exception 增加更细决策表？
   - 如果 completion-report template 后续调整 index impact summary 字段，是否需要同步 Index Impact Decision Record 的汇总方式？
   - Story 5.1 related docs taxonomy 与 Story 5.2 link maintenance policy 已建立；后续是否需要把 owner entry、supporting link、related doc、successor link 和 index entry 的维护关系拆分得更细？
@@ -81,9 +102,9 @@ open_questions:
 
 本文自身的 owner entry point 是 `docs/index.md` 的 `governance` 分组。Navigation treatment 是 `listed_in_docs_index`，index treatment 是在 `docs/index.md` 的 `## governance` 下列出 `docs/governance/index-synchronization-rules.md`。这些归属信息写在正文中，不是新的全局 frontmatter 字段。
 
-当前 `quality_status: draft` 是保守治理状态。原因是本文是 Epic 2 首版 index synchronization policy；Story 2.5 已细化 rename/migration，Story 2.6 已细化 duplicate/coexistence，Story 5.1 已细化 related docs taxonomy，Story 5.2 已细化 link maintenance，Story 5.3 已细化 reusable model entry points，Story 5.4 已细化 existing-doc reuse procedure，Story 5.5 已细化 network boundary / decay prevention，后续 Epic 3 和 Epic 6 仍会细化 review/completion records 和 batch runbooks。
+当前 `quality_status: reviewed` 表示本文已完成 Epic 6 前置稳定化审查：index synchronization 触发器、索引条目格式、Index Impact Decision Record、相邻治理依赖、链接/索引边界和非软件边界已检查。未解决项保留在 `open_questions` 和维护触发点中；本文不声明 `validated`，因为 Epic 6 batch governance runbook、batch review record 和 batch completion report 仍未落地。
 
-本文只创建 index synchronization governance asset，并为该资产同步 `docs/index.md` 入口。本文不创建 rename/migration policy、duplicate/coexistence policy、link-maintenance policy、Epic 3 review/decision/completion templates、Epic 6 batch assets，不执行 index-wide restructuring、批量排序、批量路径修复、生成式索引系统或 executable index tooling。
+本文只创建 index synchronization governance asset，并为该资产同步 `docs/index.md` 入口。本文不替代 rename/migration policy、duplicate/coexistence policy、link-maintenance policy、review/decision/completion templates 或 Epic 6 batch assets，不执行 index-wide restructuring、批量排序、批量路径修复、生成式索引系统或 executable index tooling。
 
 ## `docs/index.md` 的职责边界
 
@@ -283,7 +304,7 @@ Index-only update 不得做：
 - target path/title/topic/asset class 不清。
 - target link 不存在。
 - index update 会变成 batch sweep、generated rewrite、section reorganization、bulk sorting、bulk path repair 或 multi-topic cleanup。
-- 需要创建 Story 2.5、Story 2.6、Epic 3、Epic 5 或 Epic 6 的未来资产。
+- 需要创建、重写或提前执行相邻治理资产、review/completion templates、Epic 5 reuse/network governance 或 Epic 6 batch assets。
 
 ## 验证清单
 
@@ -319,10 +340,10 @@ Index-only update 不得做：
 
 后续归属边界：
 
-- Story 2.5 负责 rename、migration、split、merge、deprecation、successor、old-content handling 和 link-impact policy。
-- Story 2.6 负责 duplicate concept、same-topic coexistence 和 secondary entry exception 的完整决策模型；本文只调用其 outcome，不复制该模型。
-- Epic 3 负责 review record、document decision、rework loop 和 completion report templates。
-- Epic 5 负责 related docs taxonomy、link maintenance、reusable model entry points 和后续 reuse/network governance。
+- `docs/governance/rename-migration-policy.md` 负责 rename、migration、split、merge、deprecation、successor、old-content handling 和 link-impact policy。
+- `docs/governance/duplicate-and-coexistence-policy.md` 负责 duplicate concept、same-topic coexistence 和 secondary entry exception 的完整决策模型；本文只调用其 outcome，不复制该模型。
+- Review record template、document decision policy、rework loop 和 completion report template 负责 review/decision/completion evidence。
+- Epic 5 related docs taxonomy、link maintenance、reusable model entry points、existing-doc reuse procedure 和 network boundary / decay prevention governance 负责相邻关系、链接维护、复用入口和网络退化路由。
 - Epic 6 负责 batch governance runbook、batch review record 和 batch completion report。
 
 本文可以引用这些相邻 owners，但不创建对应资产、不替代其完整范围，也不把未来策略提前写成当前可执行迁移规则。
@@ -331,7 +352,7 @@ Index-only update 不得做：
 
 以下变化要求复核本文：
 
-- Story 2.5 建立 rename/migration/split/merge/deprecation/successor policy。
+- Rename/migration/split/merge/deprecation/successor policy 更新。
 - Story 2.6 已建立 duplicate/coexistence policy；后续若该政策更新，复核本文的 secondary reference 和 duplicate-entry exception 边界。
 - Epic 3 review record、document decision policy、rework loop 或 completion report template 发生实质字段或 vocabulary 变更。
 - Epic 5 related docs taxonomy、link maintenance policy、reusable model entry points 或后续 reuse/network governance 更新。

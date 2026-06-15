@@ -5,7 +5,7 @@ concept: frontmatter_schema_and_doc_id_identity_rules
 topic: governance
 depth_mode: standard
 created_at: '2026-05-25T18:00:40+08:00'
-updated_at: '2026-05-30T15:53:15+08:00'
+updated_at: '2026-06-15T17:21:39+08:00'
 source_basis:
   - _bmad-output/project-context.md
   - _bmad-output/planning-artifacts/architecture.md
@@ -28,11 +28,17 @@ source_basis:
   - docs/governance/batch-readiness-checklist.md
   - docs/governance/duplicate-and-coexistence-policy.md
   - docs/governance/revision-regeneration-continuity-policy.md
-time_context: phase_4_epic_4_revision_regeneration_continuity_policy_2026_05_28
+  - docs/governance/index-synchronization-rules.md
+  - docs/governance/related-docs-taxonomy.md
+  - docs/governance/link-maintenance-policy.md
+  - docs/governance/existing-doc-reuse-procedure.md
+  - docs/governance/network-boundary-and-decay-prevention.md
+  - _bmad-output/implementation-artifacts/stabilization-status-2026-06-15.md
+time_context: stabilization_key_draft_review_2026_06_15
 applicability: formal_docs_frontmatter_schema_and_doc_id_identity_governance
 prompt_version: not_applicable
 template_version: governance_asset_v1
-quality_status: draft
+quality_status: reviewed
 related_docs:
   - docs/index.md
   - docs/methodology/document-generation-methodology.md
@@ -51,10 +57,15 @@ related_docs:
   - docs/governance/batch-readiness-checklist.md
   - docs/governance/duplicate-and-coexistence-policy.md
   - docs/governance/revision-regeneration-continuity-policy.md
+  - docs/governance/index-synchronization-rules.md
+  - docs/governance/related-docs-taxonomy.md
+  - docs/governance/link-maintenance-policy.md
+  - docs/governance/existing-doc-reuse-procedure.md
+  - docs/governance/network-boundary-and-decay-prevention.md
 open_questions:
-  - Epic 2 后续 story 是否会授权新增 lifecycle_state、schema_version、quality_gate_version、methodology_version 或 migration_status 等独立 frontmatter 字段？
-  - Story 2.5 定义 rename/migration/split/merge/successor 规则后，是否需要把 doc_id 例外记录抽成固定决策模板？
-  - Story 5.1 related docs taxonomy 与 Story 5.2 link maintenance policy 已建立；后续是否需要进一步细分 related_docs、source references、owner entry、successor link 与 supporting link 的维护记录？
+  - 后续是否需要授权新增 lifecycle_state、schema_version、quality_gate_version、methodology_version 或 migration_status 等独立 frontmatter 字段？
+  - rename/migration/split/merge/successor 规则已建立后，是否需要把 doc_id 例外记录抽成固定决策模板？
+  - related docs taxonomy 与 link maintenance policy 已建立；后续是否需要进一步细分 related_docs、source references、owner entry、successor link 与 supporting link 的维护记录？
 ---
 
 # Frontmatter schema 与 doc_id 身份规则：正式 docs 资产的元数据基线
@@ -74,11 +85,11 @@ open_questions:
 
 本文补充 `docs/methodology/document-generation-methodology.md`、`docs/methodology/concept-document-contract.md`、`docs/methodology/concept-document-quality-gate.md`、`docs/methodology/source-discipline-and-real-world-anchor-policy.md`、`docs/governance/lifecycle-states.md`、`docs/governance/prompt-template-quality-version-governance.md`、`docs/governance/governance-asset-navigation-policy.md` 和 `docs/governance/batch-readiness-checklist.md`。主方法论仍负责概念文档的新建、升级、审查和仓库集成流程；质量门禁仍负责 Hard Fail、评分和状态声明判断；本文只负责 schema baseline 与身份规则。
 
-本文不替代后续 Epic 2、Epic 3、Epic 4、Epic 5 或 Epic 6 的专门资产：
+本文不替代已落地的 Epic 2、Epic 3、Epic 4、Epic 5 专门资产，也不替代未来 Epic 6 的 batch governance 资产：
 
 - Story 2.2 负责 topic、文件命名与路径归属策略。
 - Story 2.3 负责候选文档晋升流程。
-- Story 2.4 负责详细 `docs/index.md` 同步规则。
+- `docs/governance/index-synchronization-rules.md` 负责详细 `docs/index.md` 同步规则。
 - Story 2.5 负责 rename、migration、split、merge、deprecation、successor 和 link-impact 决策。
 - Story 2.6 负责重复概念与同主题共存政策。
 - Epic 3 负责 review record、document decision、rework loop 和 completion report 模板。
@@ -89,6 +100,8 @@ open_questions:
 - Epic 6 负责 batch governance runbook、batch review record 和 batch completion report。
 
 本文的 owner entry point 是 `docs/index.md` 的 `governance` 分组。Navigation treatment 是 `listed_in_docs_index`，index treatment 是在 `docs/index.md` 的 `## governance` 下列出 `docs/governance/frontmatter-schema.md`。这些归属信息写在正文中，不是新的全局 frontmatter 字段。
+
+当前 `quality_status: reviewed` 表示本文已完成 Epic 6 前置稳定化审查：frontmatter baseline、`doc_id` 身份规则、owner/index entry、相关治理依赖、链接/索引边界和非软件边界已检查。未解决项保留在 `open_questions` 和维护触发点中；本文不声明 `validated`，因为 Epic 6 batch governance runbook、batch review record 和 batch completion report 仍未落地。
 
 ## Frontmatter schema baseline
 
@@ -207,10 +220,10 @@ Reviewer 检查正式资产时，至少执行以下一致性判断：
 | 来源一致性 | `source_basis` 能支撑正文中的项目规则、事实、推断或来源限制；外部 current-practice claim 有相称来源和时间语境。 |
 | 时间一致性 | `time_context` 与正文核对日期、项目阶段、历史/当前实践和 open questions 一致。 |
 | 状态一致性 | `quality_status` 与实际证据和生命周期语义一致；Hard Fail、blocking open question 或身份未决时不得声明通过状态。 |
-| 路径/索引一致性 | `topic`、路径、H1/title 和 `docs/index.md` 入口不互相误导；详细同步规则由 Story 2.4 负责。 |
+| 路径/索引一致性 | `topic`、路径、H1/title 和 `docs/index.md` 入口不互相误导；详细同步规则由 `docs/governance/index-synchronization-rules.md` 负责。 |
 | 相关文档一致性 | `related_docs` 目标存在且是正式资产；缺失、计划中或未来 story 拥有的目标必须记录为 open question。 |
 | 未解问题一致性 | `open_questions` 暴露 schema、source、lifecycle、related-doc、identity 或 promotion 风险，而不是隐藏风险。 |
-| 生命周期一致性 | 与 `docs/governance/lifecycle-states.md` 的状态语义兼容；除非 Epic 2 后续明确授权，不新增 `lifecycle_state` frontmatter 字段。 |
+| 生命周期一致性 | 与 `docs/governance/lifecycle-states.md` 的状态语义兼容；除非后续明确授权，不新增 `lifecycle_state` frontmatter 字段。 |
 | 版本一致性 | `prompt_version` 和 `template_version` 反映实际使用规则；不新增 `quality_gate_version`、`methodology_version`、`version_history` 或 `migration_status` 绕过版本治理。 |
 | 非软件边界 | Frontmatter schema 检查是文档治理工作，不要求 runtime code、package manifest、tests、lint/scoring tool、CLI、API、UI、database、deployment 或 CI。 |
 
@@ -241,10 +254,10 @@ Reviewer 检查正式资产时，至少执行以下一致性判断：
 
 以下变化要求复核本文：
 
-- Story 2.2 建立 topic、文件命名和路径归属策略。
-- Story 2.3 建立候选文档晋升流程。
-- Story 2.4 建立详细 `docs/index.md` 同步规则。
-- Story 2.5 建立 rename、migration、split、merge、deprecation、successor 和 link-impact 决策规则。
+- Topic、文件命名和路径归属策略更新。
+- 候选文档晋升流程更新。
+- `docs/index.md` 同步规则更新。
+- Rename、migration、split、merge、deprecation、successor 和 link-impact 决策规则更新。
 - Story 2.6 已建立 duplicate concept 与 same-topic coexistence policy；后续若该政策改变身份/共存边界，复核本文。
 - Epic 3 review record、document decision policy、rework loop 或 completion report template 发生实质字段或 vocabulary 变更。
 - Story 4.1 已建立 revision/regeneration continuity policy；后续若该政策更新，复核 `doc_id` identity、metadata review 和 unauthorized field 边界。
@@ -253,7 +266,7 @@ Reviewer 检查正式资产时，至少执行以下一致性判断：
 - Epic 6 建立 batch governance runbook、batch review record 或 batch completion report。
 - Maxwell 明确授权 machine-readable schema、executable validation tooling、lint/scoring automation 或批量 normalization。
 
-本文当前不执行批量 normalization，不创建 machine-readable validator，不重新定义 Story 2.2-2.6 的专门资产，不改变主方法论、模板、quality gate 或 fixed prompt 语义，也不 bump prompt/template/quality 版本。
+本文当前不执行批量 normalization，不创建 machine-readable validator，不重新定义 Story 2.2-2.6 或 Epic 5 的专门资产，不改变主方法论、模板、quality gate 或 fixed prompt 语义，也不 bump prompt/template/quality 版本。
 
 ## 参考资料
 

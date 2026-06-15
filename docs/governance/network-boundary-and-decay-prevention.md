@@ -5,7 +5,7 @@ concept: network_boundary_and_decay_prevention
 topic: governance
 depth_mode: standard
 created_at: '2026-06-15T14:34:30+08:00'
-updated_at: '2026-06-15T15:46:07+08:00'
+updated_at: '2026-06-15T17:21:39+08:00'
 source_basis:
   - _bmad-output/project-context.md
   - _bmad-output/planning-artifacts/prd.md
@@ -35,11 +35,12 @@ source_basis:
   - docs/methodology/intake-and-intent-classification.md
   - docs/methodology/document-generation-methodology.md
   - docs/methodology/concept-document-quality-gate.md
-time_context: phase_5_epic_5_network_boundary_decay_prevention_2026_06_01
+  - _bmad-output/implementation-artifacts/stabilization-status-2026-06-15.md
+time_context: stabilization_key_draft_review_2026_06_15
 applicability: formal_docs_topic_boundary_network_decay_prevention_governance
 prompt_version: not_applicable
 template_version: governance_asset_v1
-quality_status: draft
+quality_status: reviewed
 related_docs:
   - docs/index.md
   - docs/governance/related-docs-taxonomy.md
@@ -102,7 +103,7 @@ open_questions:
 
 本文的 owner entry point 是 [docs/index.md](../index.md) 的 `governance` 分组。Navigation treatment 是 `listed_in_docs_index`，index treatment 是在 `docs/index.md` 的 `## governance` 下列出 `docs/governance/network-boundary-and-decay-prevention.md`。这些归属信息写在正文中，不是新的全局 frontmatter 字段。
 
-当前 `quality_status: draft` 是保守治理状态。原因是本文是 Epic 5 首版 network boundary and decay prevention policy；Epic 6 后续仍会细化 batch network review、batch stale-link cleanup、batch relationship updates 和 batch governance records。
+当前 `quality_status: reviewed` 表示本文已完成 Epic 6 前置稳定化审查：topic health signals、weak/dense/noisy/stale link signals、repeated overlap routing、Network Boundary / Decay Review Record、相邻治理依赖、链接/索引边界和非软件边界已检查。未解决项保留在 `open_questions` 和维护触发点中；本文不声明 `validated`，因为 Epic 6 batch governance runbook、batch review record 和 batch completion report 仍未落地。
 
 本文自身的 Index Impact Decision Record 是：
 
