@@ -5,7 +5,7 @@ concept: related_docs_taxonomy
 topic: governance
 depth_mode: standard
 created_at: '2026-05-29T10:14:38+08:00'
-updated_at: '2026-06-15T15:46:07+08:00'
+updated_at: '2026-06-15T16:56:49+08:00'
 source_basis:
   - _bmad-output/project-context.md
   - _bmad-output/planning-artifacts/prd.md
@@ -16,6 +16,7 @@ source_basis:
   - docs/methodology/document-generation-methodology.md
   - docs/governance/governance-asset-navigation-policy.md
   - docs/governance/batch-readiness-checklist.md
+  - docs/governance/lifecycle-states.md
   - docs/governance/frontmatter-schema.md
   - docs/governance/index-synchronization-rules.md
   - docs/governance/duplicate-and-coexistence-policy.md
@@ -32,7 +33,8 @@ source_basis:
   - docs/methodology/concept-document-quality-gate.md
   - docs/methodology/source-discipline-and-real-world-anchor-policy.md
   - docs/methodology/intake-and-intent-classification.md
-time_context: phase_5_epic_5_related_docs_taxonomy_2026_05_29
+  - _bmad-output/implementation-artifacts/deferred-work.md
+time_context: stabilization_deferred_triage_2026_06_15
 applicability: formal_docs_related_docs_taxonomy_and_meaningful_link_governance
 prompt_version: not_applicable
 template_version: governance_asset_v1
@@ -42,6 +44,7 @@ related_docs:
   - docs/methodology/document-generation-methodology.md
   - docs/governance/governance-asset-navigation-policy.md
   - docs/governance/batch-readiness-checklist.md
+  - docs/governance/lifecycle-states.md
   - docs/governance/frontmatter-schema.md
   - docs/governance/index-synchronization-rules.md
   - docs/governance/duplicate-and-coexistence-policy.md
@@ -112,10 +115,11 @@ Index Impact Decision Record
 | Target status | Meaning | Allowed treatment | Hard stop / fail signal |
 | --- | --- | --- | --- |
 | `existing` | 目标是已经存在的正式 `docs/` 资产、正式模板资产、正式索引资产或受控正式报告入口。 | 可以进入 `related_docs`；正文可链接；记录 relation type 和 transfer object。 | 路径不可解析、目标不是正式资产、标题/路径/状态暗示错误。 |
-| `intentionally_planned` | 目标尚不存在，但 planning artifact、story、owner decision 或明确 future story 已授权。 | 不作为普通 existing target 描述；必须在正文或 `open_questions` 说明 planned status、owner/future story 和当前保留关系的理由。 | 把 planned target 写得像当前可访问资产，或让 index/completion wording 暗示已经存在。 |
+| `intentionally_planned` | 目标尚不存在，但 planning artifact、story、owner decision 或明确 future story 已授权。 | 不作为普通 existing target 描述；默认进入 `open_questions`、正文 future-dependency evidence、review notes 或 completion evidence。通常不使用可点击 Markdown 链接，也不进入 frontmatter `related_docs`；只有当 owner 明确保留未来路径并授权关系占位时，才可在 frontmatter 或正文中保留 planned path reference，且必须同时标明 planned/unavailable 状态、owner/future story 和保留理由。 | 把 planned target 写得像当前可访问资产；使用普通可点击链接或 frontmatter path 制造已存在假象；或让 index/completion wording 暗示已经存在。 |
 | `unresolved` | 目标缺失、归属未定、owner 未定、路径不清或关系无法验证。 | 不得静默进入普通 `related_docs`；记录到 `open_questions`、review notes、completion evidence、follow-up list 或 Dev Agent Record。 | 缺失目标没有 open question；用 decorative link 掩盖 unresolved target。 |
+| `deprecated_or_archived` | 目标存在但生命周期、迁移记录或 index treatment 表明它不是当前普通入口。 | 关系类型仍必须来自本 taxonomy 的标准 relation type；通常使用 `successor_replacement`，或在正文证据中说明 historical context、remaining access、migration audit 或 explicit legacy support。必须说明 current successor、remaining access 或为什么仍需引用旧目标。 | 把 deprecated/archive target 当作当前 primary target；把 historical context / migration audit 当作新的 relation type；缺少 successor/remaining-access evidence；或让读者误以为旧目标仍是推荐入口。 |
 
-`related_docs` 默认优先指向 `existing` 的正式 `docs/` 资产。`intentionally_planned` 目标只有在已由 planning artifacts、story 或 owner decision 明确授权时才允许保留为 future dependency；它不等于当前存在资产。`unresolved` 目标不得被写成普通可点击关系，也不得让索引、正文或完成汇报暗示它已经可访问。
+`related_docs` 默认优先指向 `existing` 的正式 `docs/` 资产。`intentionally_planned` 目标只有在已由 planning artifacts、story 或 owner decision 明确授权时才允许保留为 future dependency；它不等于当前存在资产。`unresolved` 目标不得被写成普通可点击关系，也不得让索引、正文或完成汇报暗示它已经可访问。`deprecated_or_archived` 目标不是缺失目标，但它也不是普通当前目标；必须通过 successor/replacement、remaining access、historical support 或 migration audit 语义来解释。
 
 区分以下对象：
 
@@ -182,6 +186,8 @@ Supporting evidence、owner entry、sidecar support、source reference、index e
 
 - 只因为两个文档都提到 “link” 就互相加入 `related_docs`。
 - `related_docs` 指向 missing file，却没有 planned status、owner、future story 或 open question。
+- planned target 使用普通可点击链接，正文却没有说明目标尚不可用、owner/future story 和保留理由。
+- deprecated 或 archived target 被当作当前 primary target 链接，没有 successor、remaining access、historical context 或 migration evidence。
 - 正文只写“另见某文档”，但不说明读者要复用什么结构、边界、模型或判断。
 - 用 `adjacent_concept` 掩盖疑似 duplicate/coexistence decision。
 - 用 `successor_replacement` 暗示迁移完成，但没有 migration/index/lifecycle evidence。
@@ -236,7 +242,7 @@ Supporting evidence、owner entry、sidecar support、source reference、index e
 
 - source asset:
 - target asset:
-- target status: existing | intentionally_planned | unresolved
+- target status: existing | intentionally_planned | unresolved | deprecated_or_archived
 - relation type:
 - direction: source_to_target | target_to_source | bidirectional | one_way_with_reason
 - link location: frontmatter related_docs | body link | index entry | review evidence | completion evidence | other
@@ -264,6 +270,7 @@ Record 字段不能被拆进未经授权的 frontmatter fields。若未来确实
 | --- | --- | --- |
 | [document generation methodology](../methodology/document-generation-methodology.md) | formal docs task classification、repository integration、quality/equivalent governance check、completion evidence baseline | 本文不创建平行主方法论。 |
 | [governance asset navigation policy](./governance-asset-navigation-policy.md) | owner entry point、navigation treatment、index treatment、related-doc / owner-entry boundary | 本文不新增 owner/navigation frontmatter fields。 |
+| [lifecycle states](./lifecycle-states.md) | deprecated/archive lifecycle semantics、remaining access expectation 和状态转换边界 | 本文只把生命周期状态用于 target status 判断；不重新定义 lifecycle model。 |
 | [frontmatter schema](./frontmatter-schema.md) | baseline fields、stable `doc_id`、YAML arrays、unauthorized field 禁令 | 本文不扩展 schema；relation details 写在人类可读 evidence 中。 |
 | [index synchronization rules](./index-synchronization-rules.md) | Index Impact outcomes、导航入口边界、planned/unresolved target 风险 | 本文只记录 relationship/index impact，不执行 index-wide cleanup。 |
 | [batch readiness checklist](./batch-readiness-checklist.md) | batch link/index update、batch `related_docs` update、rule-selected target set、stop criteria、recovery evidence | 多文件 relationship assignment 是 batch-shaped，需另行 readiness。 |
@@ -318,13 +325,13 @@ Stop / escalation conditions：
 4. H1、frontmatter `title` 和 `docs/index.md` 入口标题一致。
 5. Asset role、authority、scope、owner entry point、navigation treatment 和 relationship to main methodology 已声明。
 6. Relationship type taxonomy 覆盖 `prerequisite`、`adjacent_concept`、`contrast_concept`、`deeper_dive`、`shared_mechanism`、`example_application`、`successor_replacement` 和 `approved_equivalent`。
-7. Target handling 区分 `existing`、`intentionally_planned` 和 `unresolved`。
+7. Target handling 区分 `existing`、`intentionally_planned`、`unresolved` 和 `deprecated_or_archived`。
 8. Adjacent concept rules 要求 boundary distinction 和 reuse role。
 9. Meaningful-link rules 要求 transfer object evidence。
 10. Positive examples 和 weak-link/decorative-link 反例存在。
 11. Related Docs Relationship Record 存在，并明确不是 schema、lint rule 或 frontmatter extension。
 12. Link maintenance policy、reusable model entry points policy、existing-doc reuse procedure、network boundary and decay prevention policy 和 Epic 6 boundaries 明确。
-13. Body links、frontmatter `related_docs` 和 `docs/index.md` entry 可解析，planned/missing targets 已记录为 `open_questions` 或 future dependency。
+13. Body links、frontmatter `related_docs` 和 `docs/index.md` entry 可解析；planned/missing targets 已记录为 `open_questions`、future dependency 或明确 owner-authorized planned path reference；deprecated/archive targets 有 lifecycle、successor、remaining-access 或 historical evidence。
 14. 没有实际执行 full-repo link scan、inbound/outbound repair、batch related_docs update、network health review、stale-link cleanup、legacy migration、sidecar extraction、existing-doc reuse scan、actual review record 或 actual completion report。
 15. 没有新增 runtime code、package manifests、source/test directories、software test frameworks、schemas、validators、generators、automation、CLI/API/UI/database/deployment/CI、runbooks 或 batch assets。
 

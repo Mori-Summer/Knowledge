@@ -5,7 +5,7 @@ concept: link_maintenance_policy
 topic: governance
 depth_mode: standard
 created_at: '2026-05-29T14:00:16+08:00'
-updated_at: '2026-06-15T15:46:07+08:00'
+updated_at: '2026-06-15T16:56:49+08:00'
 source_basis:
   - _bmad-output/project-context.md
   - _bmad-output/planning-artifacts/prd.md
@@ -32,7 +32,8 @@ source_basis:
   - docs/methodology/concept-document-quality-gate.md
   - docs/methodology/source-discipline-and-real-world-anchor-policy.md
   - docs/methodology/intake-and-intent-classification.md
-time_context: phase_5_epic_5_link_maintenance_policy_2026_05_29
+  - _bmad-output/implementation-artifacts/deferred-work.md
+time_context: stabilization_deferred_triage_2026_06_15
 applicability: formal_docs_cross_document_link_maintenance_and_inbound_outbound_review_governance
 prompt_version: not_applicable
 template_version: governance_asset_v1
@@ -125,12 +126,14 @@ Index Impact Decision Record
 | Check | Required meaning | Required evidence |
 | --- | --- | --- |
 | `existence` | Target exists, or missing/planned/unresolved status is visible. | Existing target path, planned owner/future story, or unresolved open question. |
-| `path` | Relative link path resolves from the source location. | Source path, target path, relative path expectation, fragment/anchor handling if relevant. |
+| `path` | Relative link path resolves from the source location. Path spelling must match repository path casing exactly, even on case-insensitive local filesystems. | Source path, target path, relative path expectation, exact filename/directory casing, fragment/anchor handling if relevant. |
 | `target_asset_class` | Target is an appropriate formal docs asset, template, index, report, sidecar/support asset, or intentionally planned future dependency. | Asset class, path group, owner entry, formal/candidate/support distinction. |
 | `topic_fit` | Link target belongs to an appropriate topic/asset class for the relationship. | Topic/path/name/index relationship and catch-all risk. |
 | `relationship_meaning` | Link has relation type and transfer object from [related docs taxonomy](./related-docs-taxonomy.md). | Relation type, transfer object, boundary/reuse meaning, or why unresolved. |
 | `definition_boundary_consistency` | Source and target do not contradict definitions, boundaries, or scope without record. | Affected docs and proposed resolution. |
 | `direction` | Link direction is one-way or bidirectional with reason. | One-way reason or bidirectional evidence. |
+
+Path validation is case-sensitive as a governance rule. A link that works only because the local filesystem ignores case is not considered validated; record it as `path_case_mismatch` and patch the link spelling or defer with an owner. Directory names, file basenames and extensions must match the repository entry exactly. A casing mismatch makes `path result: fail`; `path casing result` is the diagnostic field that names the casing-specific cause.
 
 Fragment or anchor links are conservative. Use a `#fragment` only when the target heading or explicit anchor is visible in the existing target file and the reviewer can name the exact target section. If the heading text is duplicated, mixed-language slug generation is unclear, punctuation-heavy, renderer-dependent or likely to change during retitle/rewrite, prefer a file-level link with section wording in the sentence, or record `fragment_anchor_ambiguity` with a proposed resolution. Fragment validation is a human-readable Markdown check, not a generated anchor scan.
 
@@ -141,6 +144,7 @@ Target status handling here is an application of [related docs taxonomy](./relat
 - `existing`: target exists and can be checked for path, topic fit, asset class and relationship meaning.
 - `intentionally_planned`: target does not yet exist, but planning artifact, story or owner decision explicitly authorizes it as a future dependency. It may be recorded in `open_questions`, body evidence or follow-up notes, but wording must not imply the asset is currently available.
 - `unresolved`: target is missing, path/owner is unclear, or relationship cannot be verified. It must go to `open_questions`, review notes, completion evidence, Dev Agent Record or follow-up list. It must not be silently added as ordinary `related_docs` or as a body link presented as usable.
+- `deprecated_or_archived`: target exists but is not a normal current target. It may be linked only as successor/replacement, historical context, remaining access, migration audit or explicit legacy support, with lifecycle/migration evidence visible.
 
 Different link locations carry different meanings:
 
@@ -173,7 +177,7 @@ For each outbound link in the changed-file scope, check:
 
 1. Source location: file path, section, frontmatter field or record location.
 2. Target path: relative path from source and whether fragment/anchor is used.
-3. Target status: existing, intentionally planned or unresolved.
+3. Target status: existing, intentionally planned, unresolved or deprecated/archived.
 4. Target asset class: formal docs asset, governance asset, template, report, support/sidecar, source reference, owner entry or future dependency.
 5. Topic/path fit: whether target topic and path match the relationship.
 6. Relationship meaning: relation type and transfer object from related docs taxonomy.
@@ -257,6 +261,7 @@ Conflict categories:
 | `source_time_conflict` | Source/time/currentness claims disagree or are unverifiable. | Source basis, time context, affected claims, source discipline action. |
 | `quality_status_mismatch` | Target status or quality is overclaimed. | Target `quality_status`, body wording, completion/review claim. |
 | `missing_target` | Target path or planned asset does not exist or is not authorized. | Missing path, owner/future story if any, unresolved state. |
+| `path_case_mismatch` | Link target exists only by case-insensitive filesystem behavior or differs from repository path casing. | Source link, exact repository path, corrected spelling or deferral owner. |
 | `fragment_anchor_ambiguity` | Link fragment, heading or anchor is missing, unstable or ambiguous. | Source link, target heading, proposed link text or anchor handling. |
 | `index_navigation_mismatch` | Index/owner entry/link text routes to the wrong asset or wrong status. | Index entry, owner entry, target title/path/status, index impact action. |
 
@@ -312,13 +317,14 @@ One-way reason must not be expressed through new frontmatter fields. Put it in b
 - changed file / trigger:
 - target asset:
 - link location: body link | frontmatter related_docs | index entry | successor/replacement note | support/sidecar link | review evidence | completion evidence | other
-- target status: existing | intentionally_planned | unresolved
+- target status: existing | intentionally_planned | unresolved | deprecated_or_archived
 - relation type:
 - direction: source_to_target | target_to_source | bidirectional | one_way_with_reason
 - one-way reason:
 - transfer object:
 - existence result: pass | fail | planned | unresolved | not_applicable | unverified
 - path result: pass | fail | not_applicable | unverified
+- path casing result: pass | fail | not_applicable | unverified
 - topic fit result: pass | fail | not_applicable | unverified
 - definition/boundary consistency:
 - related_docs impact:
@@ -370,13 +376,14 @@ When applying this policy in a normal story:
 
 1. Name the changed files and link triggers.
 2. Check body links, `related_docs`, successor/replacement references, support links and index links only within authorized scope.
-3. For missing/planned targets, record planned owner/future story or unresolved state.
-4. For definition/boundary conflict, record affected documents and proposed resolution.
-5. For one-way links, record direction and reason.
-6. For inbound review, state the discoverable reference scope actually checked.
-7. If the work becomes batch-shaped, stop and route to batch readiness.
-8. Do not create new frontmatter fields, schema, validator, generator, scanner or automation.
-9. Do not describe unresolved, unverified, deferred or not-authorized links as resolved.
+3. Check exact path casing for directories, basenames and extensions.
+4. For missing/planned targets, record planned owner/future story or unresolved state.
+5. For definition/boundary conflict, record affected documents and proposed resolution.
+6. For one-way links, record direction and reason.
+7. For inbound review, state the discoverable reference scope actually checked.
+8. If the work becomes batch-shaped, stop and route to batch readiness.
+9. Do not create new frontmatter fields, schema, validator, generator, scanner or automation.
+10. Do not describe unresolved, unverified, deferred or not-authorized links as resolved.
 
 Completion evidence must distinguish:
 
@@ -395,7 +402,7 @@ Validate this policy or any future application of it with the following checklis
 2. Target frontmatter contains all required baseline fields.
 3. `source_basis`, `related_docs` and `open_questions` are YAML arrays.
 4. H1, frontmatter title and `docs/index.md` title are consistent.
-5. Link target checks cover existence, path, target asset class, topic fit, relationship meaning, definition/boundary consistency and direction.
+5. Link target checks cover existence, path, exact path casing, target asset class, topic fit, relationship meaning, definition/boundary consistency and direction.
 6. Inbound and outbound review triggers are explicit.
 7. Rename/move/merge/split/deprecation/archive link review calls rename/migration and continuity policies for identity/lifecycle decisions.
 8. Definition/boundary conflict handling records affected documents and proposed resolution.
