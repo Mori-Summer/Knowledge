@@ -26,9 +26,9 @@ related_docs:
   - docs/computer-systems/modification-order.md
   - docs/computer-systems/fence.md
 open_questions:
-  - 在真实线程池和 runtime 里，`atomic_wait` 相对 condition variable 的收益边界如何量化？
-  - `atomic_wait` 与 ABA 问题结合时，哪些等待协议最值得整理成专门案例？
-  - 多等待者场景下，`notify_one` / `notify_all` 的策略与惊群成本是否值得再做专篇？
+  - '在真实线程池和 runtime 里，`atomic_wait` 相对 condition variable 的收益边界如何量化？'
+  - '`atomic_wait` 与 ABA 问题结合时，哪些等待协议最值得整理成专门案例？'
+  - '多等待者场景下，`notify_one` / `notify_all` 的策略与惊群成本是否值得再做专篇？'
 ---
 
 # Atomic Wait / Notify：当你只是在等一个原子值变化时，不必先上 condition variable

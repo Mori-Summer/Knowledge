@@ -30,9 +30,9 @@ related_docs:
   - docs/computer-systems/memory-order.md
   - docs/computer-systems/fence.md
 open_questions:
-  - 如何把真实并发 bug 里的 `happens-before` 图进一步压缩成更短的排查步骤？
-  - `strongly happens-before` 在当前草案语境下还剩哪些值得单独展开的使用场景？
-  - sanitizer 对 `happens-before` 的近似建模与真实语言语义之间，哪些偏差最值得给工程师长期提醒？
+  - '如何把真实并发 bug 里的 `happens-before` 图进一步压缩成更短的排查步骤？'
+  - '`strongly happens-before` 在当前草案语境下还剩哪些值得单独展开的使用场景？'
+  - 'sanitizer 对 `happens-before` 的近似建模与真实语言语义之间，哪些偏差最值得给工程师长期提醒？'
 ---
 
 # Happens-Before：把线程内顺序和跨线程同步边拼成可见性总图

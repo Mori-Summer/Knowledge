@@ -28,8 +28,8 @@ related_docs:
   - docs/computer-systems/fence.md
 open_questions:
   - 如何把 release sequence、fence 和 mixed-order litmus tests 再压缩成更短的判断模板？
-  - `memory_order::consume` 退场后的“依赖顺序直觉”，未来是否值得单独做一篇历史兼容说明？
-  - 在高性能运行时里，什么时候从 `seq_cst` 收窄到更弱顺序是真正值得的？
+  - '`memory_order::consume` 退场后的“依赖顺序直觉”，未来是否值得单独做一篇历史兼容说明？'
+  - '在高性能运行时里，什么时候从 `seq_cst` 收窄到更弱顺序是真正值得的？'
 ---
 
 # Memory Order：从原子性到可见性与重排序控制

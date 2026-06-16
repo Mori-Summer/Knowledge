@@ -24,9 +24,9 @@ related_docs:
   - docs/computer-systems/mutex.md
   - docs/computer-systems/atomic-wait-notify.md
 open_questions:
-  - `atomic_wait` / `notify` 什么时候已经足够，什么时候仍然必须上 condition variable + mutex？
+  - '`atomic_wait` / `notify` 什么时候已经足够，什么时候仍然必须上 condition variable + mutex？'
   - 在高负载线程池和 work stealing 系统里，condition variable 的竞争与唤醒策略还能怎样更系统地建模？
-  - 多等待者场景下，`notify_one` / `notify_all` 的最稳决策框架是否值得单独扩写？
+  - '多等待者场景下，`notify_one` / `notify_all` 的最稳决策框架是否值得单独扩写？'
 ---
 
 # Condition Variable：你等的不是通知，而是条件何时在同步关系下成立
