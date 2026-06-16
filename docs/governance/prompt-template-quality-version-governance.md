@@ -5,7 +5,7 @@ concept: prompt_template_quality_version_governance
 topic: governance
 depth_mode: standard
 created_at: '2026-05-21T16:01:10+08:00'
-updated_at: '2026-05-28T15:29:36+08:00'
+updated_at: '2026-06-16T15:17:56+08:00'
 source_basis:
   - _bmad-output/project-context.md
   - _bmad-output/planning-artifacts/prd.md
@@ -16,38 +16,46 @@ source_basis:
   - _bmad-output/implementation-artifacts/0-1-agent-behavior-constraints.md
   - _bmad-output/implementation-artifacts/0-2-governance-asset-boundary-policy.md
   - _bmad-output/implementation-artifacts/0-3-lifecycle-states.md
+  - _bmad-output/implementation-artifacts/0-5-quality-gate-baseline.md
+  - _bmad-output/implementation-artifacts/stabilization-status-2026-06-15.md
   - docs/governance/agent-behavior-constraints.md
   - docs/methodology/governance-asset-boundary-policy.md
   - docs/governance/lifecycle-states.md
+  - docs/governance/frontmatter-schema.md
   - docs/governance/governance-asset-navigation-policy.md
   - docs/governance/batch-readiness-checklist.md
   - docs/methodology/document-generation-methodology.md
   - docs/methodology/concept-document-template.md
   - docs/methodology/concept-document-quality-gate.md
   - docs/methodology/fixed-concept-generation-prompt.md
+  - docs/templates/review-record-template.md
+  - docs/templates/completion-report-template.md
   - docs/index.md
   - docs/governance/revision-regeneration-continuity-policy.md
-time_context: phase_4_epic_4_revision_regeneration_continuity_policy_2026_05_28
+time_context: stabilization_foundation_review_2026_06_16
 applicability: prompt_template_methodology_quality_rule_version_governance
 prompt_version: not_applicable
 template_version: governance_asset_v1
-quality_status: draft
+quality_status: reviewed
 related_docs:
   - docs/governance/agent-behavior-constraints.md
   - docs/methodology/governance-asset-boundary-policy.md
   - docs/governance/lifecycle-states.md
+  - docs/governance/frontmatter-schema.md
   - docs/governance/governance-asset-navigation-policy.md
   - docs/governance/batch-readiness-checklist.md
   - docs/methodology/document-generation-methodology.md
   - docs/methodology/concept-document-template.md
   - docs/methodology/concept-document-quality-gate.md
   - docs/methodology/fixed-concept-generation-prompt.md
+  - docs/templates/review-record-template.md
+  - docs/templates/completion-report-template.md
   - docs/index.md
   - docs/governance/revision-regeneration-continuity-policy.md
 open_questions:
-  - Story 0.5 已固化质量状态基线后，是否需要在后续专门审查中调整质量规则版本与 quality_status 的映射？
-  - Epic 2 定义正式 frontmatter schema 后，是否需要新增独立 methodology_version 或 quality_gate_version 字段？
-  - Story 4.1 已建立修订/重生成连续性策略；是否需要在后续专门审查中把版本迁移记录与 Continuity Record 进一步对齐？
+  - frontmatter schema 已建立；后续是否需要授权新增独立 methodology_version、quality_gate_version、version_history 或 migration_status 字段？
+  - revision/regeneration continuity policy 已建立；是否需要在后续专门审查中把版本迁移记录与 Continuity Record 进一步对齐？
+  - Epic 3 review/completion templates 晋升后，是否需要把 version change record 固定为模板字段？
 ---
 
 # Prompt、模板与质量规则版本治理：规则演进、字段语义与渐进迁移
@@ -66,7 +74,7 @@ open_questions:
 
 版本标识是治理证据，不是营销标签、质量背书或自动 freshness claim。`prompt_version`、`template_version` 或完成汇报中的 methodology/quality 来源必须表达实际使用的规则集，而不是仓库里当前存在的最新规则集。
 
-本资产当前 `quality_status: draft`。Story 0.5 已固化质量门禁 Hard Fail、评分维度与质量状态基线，但本资产尚未经过专门晋升审查，Epic 2 也尚未定义更细的 version-related frontmatter schema。这个保守状态不削弱本文作为 Story 0.4 输出规则的适用性；它表示后续治理故事仍需复核本资产自身状态和字段模型。
+当前 `quality_status: reviewed` 表示本文已完成 Epic 6 前置稳定化审查：版本对象边界、`prompt_version` / `template_version` 字段语义、quality gate 版本信号、旧文档兼容、迁移记录、索引入口、相关治理依赖、链接和 frontmatter 一致性已检查。未解决项保留在 `open_questions` 和维护触发点中；本文不声明 `validated`，因为 Epic 6 batch governance runbook、batch review record 和 batch completion report 仍未落地，version-related frontmatter 字段扩展也未被授权。
 
 ## 版本对象与字段边界
 
@@ -79,10 +87,10 @@ open_questions:
 | methodology/main spec | `docs/methodology/document-generation-methodology.md` | 正式概念文档工作的新建、升级、审查、仓库集成主执行合同 | 某个 prompt 片段或模板细则 |
 | quality gate/rubric | `docs/methodology/concept-document-quality-gate.md` | Hard Fail、评分维度、质量证据、审查输出和通过/退回判断 | 模板章节清单、生命周期状态 |
 | playbook/supporting reference | `learning-new-things-playbook.md`、`cognitive-modeling-playbook.md`、operator guide 等 | 学习、建模、背景、历史导航或辅助判断纪律 | 默认主入口或强制版本字段 |
-| governance asset template | Story 0.1-0.4 建立的治理资产模式 | 治理资产的 frontmatter、角色/权威/范围、导航和完成证据模式 | 概念文档模板 |
+| governance asset template | Foundation 治理资产模式 | 治理资产的 frontmatter、角色/权威/范围、导航和完成证据模式 | 概念文档模板 |
 | index template | `docs/index.md` 的 `index_v1` 模式 | 正式导航入口的 frontmatter 和主题分组格式 | 文档内容质量或生成规则 |
 
-当前正式文档 frontmatter 已有 `prompt_version` 和 `template_version`。在 Epic 2 定义更完整 schema 之前，本 story 不新增 `quality_rule_version`、`methodology_version`、`version_history`、`migration_status` 或类似字段，也不向既有文档批量补字段。
+当前正式文档 frontmatter 已有 `prompt_version` 和 `template_version`。当前 frontmatter schema 未授权 `quality_rule_version`、`methodology_version`、`version_history`、`migration_status` 或类似字段；本文不新增这些字段，也不向既有文档批量补字段。
 
 `prompt_version` 的语义是：该文档在生成、实质升级或审查时实际受哪个 prompt 规则集约束。概念文档通常应保留生成或实质升级时实际使用的 prompt 版本，例如 `concept_generation_prompt_v3`。如果一篇旧文档并未用新 prompt 生成或复核，不得只因为新 prompt 存在而把字段改成新值。
 
@@ -99,8 +107,8 @@ methodology/main spec 与 quality gate/rubric 当前没有独立 frontmatter 字
 - `concept_doc_v2`：当前概念文档模板信号。
 - `unified_spec_v1`：当前主方法论规格信号。
 - `unified_spec_v2`：Story 1.2 后的主方法论规格信号；保持主规范身份，但新增正式概念文档入口前的 intake handoff 和审查前置分类/等价治理检查语义。
-- `quality_gate_v2`：Story 0.5 前的质量门禁/评分规则信号。
-- `quality_gate_v3`：Story 0.5 固化 Hard Fail、六项评分解释、质量状态和完成汇报语义后的当前质量门禁/评分规则信号。
+- `quality_gate_v2`：质量门禁基线固化前的质量门禁/评分规则信号。
+- `quality_gate_v3`：Hard Fail、六项评分解释、质量状态和完成汇报语义固化后的当前质量门禁/评分规则信号。
 - `template_alignment_v2`：模板资产自身对齐版本信号。
 - `governance_asset_v1`：Foundation 治理资产模式信号。
 - `not_applicable`：该资产不由固定生成 prompt 直接治理，或 prompt 版本不适用。
@@ -117,7 +125,7 @@ methodology/main spec 与 quality gate/rubric 当前没有独立 frontmatter 字
 | 触发类型 | 说明 | 典型影响 |
 | --- | --- | --- |
 | prompt 行为变化 | fixed prompt 的任务分类、必填输入、输出约束、停止条件、审查要求或索引动作发生改变 | 后续生成或审查行为可能不同，旧文档不应自动伪装成新 prompt 产物 |
-| required frontmatter 变化 | 新增、删除、重命名或改变必填 frontmatter 字段语义 | 需要判断旧文档兼容性和 Epic 2 schema 影响 |
+| required frontmatter 变化 | 新增、删除、重命名或改变必填 frontmatter 字段语义 | 需要判断旧文档兼容性和 frontmatter schema 影响 |
 | required section 变化 | 模板要求的核心章节、信息位点、文档路径类型或 deep/standard 规则改变 | 影响新文档结构和旧文档升级判断 |
 | Hard Fail 或评分规则变化 | 质量门禁的阻塞条件、评分维度、分数解释或通过标准改变 | 既有审查结果可能需要 re-review，不得静默保留旧结论 |
 | methodology 执行流变化 | 主方法论的新建、升级、审查、仓库集成、索引同步或质量门禁接入顺序改变 | Agent 执行合同和 completion report 需要同步说明 |
@@ -163,7 +171,7 @@ methodology/main spec 与 quality gate/rubric 当前没有独立 frontmatter 字
 
 ## 版本变更记录
 
-每次 prompt、template、methodology、quality gate 或相邻治理规则发生版本治理事件时，必须留下可复制、可审查的记录。记录可以写入 completion report、Change Log、review record、专门迁移记录或未来 Epic 2/3/4 规定的位置。
+每次 prompt、template、methodology、quality gate 或相邻治理规则发生版本治理事件时，必须留下可复制、可审查的记录。记录可以写入 completion report、Change Log、review record、专门迁移记录，或后续明确授权的 schema、report、runbook 位置。
 
 最小记录形状如下：
 
@@ -232,12 +240,12 @@ version_change_record:
 
 迁移动作分为四类：
 
-| 迁移类型 | 含义 | 当前 Story 0.4 是否授权 |
+| 迁移类型 | 含义 | 本文是否授权 |
 | --- | --- | --- |
 | targeted revision | 对单篇或小范围资产做具体修订，保留高价值内容并更新实际使用版本证据 | 仅在后续任务明确要求目标文件时授权 |
-| structural upgrade | 按新模板或新方法论补齐结构、frontmatter、索引和质量证据 | 本 story 不执行旧文档升级 |
-| regeneration | 基于新 prompt/template 重新生成或大幅重写，并记录旧版本保留方式 | 本 story 不执行重生成 |
-| batch migration | 批量扫描、批量改字段、批量归一化版本或批量重构 | 本 story 明确不授权 |
+| structural upgrade | 按新模板或新方法论补齐结构、frontmatter、索引和质量证据 | 本文不执行旧文档升级 |
+| regeneration | 基于新 prompt/template 重新生成或大幅重写，并记录旧版本保留方式 | 本文不执行重生成 |
+| batch migration | 批量扫描、批量改字段、批量归一化版本或批量重构 | 本文明确不授权 |
 
 批量版本 normalization、批量 frontmatter 改写、批量迁移或批量状态转换必须先按 `docs/governance/batch-readiness-checklist.md` 完成 readiness 判定，并由具体 story 或 Maxwell 在具体任务中明确批准。批准前，Agent 只能记录候选范围和风险，不能自行执行。
 
@@ -279,16 +287,16 @@ version_change_record:
 
 本资产位于 `docs/governance/prompt-template-quality-version-governance.md`，并列入 `docs/index.md` 的 `governance` 分组。加入索引表示它是正式治理资产；这不表示它改变了现有 prompt、template、methodology 或 quality gate 的正文语义，也不表示既有文档已经完成迁移。
 
-本资产自身不要求为了版本治理而反向改写 `docs/methodology/document-generation-methodology.md`、`docs/methodology/concept-document-template.md` 或 `docs/methodology/fixed-concept-generation-prompt.md`。Story 0.5 已将 `docs/methodology/concept-document-quality-gate.md` 提升到 `quality_gate_v3` 并记录为质量规则版本治理事件；后续若再把本文规则写入主规范、模板、质量门禁或 fixed prompt，仍应作为独立版本治理事件处理。
+本资产自身不要求为了版本治理而反向改写 `docs/methodology/document-generation-methodology.md`、`docs/methodology/concept-document-template.md` 或 `docs/methodology/fixed-concept-generation-prompt.md`。`docs/methodology/concept-document-quality-gate.md` 已提升到 `quality_gate_v3` 并记录为质量规则版本治理事件；后续若再把本文规则写入主规范、模板、质量门禁或 fixed prompt，仍应作为独立版本治理事件处理。
 
 已知维护触发点包括：
 
-- Story 0.5 后若再次改变质量门禁 Hard Fail、评分维度与质量状态基线，复核当前 quality gate 版本、`quality_status` 和本文质量规则版本记录是否需要细化。
+- 质量门禁再次改变 Hard Fail、评分维度与质量状态基线时，复核当前 quality gate 版本、`quality_status` 和本文质量规则版本记录是否需要细化。
 - `docs/governance/governance-asset-navigation-policy.md` 已建立治理资产导航、索引与入口归属基线；后续版本治理事件涉及导航处理时，应按该政策复核 index/navigation impact。
 - `docs/governance/batch-readiness-checklist.md` 已定义批量治理 readiness；batch migration、batch normalization 和批量版本记录必须按该政策暴露 target set、冲突、停止条件、owner decision 和恢复策略。
-- Epic 2 定义正式 frontmatter schema、`doc_id`、topic/path/name 和 candidate promotion 后，决定是否新增 `methodology_version`、`quality_gate_version`、`version_history` 或 `migration_status` 等字段。
+- `docs/governance/frontmatter-schema.md` 已定义正式 frontmatter schema、`doc_id` 和 baseline required fields；后续若授权新增 `methodology_version`、`quality_gate_version`、`version_history` 或 `migration_status` 等字段，必须回到本文复核版本记录和迁移规则。
 - Epic 3 review record、document decision policy、rework loop 或 completion report template 发生实质字段或 vocabulary 变更时，复核本文的 version change record 和 completion report 格式。
-- Story 4.1 已建立修订、重生成与版本连续性策略；后续若该政策更新，复核 targeted revision、structural upgrade、regeneration 和 gradual migration 的记录深度。
+- `docs/governance/revision-regeneration-continuity-policy.md` 已建立修订、重生成与版本连续性策略；后续若该政策更新，复核 targeted revision、structural upgrade、regeneration 和 gradual migration 的记录深度。
 - `docs/governance/sidecar-boundary-policy.md` 或 `docs/governance/legacy-migration-guide.md` 更新后，复核 version migration records 与 sidecar/legacy 边界。
 
 当任何后续 story 改变 prompt/template/methodology/quality gate 的正式行为时，应回到本文检查是否需要版本记录、迁移计划、索引影响说明和旧文档兼容声明。

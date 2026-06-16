@@ -5,7 +5,7 @@ concept: governance_asset_boundary_policy
 topic: methodology
 depth_mode: standard
 created_at: '2026-05-21T11:39:02+08:00'
-updated_at: '2026-05-25T09:34:08+08:00'
+updated_at: '2026-06-16T15:17:56+08:00'
 source_basis:
   - _bmad-output/project-context.md
   - _bmad-output/planning-artifacts/prd.md
@@ -13,7 +13,14 @@ source_basis:
   - _bmad-output/planning-artifacts/epics.md
   - _bmad-output/planning-artifacts/implementation-readiness-report-corrected-2026-05-20.md
   - _bmad-output/implementation-artifacts/0-1-agent-behavior-constraints.md
+  - _bmad-output/implementation-artifacts/0-3-lifecycle-states.md
+  - _bmad-output/implementation-artifacts/0-4-prompt-template-quality-version-governance.md
+  - _bmad-output/implementation-artifacts/0-5-quality-gate-baseline.md
+  - _bmad-output/implementation-artifacts/stabilization-status-2026-06-15.md
   - docs/governance/agent-behavior-constraints.md
+  - docs/governance/lifecycle-states.md
+  - docs/governance/prompt-template-quality-version-governance.md
+  - docs/governance/frontmatter-schema.md
   - docs/methodology/document-generation-methodology.md
   - docs/methodology/concept-document-template.md
   - docs/methodology/concept-document-quality-gate.md
@@ -23,11 +30,14 @@ source_basis:
   - docs/methodology/methodology-operator-guide.md
   - docs/governance/governance-asset-navigation-policy.md
   - docs/governance/batch-readiness-checklist.md
-time_context: phase_4_foundation_2026_05_25
+  - docs/templates/review-record-template.md
+  - docs/templates/completion-report-template.md
+  - docs/index.md
+time_context: stabilization_foundation_review_2026_06_16
 applicability: methodology_asset_boundary_and_change_impact_governance
 prompt_version: not_applicable
 template_version: governance_asset_v1
-quality_status: draft
+quality_status: reviewed
 related_docs:
   - docs/methodology/document-generation-methodology.md
   - docs/methodology/concept-document-template.md
@@ -37,12 +47,17 @@ related_docs:
   - docs/methodology/cognitive-modeling-playbook.md
   - docs/methodology/methodology-operator-guide.md
   - docs/governance/agent-behavior-constraints.md
+  - docs/governance/lifecycle-states.md
+  - docs/governance/prompt-template-quality-version-governance.md
+  - docs/governance/frontmatter-schema.md
   - docs/governance/governance-asset-navigation-policy.md
   - docs/governance/batch-readiness-checklist.md
+  - docs/templates/review-record-template.md
+  - docs/templates/completion-report-template.md
+  - docs/index.md
 open_questions:
-  - Story 0.3 定义正式生命周期状态后，是否需要调整本资产的 quality_status？
-  - Story 0.4 定义 prompt/template/quality version governance 后，是否需要补充更细的版本变更记录格式？
-  - Story 0.5 固化质量门禁基线后，是否需要把本资产的影响分析清单对齐到新的质量证据格式？
+  - Epic 3 review/completion templates 晋升后，是否需要把方法论资产边界变更的 completion evidence 字段进一步标准化？
+  - Epic 6 batch governance runbook 落地后，是否需要补充方法论资产批量变更的 target-set 示例？
 ---
 
 # 方法论资产边界：主规范、模板、质量门禁、playbook 与固定 Prompt 的职责分工
@@ -70,6 +85,8 @@ open_questions:
 - 替代 `docs/governance/batch-readiness-checklist.md` 中的批量治理 readiness 策略
 
 这些内容分别由对应 Foundation 治理资产承担。本资产只能说明方法论资产边界和影响分析，不能替代生命周期、版本、质量、导航或 batch readiness 的 canonical policy。
+
+当前 `quality_status: reviewed` 表示本文已完成 Epic 6 前置稳定化审查：方法论资产职责边界、主规范优先级、支撑资产角色、冲突处理、变更影响分析、索引入口、相关治理依赖、链接和 frontmatter 一致性已检查。未解决项保留在 `open_questions` 和维护触发点中；本文不声明 `validated`，因为 Epic 6 batch governance runbook、batch review record 和 batch completion report 仍未落地。
 
 ## 方法论资产职责地图
 
@@ -159,7 +176,7 @@ open_questions:
 
 影响分析不能只写“无影响”。如果判定无影响，必须说明检查了哪些范围，为什么不需要变更。
 
-Story 0.2 的边界是建立职责边界和影响分析合同，不定义最终 lifecycle vocabulary、最终 version governance、最终 quality-status vocabulary 或 batch-readiness policy。批量治理 readiness 现在由 `docs/governance/batch-readiness-checklist.md` 承担；本资产只在方法论资产变更影响分析中引用其停止条件和范围判定要求。
+本资产的边界是建立职责边界和影响分析合同，不定义 lifecycle vocabulary、version governance、quality-status vocabulary 或 batch-readiness policy。批量治理 readiness 现在由 `docs/governance/batch-readiness-checklist.md` 承担；本资产只在方法论资产变更影响分析中引用其停止条件和范围判定要求。
 
 ## 导航与索引处理
 
@@ -167,7 +184,7 @@ Story 0.2 的边界是建立职责边界和影响分析合同，不定义最终 
 
 把本资产加入索引表示它是正式方法论治理资产；这不表示它替代主规范，也不表示所有支撑资产都必须反向链接它。
 
-本次新增本资产不自动要求修改 `docs/methodology/document-generation-methodology.md`。只有当 Maxwell 后续授权新增主规范交叉引用、方法论入口重组或导航策略调整时，才应修改主规范正文。
+维护本资产不自动要求修改 `docs/methodology/document-generation-methodology.md`。只有当 Maxwell 后续授权新增主规范交叉引用、方法论入口重组或导航策略调整时，才应修改主规范正文。
 
 ## 完成汇报与验证证据
 
@@ -188,15 +205,15 @@ Story 0.2 的边界是建立职责边界和影响分析合同，不定义最终 
 
 本资产的维护触发点包括：
 
-- Story 0.3 定义正式生命周期状态和状态转换规则后，复核 `quality_status` 与状态词表是否对齐。
-- Story 0.4 建立 prompt、template 与 quality version governance 后，补充版本字段变更记录格式。
-- Story 0.5 固化质量门禁 Hard Fail、评分维度与质量状态基线后，复核本资产的验证证据清单。
+- `docs/governance/lifecycle-states.md` 定义正式生命周期状态和状态转换规则；后续状态词表变化时，复核 `quality_status` 与状态词表是否对齐。
+- `docs/governance/prompt-template-quality-version-governance.md` 建立 prompt、template 与 quality version governance；后续版本记录格式变化时，复核本资产的影响分析清单。
+- `docs/methodology/concept-document-quality-gate.md` 已固化质量门禁 Hard Fail、评分维度与质量状态基线；后续质量证据格式变化时，复核本资产的验证证据清单。
 - `docs/governance/governance-asset-navigation-policy.md` 已建立治理资产导航、索引与入口归属基线；后续如改变主规范交叉引用或导航策略，应按该政策复核。
 - `docs/governance/batch-readiness-checklist.md` 已定义批量治理 readiness；批量变更触及方法论资产时，必须按该政策补充 target set、excluded files、冲突暴露、停止条件和 downstream impact analysis。
 
-如果未来要把本资产从 `draft` 晋升为更高状态，至少应确认：
+如果未来要把本资产从 `reviewed` 晋升为 `validated` 或等价 active 状态，至少应确认：
 
-- 后续 Foundation story 没有与本资产冲突的最终规则
+- 后续 Foundation 或 Epic 6 资产没有与本资产冲突的最终规则
 - `docs/index.md` 中的导航位置仍正确
 - `source_basis`、`time_context`、`related_docs` 和 `open_questions` 与当前治理状态一致
 - 本资产没有被误用为概念文档生成主流程
