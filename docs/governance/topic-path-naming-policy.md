@@ -5,7 +5,7 @@ concept: topic_path_naming_policy
 topic: governance
 depth_mode: standard
 created_at: '2026-05-26T09:28:34+08:00'
-updated_at: '2026-05-28T10:04:11+08:00'
+updated_at: '2026-06-16T09:42:19+08:00'
 source_basis:
   - _bmad-output/planning-artifacts/prd.md
   - _bmad-output/planning-artifacts/architecture.md
@@ -20,13 +20,28 @@ source_basis:
   - docs/governance/governance-asset-navigation-policy.md
   - docs/governance/lifecycle-states.md
   - docs/governance/batch-readiness-checklist.md
+  - docs/governance/candidate-promotion-checklist.md
+  - docs/governance/index-synchronization-rules.md
+  - docs/governance/rename-migration-policy.md
   - docs/governance/duplicate-and-coexistence-policy.md
   - docs/governance/revision-regeneration-continuity-policy.md
-time_context: phase_4_epic_4_revision_regeneration_continuity_policy_2026_05_28
+  - docs/governance/sidecar-boundary-policy.md
+  - docs/governance/legacy-migration-guide.md
+  - docs/governance/related-docs-taxonomy.md
+  - docs/governance/link-maintenance-policy.md
+  - docs/governance/reusable-model-entry-points.md
+  - docs/governance/existing-doc-reuse-procedure.md
+  - docs/governance/network-boundary-and-decay-prevention.md
+  - docs/templates/review-record-template.md
+  - docs/templates/completion-report-template.md
+  - docs/governance/document-decision-policy.md
+  - docs/governance/rework-loop-examples.md
+  - _bmad-output/implementation-artifacts/stabilization-status-2026-06-15.md
+time_context: stabilization_epic_2_governance_review_2026_06_16
 applicability: formal_docs_topic_path_naming_and_repository_placement_governance
 prompt_version: not_applicable
 template_version: governance_asset_v1
-quality_status: draft
+quality_status: reviewed
 related_docs:
   - docs/index.md
   - docs/governance/frontmatter-schema.md
@@ -37,13 +52,27 @@ related_docs:
   - docs/governance/governance-asset-navigation-policy.md
   - docs/governance/lifecycle-states.md
   - docs/governance/batch-readiness-checklist.md
+  - docs/governance/candidate-promotion-checklist.md
+  - docs/governance/index-synchronization-rules.md
+  - docs/governance/rename-migration-policy.md
   - docs/governance/duplicate-and-coexistence-policy.md
   - docs/governance/revision-regeneration-continuity-policy.md
+  - docs/governance/sidecar-boundary-policy.md
+  - docs/governance/legacy-migration-guide.md
+  - docs/governance/related-docs-taxonomy.md
+  - docs/governance/link-maintenance-policy.md
+  - docs/governance/reusable-model-entry-points.md
+  - docs/governance/existing-doc-reuse-procedure.md
+  - docs/governance/network-boundary-and-decay-prevention.md
+  - docs/templates/review-record-template.md
+  - docs/templates/completion-report-template.md
+  - docs/governance/document-decision-policy.md
+  - docs/governance/rework-loop-examples.md
 open_questions:
-  - Story 2.3 建立 candidate promotion workflow 后，是否需要把 promotion evidence 中的 topic/path/name 判断抽成固定记录项？
-  - Story 2.4 建立详细 index synchronization rules 后，是否需要把本文中的 index grouping 检查拆成更细的 add/move/rename/title/topic/status 同步规则？
-  - Story 2.5 建立 rename/migration policy 后，是否需要把 legacy filename、path exception 和 link-impact 处理迁出本文并改为引用迁移政策？
-  - Story 2.6 已建立 duplicate/coexistence policy 后，是否还需要为同 topic 近义文档、重叠概念和共存条件新增更细判定表？
+  - 是否需要把 promotion evidence 中的 topic/path/name 判断抽成固定记录项？
+  - 是否需要把本文中的 index grouping 检查拆成更细的 add/move/rename/title/topic/status 同步规则？
+  - 是否需要把 legacy filename、path exception 和 link-impact 处理迁出本文并改为引用迁移政策？
+  - 是否还需要为同 topic 近义文档、重叠概念和共存条件新增更细判定表？
 ---
 
 # Topic、文件命名与路径归属策略：正式 docs 资产的位置、命名与一致性规则
@@ -58,27 +87,27 @@ open_questions:
 - `docs/methodology/` 下的主方法论、模板、质量门禁、fixed prompt、playbook 和方法论支撑资产。
 - `docs/governance/` 下的治理政策和规则资产。
 - `docs/_reports/` 下已经批准保留的报告资产。
-- 未来明确批准的 `docs/templates/` 和 `docs/runbooks/` 资产。
+- 已批准的 `docs/templates/` 模板资产，以及未来明确批准的 `docs/runbooks/` 资产。
 - 从 `_bmad-output/`、对话输出或候选稿进入正式 `docs/` 前的 topic/path/name 判断。
 
-本文补充 `docs/methodology/document-generation-methodology.md`、`docs/methodology/concept-document-contract.md`、`docs/methodology/intake-and-intent-classification.md`、`docs/methodology/concept-document-quality-gate.md`、`docs/governance/frontmatter-schema.md`、`docs/governance/governance-asset-navigation-policy.md`、`docs/governance/lifecycle-states.md` 和 `docs/governance/batch-readiness-checklist.md`。主方法论仍负责正式概念文档的新建、升级、审查和仓库集成流程；Story 2.1 frontmatter schema 仍负责 required fields、YAML array、`doc_id` 身份和 frontmatter/body 一致性。本文只负责 topic、正式路径、文件名、slug、path ownership 和跨信号一致性。
+本文补充 `docs/methodology/document-generation-methodology.md`、`docs/methodology/concept-document-contract.md`、`docs/methodology/intake-and-intent-classification.md`、`docs/methodology/concept-document-quality-gate.md`、`docs/governance/frontmatter-schema.md`、`docs/governance/governance-asset-navigation-policy.md`、`docs/governance/lifecycle-states.md` 和 `docs/governance/batch-readiness-checklist.md`。主方法论仍负责正式概念文档的新建、升级、审查和仓库集成流程；frontmatter schema 仍负责 required fields、YAML array、`doc_id` 身份和 frontmatter/body 一致性。本文只负责 topic、正式路径、文件名、slug、path ownership 和跨信号一致性。
 
-本文不替代后续 Epic 2、Epic 3、Epic 4、Epic 5 或 Epic 6 的专门资产：
+本文不替代已落地的 Epic 2、Epic 3、Epic 4、Epic 5 专门资产，也不替代未来 Epic 6 的 batch governance 资产：
 
-- Story 2.3 负责 candidate promotion workflow 和 promotion evidence。
-- Story 2.4 负责详细 `docs/index.md` synchronization rules。
-- Story 2.5 负责 rename、migration、split、merge、deprecation、successor 和 link-impact 决策。
-- Story 2.6 负责 duplicate concept 和 same-topic coexistence policy。
-- Epic 3 负责 review record、document decision、rework loop 和 completion report 模板。
-- Story 4.1 负责 revision/regeneration continuity、update mode taxonomy、old-content handling 和 reference validity。
-- Story 4.2 负责 sidecar boundary policy。
-- Story 4.3 负责 legacy migration guide。
-- Epic 5 负责 related docs taxonomy、link maintenance 和 reusable model entry points。
+- `docs/governance/candidate-promotion-checklist.md` 负责 candidate promotion workflow 和 promotion evidence。
+- `docs/governance/index-synchronization-rules.md` 负责详细 `docs/index.md` synchronization rules。
+- `docs/governance/rename-migration-policy.md` 负责 rename、migration、split、merge、deprecation、successor 和 link-impact 决策。
+- `docs/governance/duplicate-and-coexistence-policy.md` 负责 duplicate concept 和 same-topic coexistence policy。
+- `docs/templates/review-record-template.md`、`docs/governance/document-decision-policy.md`、`docs/governance/rework-loop-examples.md` 和 `docs/templates/completion-report-template.md` 负责 review/decision/completion evidence。
+- `docs/governance/revision-regeneration-continuity-policy.md` 负责 revision/regeneration continuity、update mode taxonomy、old-content handling 和 reference validity。
+- `docs/governance/sidecar-boundary-policy.md` 负责 sidecar boundary policy。
+- `docs/governance/legacy-migration-guide.md` 负责 legacy migration guide。
+- `docs/governance/related-docs-taxonomy.md`、`docs/governance/link-maintenance-policy.md`、`docs/governance/reusable-model-entry-points.md`、`docs/governance/existing-doc-reuse-procedure.md` 和 `docs/governance/network-boundary-and-decay-prevention.md` 负责相邻关系、链接维护、复用入口和网络退化路由。
 - Epic 6 负责 batch governance runbook、batch review record 和 batch completion report。
 
 本文自身的 owner entry point 是 `docs/index.md` 的 `governance` 分组。Navigation treatment 是 `listed_in_docs_index`，index treatment 是在 `docs/index.md` 的 `## governance` 下列出 `docs/governance/topic-path-naming-policy.md`。这些归属信息写在正文中，不是新的全局 frontmatter 字段。
 
-当前 `quality_status: draft` 是保守治理状态。原因是本文是 Epic 2 的首版 topic/path/name policy；Story 2.3-2.6 已细化 promotion、index synchronization、migration 和 duplicate/coexistence，后续 Epic 3、Epic 5 和 Epic 6 仍会细化 review evidence、related docs 和 batch execution。
+当前 `quality_status: reviewed` 表示本文已完成 Epic 6 前置稳定化审查：topic/path/name 规则、asset class 边界、路径/索引一致性、相邻治理依赖、链接/索引边界和非软件边界已检查。未解决项保留在 `open_questions` 和维护触发点中；本文不声明 `validated`，因为 Epic 6 batch governance runbook、batch review record 和 batch completion report 仍未落地。
 
 ## 正式路径与资产类别
 
@@ -98,15 +127,15 @@ docs/{topic}/{kebab-case-slug}.md
 | 主方法论和方法论支撑资产 | `docs/methodology/{kebab-case-slug}.md` | 用于定义概念文档生成、升级、审查、模板、质量门禁、fixed prompt、playbook 或方法论支撑规则。 |
 | 治理资产 | `docs/governance/{kebab-case-slug}.md` | 用于约束 Agent 行为、frontmatter、生命周期、导航、版本、批量 readiness、topic/path/name 或其他仓库治理规则。 |
 | 报告/归档性正式资产 | `docs/_reports/{kebab-case-slug}.md` | 用于保留已批准的报告、迁移记录或历史审计入口；`docs/_reports/` 是受控特殊目录，可对应 frontmatter `topic: reports`；不得伪装成普通概念文档。 |
-| 未来模板资产 | `docs/templates/{kebab-case-slug}.md` | 只有在后续 story 或 Maxwell 明确批准该目录和入口后使用。 |
+| 模板资产 | `docs/templates/{kebab-case-slug}.md` | 只有在模板资产已被明确批准为正式入口时使用。 |
 | 未来 runbook 资产 | `docs/runbooks/{kebab-case-slug}.md` | 只有在后续 story 或 Maxwell 明确批准该目录和入口后使用。 |
 | BMad workflow/planning output | `_bmad-output/...` | 可作为 source context、story evidence、planning record 或 candidate source；不是正式 `docs/` 资产。 |
 
-`_bmad-output/` 下的 PRD、Architecture、Epics、Story、readiness report、review output、completion record 和草稿不能被当成正式 `docs/` 资产直接索引或发布。它们可以出现在 `source_basis` 中作为实施依据，但这不会改变它们的 workflow output 生命周期。进入正式 `docs/` 前，必须按 Story 2.3 的 candidate promotion workflow 完成 promotion 判断，并显式检查 target path、frontmatter、topic、filename、source/time context、quality status、related docs、open questions 和 index impact。
+`_bmad-output/` 下的 PRD、Architecture、Epics、Story、readiness report、review output、completion record 和草稿不能被当成正式 `docs/` 资产直接索引或发布。它们可以出现在 `source_basis` 中作为实施依据，但这不会改变它们的 workflow output 生命周期。进入正式 `docs/` 前，必须按 `docs/governance/candidate-promotion-checklist.md` 完成 promotion 判断，并显式检查 target path、frontmatter、topic、filename、source/time context、quality status、related docs、open questions 和 index impact。
 
 正式非概念资产是否进入 `docs/governance/` 或 `docs/methodology/`，按职责判断：
 
-- 如果资产定义仓库治理规则、Agent 约束、生命周期、导航、frontmatter、topic/path/name、batch readiness、版本治理或 future review/completion policy，应进入 `docs/governance/`。
+- 如果资产定义仓库治理规则、Agent 约束、生命周期、导航、frontmatter、topic/path/name、batch readiness、版本治理或 review/completion evidence policy，应进入 `docs/governance/`。
 - 如果资产定义概念文档生成、升级、审查、模板、质量门禁、fixed prompt、学习/建模方法或方法论执行支撑，应进入 `docs/methodology/`。
 - 如果一个文件既像方法论又像治理规则，先看 owner entry point 和主要约束对象；影响主概念文档执行合同的，通常归 `docs/methodology/`；约束跨资产仓库治理的，通常归 `docs/governance/`。无法可靠判断时，记录 open question 或请求 Maxwell 确认。
 
@@ -136,7 +165,7 @@ Topic 歧义必须显性处理。可接受结果只有以下几类：
 | 两个 topic 都合理但一个更贴合 reuse context | 选择更贴合的 topic，记录 rejected alternative 和理由。 |
 | 主题实际属于 governance/methodology/report/template/runbook | 放入对应特殊路径，不强行进入普通 `docs/{topic}/`。 |
 | 信息不足以可靠判断 | 记录 open question 或请求 Maxwell 确认；不得静默选择。 |
-| 可能是 duplicate concept、same-topic coexistence、split/merge 或 successor 问题 | 记录 future-story dependency，交给 Story 2.5 或 Story 2.6；不得在本文范围内擅自合并或迁移。 |
+| 可能是 duplicate concept、same-topic coexistence、split/merge 或 successor 问题 | 记录后续 owner，交给 `docs/governance/rename-migration-policy.md` 或 `docs/governance/duplicate-and-coexistence-policy.md`；不得在本文范围内擅自合并或迁移。 |
 
 未解决 topic ambiguity 会阻塞 strong ready、validated、maintained 或等价通过声明。它必须出现在 `open_questions`、review evidence、completion evidence、story Dev Agent Record 或未来 promotion record 中。不得一边把 topic 当成不确定，一边更新索引和质量状态来暗示已完成归属判断。
 
@@ -192,34 +221,34 @@ Topic directory 和 Markdown filename 必须使用 `kebab-case`。Frontmatter `c
 | --- | --- |
 | title 与 H1 | 含义一致，可以有可读性差异，但不得表达不同对象。 |
 | topic 与目录 | Frontmatter `topic` 与所在目录或受控资产类别映射一致；治理/方法论资产不强行伪装成普通知识 topic，`docs/_reports/` 可以使用 `topic: reports`。 |
-| path 与资产类别 | 普通概念资产在 `docs/{topic}/`；方法论、治理、报告、future templates/runbooks 分别使用对应正式路径。 |
+| path 与资产类别 | 普通概念资产在 `docs/{topic}/`；方法论、治理、报告、模板、future runbooks 分别使用对应正式路径。 |
 | `concept` 与对象边界 | `concept` 指向稳定对象或资产键，不复制完整标题，不与相邻概念混淆。 |
 | filename 与导航 | filename slug 足够描述核心对象，能稳定导航，但不承担身份职责。 |
 | index grouping | `docs/index.md` section 与 path/topic 不误导读者或 Agent。 |
-| `related_docs` 与正文链接 | 链接目标存在且关系合理；缺失目标写入 `open_questions` 或 future-story dependency。 |
+| `related_docs` 与正文链接 | 链接目标存在且关系合理；缺失目标写入 `open_questions` 或 follow-up dependency。 |
 
 发现不一致时，必须记录：
 
 - affected file(s)。
 - 冲突信号，例如 title/path/topic/index grouping 不一致。
-- 选择的 disposition：修正、保留为受控例外、记录 open question、请求 Maxwell 确认、或 defer to future story。
+- 选择的 disposition：修正、保留为受控例外、记录 open question、请求 Maxwell 确认、或 defer to follow-up owner。
 - 处理理由。
-- unresolved follow-up owner 或 story，如果当前 story 不授权修复。
+- unresolved follow-up owner 或 story，如果当前授权范围不覆盖修复。
 
 Legacy exception 不是静默通过。旧文件、历史 slug、旧 index title 或旧 frontmatter 可以暂时保留，但必须不误导当前使用；如果它影响 identity、path ownership、topic boundary、index discovery、quality status 或 lifecycle 语义，应记录为 open question、review finding 或 future migration candidate。
 
-移动、重命名、拆分、合并、废弃、归档和 successor 处理不由本文直接执行。本文只要求在发现相关信号时不要静默处理；详细决策和 link impact 由 Story 2.5 负责。重复概念、同 topic 共存和相邻主题重叠的细则由 Story 2.6 负责。
+移动、重命名、拆分、合并、废弃、归档和 successor 处理不由本文直接执行。本文只要求在发现相关信号时不要静默处理；详细决策和 link impact 由 `docs/governance/rename-migration-policy.md` 负责。重复概念、同 topic 共存和相邻主题重叠的细则由 `docs/governance/duplicate-and-coexistence-policy.md` 负责。
 
 ## 检查清单
 
 新建、晋升、移动、重命名或审查正式 `docs/` 资产前，至少检查：
 
 1. 任务类型已经判定：新建、升级、审查、index-only、methodology maintenance、governance maintenance、planning artifact、archive/deprecation 或 batch governance。
-2. 资产类别已经判定：普通概念/知识资产、methodology asset、governance asset、report、future template、future runbook 或 `_bmad-output/` workflow output。
+2. 资产类别已经判定：普通概念/知识资产、methodology asset、governance asset、report、template、future runbook 或 `_bmad-output/` workflow output。
 3. 目标 path 是否符合资产类别：普通概念资产走 `docs/{topic}/{kebab-case-slug}.md`，特殊资产走对应正式目录。
-4. `_bmad-output/`、对话输出或候选稿是否仍是 candidate；如果要进入 `docs/`，是否记录 promotion 检查或 Story 2.3 dependency。
+4. `_bmad-output/`、对话输出或候选稿是否仍是 candidate；如果要进入 `docs/`，是否记录 promotion 检查或 candidate-promotion dependency。
 5. Topic 是否通过 reuse context、neighboring documents、existing topic directories、`docs/index.md` grouping 和 related docs 检查。
-6. Topic 歧义是否已经解决并记录理由，或作为 open question/future-story dependency 暴露。
+6. Topic 歧义是否已经解决并记录理由，或作为 open question/follow-up dependency 暴露。
 7. Topic directory 和 Markdown filename 是否使用 `kebab-case`。
 8. Frontmatter `concept` 是否使用稳定 `snake_case`，且没有复制完整标题或路径。
 9. `doc_id` 是否保持稳定，并且没有根据 filename、title、path、topic、H1 或 index title 自动改写。
@@ -235,14 +264,14 @@ Legacy exception 不是静默通过。旧文件、历史 slug、旧 index title 
 
 以下变化要求复核本文：
 
-- Story 2.3 建立 candidate promotion workflow 后，复核本文中的 promotion placeholder 和最低 promotion 检查。
-- Story 2.4 建立 detailed `docs/index.md` synchronization rules 后，复核本文中的 index grouping、一致性检查和 navigation treatment 表述。
-- Story 2.5 建立 rename/migration/split/merge/deprecation/successor/link-impact policy 后，复核 filename/path exception 和 legacy handling。
-- Story 2.6 已建立 duplicate concept 与 same-topic coexistence policy；后续若该政策改变 topic ambiguity 或 overlap handling，复核本文。
-- Epic 3 建立 review record、document decision policy、rework loop 或 completion report template 后，复核本文要求的 rationale、open question 和 evidence 记录位置。
-- Story 4.1 已建立 revision/regeneration continuity policy；后续若该政策更新，复核 path、identity、old-content handling 和 reference validity 规则。
-- Story 4.2 或 Story 4.3 建立 sidecar boundary 或 legacy migration guide 后，复核 sidecar path 和 legacy exception 规则。
-- Epic 5 建立 related docs taxonomy、link maintenance 或 reusable model entry points 后，复核 related docs、neighboring documents 和 reuse context 的判断顺序。
+- Candidate promotion workflow 更新后，复核本文中的 promotion placeholder 和最低 promotion 检查。
+- Detailed `docs/index.md` synchronization rules 更新后，复核本文中的 index grouping、一致性检查和 navigation treatment 表述。
+- Rename/migration/split/merge/deprecation/successor/link-impact policy 更新后，复核 filename/path exception 和 legacy handling。
+- Duplicate concept 与 same-topic coexistence policy 更新后，复核本文的 topic ambiguity 或 overlap handling。
+- Review record、document decision policy、rework loop 或 completion report template 更新后，复核本文要求的 rationale、open question 和 evidence 记录位置。
+- Revision/regeneration continuity policy 更新后，复核 path、identity、old-content handling 和 reference validity 规则。
+- Sidecar boundary policy 或 legacy migration guide 更新后，复核 sidecar path 和 legacy exception 规则。
+- Related docs taxonomy、link maintenance、reusable model entry points、existing-doc reuse procedure 或 network boundary / decay prevention policy 更新后，复核 related docs、neighboring documents 和 reuse context 的判断顺序。
 - Epic 6 建立 batch governance runbook、batch review record 或 batch completion report 后，复核本文的 batch exclusion 和 non-output 边界。
 - Maxwell 明确授权新 topic taxonomy、machine-readable schema、executable validation tooling、lint/scoring automation、批量 normalization 或 index restructuring。
 
@@ -252,12 +281,26 @@ Legacy exception 不是静默通过。旧文件、历史 slug、旧 index title 
 
 - [Knowledge Docs Index](../index.md)
 - [Frontmatter schema 与 doc_id 身份规则：正式 docs 资产的元数据基线](./frontmatter-schema.md)
+- [候选文档晋升 Checklist：从工作流输出到正式 docs 资产的治理门禁](./candidate-promotion-checklist.md)
+- [docs/index.md 同步与导航治理规则：正式导航入口的更新、排除与证据要求](./index-synchronization-rules.md)
+- [重命名、路径迁移与废弃治理：身份连续性、旧内容处理、继任入口与链接索引影响](./rename-migration-policy.md)
+- [重复概念与同主题共存治理：合并、相邻链接、窄化、保留与拒绝决策](./duplicate-and-coexistence-policy.md)
+- [修订、重生成与版本连续性策略：更新模式、旧内容处理、身份连续性与引用有效性](./revision-regeneration-continuity-policy.md)
+- [Sidecar 边界政策：正式文档、临时记录、草稿与旁注的归属规则](./sidecar-boundary-policy.md)
+- [Legacy Migration Guide：旧文档迁移、保留、归档与兼容处理](./legacy-migration-guide.md)
+- [related docs 与相邻概念关系分类：关系类型、边界区分、meaningful-link evidence 与 unresolved target handling](./related-docs-taxonomy.md)
+- [链接维护政策：正文链接、related_docs、入链影响与失效链接处置](./link-maintenance-policy.md)
+- [可复用模型入口治理：稳定入口、边界、迁移提示与跨文档复用路径](./reusable-model-entry-points.md)
+- [既有文档复用流程：新问题先检索、匹配、复用、再决定是否新建](./existing-doc-reuse-procedure.md)
+- [网络边界与退化预防：限制链接噪声、关系漂移与维护失控](./network-boundary-and-decay-prevention.md)
+- [Review Record Template](../templates/review-record-template.md)
+- [Completion Report Template](../templates/completion-report-template.md)
+- [文档决策政策：接受、修订、拒绝与延后记录的治理规则](./document-decision-policy.md)
+- [返工循环示例：从审查发现到修订记录的闭环样例](./rework-loop-examples.md)
 - [统一概念文档规范：新建、升级、审查与仓库集成](../methodology/document-generation-methodology.md)
 - [概念文档生成合同：输入、输出、边界与必需信息位点](../methodology/concept-document-contract.md)
 - [输入摄入与任务意图判定：任务类型、文档路径、深度与缺失输入处理](../methodology/intake-and-intent-classification.md)
 - [统一概念文档质量门禁](../methodology/concept-document-quality-gate.md)
 - [治理资产导航、索引与入口归属政策](./governance-asset-navigation-policy.md)
-- [重复概念与同主题共存治理：合并、相邻链接、窄化、保留与拒绝决策](./duplicate-and-coexistence-policy.md)
-- [修订、重生成与版本连续性策略：更新模式、旧内容处理、身份连续性与引用有效性](./revision-regeneration-continuity-policy.md)
 - [文档生命周期状态：草稿、审查、验证、废弃与归档转换规则](./lifecycle-states.md)
 - [批量治理 Readiness Checklist：范围、冲突、停止条件与恢复策略](./batch-readiness-checklist.md)
