@@ -56,7 +56,7 @@ related_docs:
   - docs/methodology/concept-document-quality-gate.md
   - docs/methodology/source-discipline-and-real-world-anchor-policy.md
 open_questions:
-  - `docs/governance/legacy-migration-guide.md` 已建立后，是否需要在后续审查中为 old sidecar、legacy notes 和 historical support material 补充更细的 worked examples？
+  - "`docs/governance/legacy-migration-guide.md` 已建立后，是否需要在后续审查中为 old sidecar、legacy notes 和 historical support material 补充更细的 worked examples？"
   - Story 5.1 related-doc taxonomy 与 Story 5.2 link maintenance policy 已建立；后续是否需要区分 sidecar link、supporting link、successor link、related_docs 和 owner entry 的维护关系？
   - Epic 6 建立 batch governance runbook 后，是否需要把 sidecar inventory、bulk disconnect 和 batch support-asset cleanup 转入专门 runbook records？
 ---

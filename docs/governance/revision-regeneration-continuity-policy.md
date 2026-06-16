@@ -56,7 +56,7 @@ related_docs:
   - docs/methodology/concept-document-quality-gate.md
   - docs/methodology/source-discipline-and-real-world-anchor-policy.md
 open_questions:
-  - `docs/governance/legacy-migration-guide.md` 已建立后，是否需要在后续审查中把 structural upgrade 与 legacy migration 的交界条件补充为更细的 worked examples？
+  - "`docs/governance/legacy-migration-guide.md` 已建立后，是否需要在后续审查中把 structural upgrade 与 legacy migration 的交界条件补充为更细的 worked examples？"
   - Story 5.1 related-doc taxonomy 与 Story 5.2 link maintenance policy 已建立；后续是否需要细分 reference validity、successor link、supporting link 和 related_docs impact 的维护记录？
   - Epic 6 建立 batch governance runbook 后，是否需要把 batch regeneration / batch migration continuity records 转入专门 runbook records？
 ---
