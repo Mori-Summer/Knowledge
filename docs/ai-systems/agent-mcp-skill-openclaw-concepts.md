@@ -5,14 +5,15 @@ concept: agent_stack_layering
 topic: ai-systems
 depth_mode: deep
 created_at: '2026-03-16T00:00:00+08:00'
-updated_at: '2026-04-08T19:51:22+08:00'
+updated_at: '2026-06-16T14:29:40+08:00'
 source_basis:
   - agent_mcp_skill_prompt_layering_resynthesis_2026_04_08
   - prompt_doc_alignment_checked_2026_04_08
   - skill_doc_alignment_checked_2026_04_08
   - mcp_official_architecture_docs_checked_2026_04_08
   - openclaw_architecture_and_agent_docs_checked_2026_04_08
-time_context: foundational_model_plus_official_protocol_and_runtime_docs_checked_2026_04_08
+  - repository_skill_paths_and_entry_behavior_rechecked_2026_06_16
+time_context: foundational_model_plus_official_protocol_and_runtime_docs_checked_2026_04_08_and_repository_skill_paths_and_entry_behavior_rechecked_2026_06_16
 applicability: ai_agent_architecture_analysis_protocol_layering_and_runtime_boundary_judgment
 prompt_version: concept_generation_prompt_v3
 template_version: unified_spec_v1
@@ -200,13 +201,13 @@ flowchart TD
 ### 8.4 当前仓库中的 skill 体系：本地可观察的资产层
 
 这个仓库本身也提供了一个现实锚点：  
-[bmad-tech-writer/SKILL.md](../../.agents/skills/bmad-tech-writer/SKILL.md)、[bmad-help/SKILL.md](../../.agents/skills/bmad-help/SKILL.md) 和 [bmad-quick-dev-new-preview/SKILL.md](../../.agents/skills/bmad-quick-dev-new-preview/SKILL.md) 展示了 skill 如何作为入口层、workflow 入口和完整工作方法包存在。  
+[bmad-agent-tech-writer/SKILL.md](../../.agents/skills/bmad-agent-tech-writer/SKILL.md)、[bmad-help/SKILL.md](../../.agents/skills/bmad-help/SKILL.md) 和 [bmad-quick-dev/SKILL.md](../../.agents/skills/bmad-quick-dev/SKILL.md) 展示了 skill 如何作为 agent 入口、路由入口和完整工作方法包存在。
 这恰好可以用来观察 `Prompt`、`Skill`、`Agent` 三层之间的分工，而不用只停留在抽象定义。
 
 ## 9. 当前推荐实践、过时路径与替代
 
 本节涉及当前实践判断。  
-其中 MCP 与 OpenClaw 的外部锚点，核对日期为 `2026-04-08`；仓库内 prompt / skill 分层观察，核对日期也为 `2026-04-08`。
+其中 MCP 与 OpenClaw 的外部锚点，核对日期为 `2026-04-08`；仓库内 prompt / skill 分层观察源自 `2026-04-08`，本地 skill 路径与入口行为已在 `2026-06-16` 补充复核。
 
 当前更稳的方向通常是：
 
@@ -270,9 +271,9 @@ flowchart TD
 - [Skill：把 SOP、约束与操作策略沉淀成可复用行为资产](./skill.md)
 - [MCP：把工具、资源与提示接成标准能力面的协议层](./mcp.md)
 - [统一概念文档规范：新建、升级、审查与仓库集成](../methodology/document-generation-methodology.md)
-- [bmad-tech-writer/SKILL.md](../../.agents/skills/bmad-tech-writer/SKILL.md)
+- [bmad-agent-tech-writer/SKILL.md](../../.agents/skills/bmad-agent-tech-writer/SKILL.md)
 - [bmad-help/SKILL.md](../../.agents/skills/bmad-help/SKILL.md)
-- [bmad-quick-dev-new-preview/SKILL.md](../../.agents/skills/bmad-quick-dev-new-preview/SKILL.md)
+- [bmad-quick-dev/SKILL.md](../../.agents/skills/bmad-quick-dev/SKILL.md)
 - [MCP Learn: Architecture](https://modelcontextprotocol.io/docs/learn/architecture)
 - [MCP Specification 2025-06-18: Server Prompts](https://modelcontextprotocol.io/specification/2025-06-18/server/prompts)
 - [OpenClaw: Gateway Architecture](https://docs.openclaw.ai/architecture)
