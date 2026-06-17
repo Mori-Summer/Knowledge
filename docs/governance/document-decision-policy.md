@@ -5,7 +5,7 @@ concept: document_decision_policy
 topic: governance
 depth_mode: standard
 created_at: '2026-05-27T10:45:17+08:00'
-updated_at: '2026-05-28T10:04:11+08:00'
+updated_at: '2026-06-17T10:21:48+08:00'
 source_basis:
   - _bmad-output/planning-artifacts/prd.md
   - _bmad-output/planning-artifacts/architecture.md
@@ -31,11 +31,17 @@ source_basis:
   - docs/governance/revision-regeneration-continuity-policy.md
   - docs/governance/batch-readiness-checklist.md
   - docs/governance/rework-loop-examples.md
-time_context: phase_4_epic_4_revision_regeneration_continuity_policy_2026_05_28
+  - docs/governance/related-docs-taxonomy.md
+  - docs/governance/link-maintenance-policy.md
+  - docs/governance/reusable-model-entry-points.md
+  - docs/governance/existing-doc-reuse-procedure.md
+  - docs/governance/network-boundary-and-decay-prevention.md
+  - _bmad-output/implementation-artifacts/stabilization-status-2026-06-15.md
+time_context: stabilization_epic_3_evidence_asset_review_2026_06_17
 applicability: formal_docs_review_decision_governance
 prompt_version: not_applicable
 template_version: governance_asset_v1
-quality_status: draft
+quality_status: reviewed
 related_docs:
   - docs/index.md
   - docs/templates/review-record-template.md
@@ -54,9 +60,14 @@ related_docs:
   - docs/governance/revision-regeneration-continuity-policy.md
   - docs/governance/batch-readiness-checklist.md
   - docs/governance/rework-loop-examples.md
+  - docs/governance/related-docs-taxonomy.md
+  - docs/governance/link-maintenance-policy.md
+  - docs/governance/reusable-model-entry-points.md
+  - docs/governance/existing-doc-reuse-procedure.md
+  - docs/governance/network-boundary-and-decay-prevention.md
 open_questions:
   - 如果 completion-report template 后续调整 accepted/returned/regenerated/deprecated/held outcome mapping，是否需要同步本文 copyable decision summary skeleton？
-  - Epic 5 建立 related-doc taxonomy 与 link maintenance policy 后，是否需要细分 index/link/related-doc impact 的证据分类？
+  - related-doc taxonomy、link maintenance、reusable model entry point、existing-doc reuse 或 network boundary policy 更新后，是否需要细分 index/link/related-doc impact 的证据分类？
   - Epic 6 建立 batch governance runbook 与 batch records 后，是否需要为批量 review decision 汇总增加专门引用方式？
 ---
 
@@ -85,7 +96,7 @@ open_questions:
 
 本文自身的 owner entry point 是 `docs/index.md` 的 `governance` 分组。Navigation treatment 是 `listed_in_docs_index`，index treatment 是在 `docs/index.md` 的 `## governance` 下列出 `docs/governance/document-decision-policy.md`。这些归属信息写在正文中，不是新的全局 frontmatter 字段。
 
-当前 `quality_status: draft` 是保守治理状态。原因是本文是 Story 3.2 首版 document decision policy；Story 3.3 已建立 rework-loop examples，Story 3.4 已建立 completion-report template，Epic 5 和 Epic 6 后续仍会细化链接分类和批量记录。
+当前 `quality_status: reviewed` 表示本文已完成 Epic 6 前置稳定化审查：decision prerequisites、allowed final decision labels、status vocabulary separation、blocker precedence、weak evidence handling、regenerate/reject/hold/defer/not_authorized boundaries、owner/index entry、相关治理依赖、链接/索引边界和非软件边界已检查。未解决项保留在 `open_questions` 和维护触发点中；本文不声明 `validated`，因为 Epic 6 batch governance runbook、batch review record 和 batch completion report 仍未落地。
 
 本文自身的 Index Impact Decision Record 是：
 
@@ -100,7 +111,7 @@ Index Impact Decision Record
 - action taken: add governance entry and update index metadata
 - reason: Story 3.2 explicitly authorizes the canonical document-decision policy asset
 - validation result: target exists and relative link resolves
-- unresolved risk: none for this index entry; completion-report/Epic 5/Epic 6 integrations remain open questions
+- unresolved risk: none for this index entry; completion-report and Epic 5 link/network integrations are referenced; Epic 6 batch integrations remain open questions
 ```
 
 ## 职责边界与非目标
@@ -111,7 +122,7 @@ Index Impact Decision Record
 
 - Story 3.3 rework-loop examples：失败类别、返工路径和示例库已由 `docs/governance/rework-loop-examples.md` 定义。
 - `docs/templates/completion-report-template.md`：最终完成汇报模板和项目级完成摘要。
-- Epic 5 related-doc taxonomy、link maintenance、reusable model entry point 或 existing-doc reuse procedure。
+- related-doc taxonomy、link maintenance、reusable model entry point、existing-doc reuse procedure 或 network boundary policy。
 - Epic 6 batch governance runbook、batch review record 或 batch completion report。
 - 既有正式资产的实际 review records、批量审查记录、评分报告、完成报告或状态迁移。
 - executable tooling、machine-readable schema、JSON/YAML schema、lint/scoring tool、decision generator、review-record generator、CLI/API/UI/database/deployment/CI、package manifest、`src/` 或 `tests/`。
@@ -300,7 +311,7 @@ Blocking defer 不能被包装成 accepted。Nonblocking defer 也必须进入 f
 Not authorized 用于请求或必要动作越过当前授权边界，例如：
 
 - 非软件边界：要求 runtime code、package manifest、software tests、automation、CLI/API/UI/database/deployment/CI。
-- Future-story boundary：提前实现未授权或尚未到期的 Epic 5、Epic 6 资产，或在已落地 Story 3.3/3.4 范围外扩展 rework-loop 或 completion-report policy。
+- Future-story boundary：提前实现未授权或尚未到期的 Epic 6 或其他未来资产，或在已落地 Story 3.3/3.4 和 Epic 5 资产边界外扩展 rework-loop、completion-report 或 link/network policy。
 - Schema boundary：新增未经授权 frontmatter 字段、machine-readable schema、validators 或 status fields。
 - Batch readiness boundary：未完成 batch readiness 却要求批量状态转换、批量索引、批量迁移、批量 link repair 或批量 review。
 - Active workflow contract：修改 story/sprint 状态、BMad skill、Agent 行为或 workflow hook 超出当前任务授权。
@@ -373,13 +384,13 @@ If the decision is not `accept_promote`, the summary must make clear what preven
 12. `docs/index.md` 有 `## governance` entry，relative link 从 `docs/index.md` 可解析。
 13. Changed-file links、body links 和 `related_docs` targets 存在；planned targets 只出现在 `open_questions` 或 future-story dependency。
 14. Lifecycle/quality-status vocabulary 与当前治理规则兼容，不伪造 review、validation、migration、promotion、lifecycle 或 batch evidence。
-15. 未创建 runtime code、package manifest、source tree、software tests、build config、automation、CLI/API/UI/database/deployment/CI、decision generator、validation script、额外 completion-report asset、Epic 5 asset、Epic 6 asset 或 actual review record。
+15. 未创建 runtime code、package manifest、source tree、software tests、build config、automation、CLI/API/UI/database/deployment/CI、decision generator、validation script、额外 completion-report asset、额外 Epic 5 asset、Epic 6 asset 或 actual review record。
 
 以下变化要求复核本文：
 
 - `docs/governance/rework-loop-examples.md` 的 failure classes、repair instruction、regeneration rationale 或 resubmission vocabulary 发生实质变更。
 - `docs/templates/completion-report-template.md` 的 outcome mapping、completion summary 或 blocker/follow-up 字段发生实质变更。
-- Epic 5 建立 related docs taxonomy、link maintenance、reusable model entry point 或 existing-doc reuse procedure。
+- related docs taxonomy、link maintenance、reusable model entry point、existing-doc reuse procedure 或 network boundary policy 发生实质变更。
 - Epic 6 建立 batch governance runbook、batch change review record 或 batch completion report。
 - Maxwell 明确授权 machine-readable schema、executable validation tooling、decision generator、review-record generator、lint/scoring automation 或批量审查记录。
 - `quality_status`、lifecycle、frontmatter schema、promotion、index、migration、duplicate/coexistence 或 batch readiness vocabulary 发生实质治理变更。

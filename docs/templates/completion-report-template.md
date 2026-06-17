@@ -5,7 +5,7 @@ concept: completion_report_template
 topic: templates
 depth_mode: standard
 created_at: '2026-05-27T14:52:11+08:00'
-updated_at: '2026-05-28T15:29:36+08:00'
+updated_at: '2026-06-17T10:21:48+08:00'
 source_basis:
   - _bmad-output/planning-artifacts/prd.md
   - _bmad-output/planning-artifacts/architecture.md
@@ -27,13 +27,21 @@ source_basis:
   - docs/governance/rename-migration-policy.md
   - docs/governance/duplicate-and-coexistence-policy.md
   - docs/governance/revision-regeneration-continuity-policy.md
+  - docs/governance/sidecar-boundary-policy.md
+  - docs/governance/legacy-migration-guide.md
   - docs/governance/batch-readiness-checklist.md
   - docs/methodology/source-discipline-and-real-world-anchor-policy.md
-time_context: phase_4_epic_4_revision_regeneration_continuity_policy_2026_05_28
+  - docs/governance/related-docs-taxonomy.md
+  - docs/governance/link-maintenance-policy.md
+  - docs/governance/reusable-model-entry-points.md
+  - docs/governance/existing-doc-reuse-procedure.md
+  - docs/governance/network-boundary-and-decay-prevention.md
+  - _bmad-output/implementation-artifacts/stabilization-status-2026-06-15.md
+time_context: stabilization_epic_3_evidence_asset_review_2026_06_17
 applicability: formal_docs_completion_quality_status_and_decision_reporting
 prompt_version: not_applicable
 template_version: template_asset_v1
-quality_status: draft
+quality_status: reviewed
 related_docs:
   - docs/index.md
   - docs/templates/review-record-template.md
@@ -48,11 +56,18 @@ related_docs:
   - docs/governance/rename-migration-policy.md
   - docs/governance/duplicate-and-coexistence-policy.md
   - docs/governance/revision-regeneration-continuity-policy.md
+  - docs/governance/sidecar-boundary-policy.md
+  - docs/governance/legacy-migration-guide.md
   - docs/governance/batch-readiness-checklist.md
   - docs/methodology/source-discipline-and-real-world-anchor-policy.md
+  - docs/governance/related-docs-taxonomy.md
+  - docs/governance/link-maintenance-policy.md
+  - docs/governance/reusable-model-entry-points.md
+  - docs/governance/existing-doc-reuse-procedure.md
+  - docs/governance/network-boundary-and-decay-prevention.md
 open_questions:
   - Story 4.1 已建立 revision/regeneration continuity policy；后续若 Continuity Record 字段变化，是否需要同步本文 specialized records summary？
-  - Epic 5 related-doc taxonomy 与 link maintenance policy 已建立；后续是否需要细分 link impact、related_docs impact、owner entry 和 successor link 字段？
+  - related-doc taxonomy、link maintenance、reusable model entry point、existing-doc reuse 或 network boundary policy 更新后，是否需要细分 link impact、related_docs impact、owner entry 和 successor link 字段？
   - Epic 6 建立 batch completion report template 后，是否需要把本文的单项 completion report 与批量 completion report 字段对齐？
 ---
 
@@ -73,7 +88,7 @@ open_questions:
 
 本文自身的 owner entry point 是 `docs/index.md` 的 `templates` 分组。Navigation treatment 是 `listed_in_docs_index`，index treatment 是在 `docs/index.md` 的 `## templates` 下列出 `docs/templates/completion-report-template.md`。这些归属信息写在正文中，不是新的全局 frontmatter 字段。
 
-当前 `quality_status: draft` 是保守模板资产状态。原因是本文是 Story 3.4 首版 completion-report template；Story 4.1 已建立 revision/regeneration continuity policy，`docs/governance/sidecar-boundary-policy.md` 和 `docs/governance/legacy-migration-guide.md` 已提供 sidecar / legacy migration 的相邻 evidence 入口，Epic 5 和 Epic 6 后续仍会细化 link/network governance 和 batch completion reporting。
+当前 `quality_status: reviewed` 表示本文已完成 Epic 6 前置稳定化审查：completion scope classification、changed files evidence、methodology/template/source context、quality gate/equivalent check、`quality_status` impact、final decision/follow-up、specialized records summary、impact scope、completion wording、owner/index entry、相关治理依赖、链接/索引边界和非软件边界已检查。未解决项保留在 `open_questions` 和维护触发点中；本文不声明 `validated`，因为 Epic 6 batch governance runbook、batch review record 和 batch completion report 仍未落地。
 
 本文与相邻资产的关系如下：
 
@@ -85,7 +100,7 @@ open_questions:
 | Story 3.1 review-record template | 引用 review classification、Hard Fail、score/equivalent check、`未验证`/`不适用` register 和 final decision evidence。 |
 | Story 3.2 document-decision policy | 使用其 final decision labels、blocking/status values、allowed wording 和 `quality_status` impact 规则。 |
 | Story 3.3 rework-loop examples | 汇总 failure class、repair instruction、regeneration rationale、prior failure record 和 resubmission outcome。 |
-| Story 4.1 / Story 4.2 / Story 4.3 / Epic 5 / Epic 6 | 汇总 revision/regeneration continuity、sidecar boundary 和 legacy migration assessment evidence；仅记录 link taxonomy、runbook 或 batch completion template 的 future dependency 和 maintenance trigger。 |
+| Story 4.1 / Story 4.2 / Story 4.3 / Epic 5 / Epic 6 | 汇总 revision/regeneration continuity、sidecar boundary、legacy migration assessment、link taxonomy、reuse 和 network boundary evidence；仅把 Epic 6 runbook 或 batch completion template 记录为 future dependency 和 maintenance trigger。 |
 
 本文自身的 Index Impact Decision Record 是：
 
@@ -100,7 +115,7 @@ Index Impact Decision Record
 - action taken: add template entry and update index metadata
 - reason: Story 3.4 explicitly authorizes the canonical completion-report template asset
 - validation result: target exists and relative link resolves
-- unresolved risk: none for this index entry; Story 4.1 continuity, Story 4.2 sidecar and Story 4.3 legacy migration integrations are referenced, while Epic 5 link taxonomy and Epic 6 batch integrations remain open questions
+- unresolved risk: none for this index entry; Story 4.1 continuity, sidecar, legacy migration and Epic 5 link/network integrations are referenced; Epic 6 batch integrations remain open questions
 ```
 
 ## 职责边界与非目标
@@ -114,7 +129,7 @@ Index Impact Decision Record
 - Story 3.2 document-decision policy 的 final decision 语义。
 - Story 3.3 rework-loop examples 的 failure classes、repair instructions、regeneration examples 或 resubmission checks。
 - Story 4.1 revision/regeneration continuity policy 的 Continuity Record 字段；`docs/governance/sidecar-boundary-policy.md` 或 `docs/governance/legacy-migration-guide.md` 的相邻 evidence 规则。
-- Epic 5 related-doc taxonomy、link maintenance、reusable model entry points 或 existing-doc reuse procedure。
+- related-doc taxonomy、link maintenance、reusable model entry points、existing-doc reuse procedure 或 network boundary policy。
 - Epic 6 batch governance runbook、batch change review record 或 batch completion report template。
 - executable tooling、machine-readable schema、JSON/YAML schema、validator、lint/scoring tool、completion-report generator、decision generator、CLI/API/UI/database/deployment/CI、package manifest、`src/` 或 `tests/`。
 
@@ -505,14 +520,14 @@ Do not write ready, publication-ready, accepted, promoted, validated, maintained
 14. `docs/index.md` 有 `## templates` entry，relative link 从 `docs/index.md` 可解析。
 15. Changed-file links、body links 和 `related_docs` targets 存在；planned targets 只出现在 `open_questions` 或 future-story dependency。
 16. Lifecycle/quality-status vocabulary 与当前治理规则兼容，不伪造 review、validation、migration、promotion、lifecycle 或 batch evidence。
-17. 未创建 runtime code、package manifest、source tree、software tests、build config、automation、CLI/API/UI/database/deployment/CI、completion-report generator、decision generator、validation script、batch completion template、Story 4.2/4.3 asset、Epic 5 asset、Epic 6 asset 或 actual completion report。
+17. 未创建 runtime code、package manifest、source tree、software tests、build config、automation、CLI/API/UI/database/deployment/CI、completion-report generator、decision generator、validation script、batch completion template、额外 sidecar/legacy/Epic 5 asset、Epic 6 asset 或 actual completion report。
 
 以下变化要求复核本文：
 
 - Story 3.1 review-record template、Story 3.2 document-decision policy 或 Story 3.3 rework-loop examples 的字段、label、blocking/status values 或 resubmission vocabulary 发生实质变更。
 - Story 4.1 revision/regeneration continuity policy 的 Continuity Record 字段变化。
 - `docs/governance/sidecar-boundary-policy.md` 或 `docs/governance/legacy-migration-guide.md` 的相邻 evidence 规则发生实质变更。
-- Epic 5 related-doc taxonomy、link maintenance policy、reusable model entry point、existing-doc reuse procedure 或后续 network governance 更新。
+- related-doc taxonomy、link maintenance policy、reusable model entry point、existing-doc reuse procedure 或后续 network governance 更新。
 - Epic 6 建立 batch governance runbook、batch change review record 或 batch completion report template。
 - Maxwell 明确授权 machine-readable schema、executable validation tooling、completion-report generator、decision generator、review-record generator、lint/scoring automation、batch completion reports 或批量状态迁移。
 - `quality_status`、lifecycle、frontmatter schema、promotion、index、migration、duplicate/coexistence 或 batch readiness vocabulary 发生实质治理变更。
@@ -536,3 +551,8 @@ Do not write ready, publication-ready, accepted, promoted, validated, maintained
 - [修订、重生成与版本连续性策略：更新模式、旧内容处理、身份连续性与引用有效性](../governance/revision-regeneration-continuity-policy.md)
 - [批量治理 Readiness Checklist：范围、冲突、停止条件与恢复策略](../governance/batch-readiness-checklist.md)
 - [来源纪律与真实世界锚点政策：当前实践、历史路径与不可验证声明处理](../methodology/source-discipline-and-real-world-anchor-policy.md)
+- [related docs 与相邻概念关系分类：关系类型、边界区分、meaningful-link evidence 与 unresolved target handling](../governance/related-docs-taxonomy.md)
+- [跨文档链接维护政策：existence/path/topic/meaning checks、inbound/outbound review、one-way reason 与 boundary conflict handling](../governance/link-maintenance-policy.md)
+- [可复用模型入口政策：core model、boundary rule、decision frame、failure pattern 与 verification method](../governance/reusable-model-entry-points.md)
+- [既有文档复用流程：发现、对齐、复用决策与避免重复生成](../governance/existing-doc-reuse-procedure.md)
+- [知识网络主题边界与退化防护政策](../governance/network-boundary-and-decay-prevention.md)
