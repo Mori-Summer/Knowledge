@@ -5,7 +5,7 @@ concept: legacy_migration_guide
 topic: governance
 depth_mode: standard
 created_at: '2026-05-28T15:29:36+08:00'
-updated_at: '2026-05-28T16:57:49+08:00'
+updated_at: '2026-06-17T10:48:01+08:00'
 source_basis:
   - _bmad-output/project-context.md
   - _bmad-output/planning-artifacts/prd.md
@@ -28,11 +28,17 @@ source_basis:
   - docs/methodology/intake-and-intent-classification.md
   - docs/methodology/concept-document-quality-gate.md
   - docs/methodology/source-discipline-and-real-world-anchor-policy.md
-time_context: phase_4_epic_4_legacy_migration_guide_2026_05_28
+  - docs/governance/related-docs-taxonomy.md
+  - docs/governance/link-maintenance-policy.md
+  - docs/governance/reusable-model-entry-points.md
+  - docs/governance/existing-doc-reuse-procedure.md
+  - docs/governance/network-boundary-and-decay-prevention.md
+  - _bmad-output/implementation-artifacts/stabilization-status-2026-06-15.md
+time_context: stabilization_epic_4_continuity_migration_governance_review_2026_06_17
 applicability: formal_docs_legacy_migration_and_compatibility_governance
 prompt_version: not_applicable
 template_version: governance_asset_v1
-quality_status: draft
+quality_status: reviewed
 related_docs:
   - docs/index.md
   - docs/governance/frontmatter-schema.md
@@ -50,8 +56,13 @@ related_docs:
   - docs/methodology/intake-and-intent-classification.md
   - docs/methodology/concept-document-quality-gate.md
   - docs/methodology/source-discipline-and-real-world-anchor-policy.md
+  - docs/governance/related-docs-taxonomy.md
+  - docs/governance/link-maintenance-policy.md
+  - docs/governance/reusable-model-entry-points.md
+  - docs/governance/existing-doc-reuse-procedure.md
+  - docs/governance/network-boundary-and-decay-prevention.md
 open_questions:
-  - Story 5.1 related-doc taxonomy 与 Story 5.2 link maintenance policy 已建立；后续是否需要细分 legacy successor link、supporting link、related_docs、owner entry 和 inbound/outbound evidence？
+  - related-doc taxonomy、link maintenance、reusable model entry points、existing-doc reuse 或 network boundary policy 更新后，是否需要细分 legacy successor link、supporting link、related_docs、owner entry 和 inbound/outbound evidence？
   - Epic 6 建立 batch governance runbook、batch change review record 或 batch completion report 后，是否需要把 batch legacy migration assessment 转入专门 runbook records？
   - Maxwell 后续明确授权 actual legacy inventory 或 named old-doc migration 后，是否需要为本政策补充真实 migration examples？
 ---
@@ -71,7 +82,7 @@ open_questions:
 
 本文的 owner entry point 是 `docs/index.md` 的 `governance` 分组。Navigation treatment 是 `listed_in_docs_index`，index treatment 是在 `docs/index.md` 的 `## governance` 下列出 `docs/governance/legacy-migration-guide.md`。这些归属信息写在正文中，不是新的全局 frontmatter 字段。
 
-当前 `quality_status: draft` 是保守治理状态。原因是本文是 Epic 4 首版 legacy migration guide；Story 5.1 已细化 related-doc taxonomy，Story 5.2+ 仍会细化 link maintenance、existing-doc reuse、reusable model entry points 和 network governance，Epic 6 仍会细化 batch governance runbook、batch review record 和 batch completion report。
+当前 `quality_status: reviewed` 表示本文已完成 Epic 6 前置稳定化审查：legacy asset classes、migration gap taxonomy、old-content preservation、migration/compatibility outcomes、batch-risk criteria、sample-check requirements、Legacy Migration Assessment Record、remaining-gap wording、相邻治理依赖和非软件边界已检查。未解决项保留在 `open_questions` 和维护触发点中；本文不声明 `validated`，因为 Epic 6 batch governance runbook、batch review record 和 batch completion report 仍未落地。
 
 本文自身的 Index Impact Decision Record 是：
 
@@ -86,7 +97,7 @@ Index Impact Decision Record
 - action taken: add governance entry and update index metadata
 - reason: Story 4.3 explicitly authorizes the canonical legacy migration and old-document compatibility governance asset
 - validation result: target exists and relative link resolves
-- unresolved risk: Epic 5 link taxonomy/link maintenance and Epic 6 batch runbook integrations remain open questions
+- unresolved risk: Epic 5 link/reuse/network integrations are referenced as current adjacent assets; Epic 6 batch integrations remain open questions
 ```
 
 ## 职责边界与非目标
@@ -97,7 +108,7 @@ Index Impact Decision Record
 
 - actual old-doc inventory、旧文档升级、旧文档重生成、旧路径清理、旧 report 归档、sidecar extraction、batch migration、batch link/index repair、batch frontmatter normalization、batch status conversion 或 source/currentness sweep。
 - candidate promotion、duplicate/coexistence、rename/move/replacement/successor/deprecation/archive、revision/regeneration、sidecar boundary、index synchronization、source discipline、review decision 或 completion reporting 的完整模型；这些由相邻资产负责。
-- Epic 5 的 related-doc taxonomy、general link maintenance、existing-doc reuse、reusable model entry points 或 knowledge-network decay assets。
+- related-doc taxonomy、general link maintenance、existing-doc reuse、reusable model entry points 或 knowledge-network decay assets。
 - Epic 6 的 batch governance runbook、batch change review record、batch completion report template 或 batch execution records。
 - runtime code、package manifest、source tree、software tests、CLI/API/UI/database/deployment/CI、machine-readable schema、validator、generator、link scanner、index generator、migration script、completion-report generator、decision generator、lint/scoring tool 或 executable automation。
 
@@ -399,7 +410,7 @@ Use this guide as the legacy assessment entry point, then route specialized deci
 
 Future-owner boundaries:
 
-- Story 5.1 owns detailed related-doc taxonomy；Story 5.2+ owns general link maintenance、existing-doc reuse、reusable model entry points 和 knowledge-network decay prevention。本文只记录这些缺口和 future dependency。
+- `docs/governance/related-docs-taxonomy.md` owns detailed related-doc taxonomy；`docs/governance/link-maintenance-policy.md` owns general link maintenance；`docs/governance/existing-doc-reuse-procedure.md` owns existing-doc reuse；`docs/governance/reusable-model-entry-points.md` owns reusable model entry points；`docs/governance/network-boundary-and-decay-prevention.md` owns knowledge-network decay prevention。本文只记录这些缺口和 maintenance dependency。
 - Epic 6 owns batch governance runbook、batch change review record 和 batch completion report。本文只 defines batch migration risk criteria and readiness handoff, not execution.
 
 ## Validation Checklist And Maintenance Triggers
@@ -423,13 +434,22 @@ Use this checklist when creating or updating this guide, or when applying it to 
 15. Remaining gaps and completion wording distinguish `blocked`、`nonblocking`、`held`、`deferred_with_reason` and `not_authorized`.
 16. Body links and `related_docs` targets resolve or planned targets are recorded in `open_questions` / future dependencies.
 17. `docs/index.md` contains this asset under `## governance` and its relative link resolves.
-18. No actual old-doc inventory, old-doc migration, batch frontmatter normalization, batch status conversion, batch link/index repair, actual sidecar extraction, Epic 5 link/network work, Epic 6 batch work or software automation was performed under this guide alone.
+18. No actual old-doc inventory, old-doc migration, batch frontmatter normalization, batch status conversion, batch link/index repair, actual sidecar extraction, extra Epic 5 link/network work, Epic 6 batch work or software automation was performed under this guide alone.
 19. No runtime code、package manifests、source/test directories、software test frameworks、schemas、validators、generators、automation、CLI/API/UI/database/deployment/CI、runbooks、actual completion reports or migration scripts were created.
 
 Maintenance triggers:
 
-- Story 5.1 related-doc taxonomy, Story 5.2 link maintenance policy, Story 5.4 existing-doc reuse procedure, Story 5.3 reusable model entry points or Story 5.5 network-boundary assets are created or updated.
+- related-doc taxonomy, link maintenance policy, existing-doc reuse procedure, reusable model entry points or network-boundary assets are updated.
 - Epic 6 creates batch governance runbook, batch change review record or batch completion report template.
 - Maxwell authorizes actual legacy inventory, named old-doc migration or tooling/schema changes.
 - A review finds repeated confusion between migration assessment and actual migration, or between draft compatibility and validated/current status.
 - Adjacent assets change decision labels, lifecycle vocabulary, frontmatter schema, batch readiness owner decisions or index impact outcomes.
+
+## 参考资料
+
+- [Knowledge Docs Index](../index.md)
+- [related docs 与相邻概念关系分类：关系类型、边界区分、meaningful-link evidence 与 unresolved target handling](./related-docs-taxonomy.md)
+- [跨文档链接维护政策：existence/path/topic/meaning checks、inbound/outbound review、one-way reason 与 boundary conflict handling](./link-maintenance-policy.md)
+- [可复用模型入口政策：core model、boundary rule、decision frame、failure pattern 与 verification method](./reusable-model-entry-points.md)
+- [既有文档复用流程：发现、对齐、复用决策与避免重复生成](./existing-doc-reuse-procedure.md)
+- [知识网络主题边界与退化防护政策](./network-boundary-and-decay-prevention.md)

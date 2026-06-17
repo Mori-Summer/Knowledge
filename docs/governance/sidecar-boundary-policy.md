@@ -5,7 +5,7 @@ concept: sidecar_boundary_policy
 topic: governance
 depth_mode: standard
 created_at: '2026-05-28T14:34:49+08:00'
-updated_at: '2026-05-30T15:53:15+08:00'
+updated_at: '2026-06-17T10:48:01+08:00'
 source_basis:
   - _bmad-output/project-context.md
   - _bmad-output/planning-artifacts/prd.md
@@ -31,11 +31,17 @@ source_basis:
   - docs/methodology/intake-and-intent-classification.md
   - docs/methodology/concept-document-quality-gate.md
   - docs/methodology/source-discipline-and-real-world-anchor-policy.md
-time_context: phase_4_epic_4_sidecar_boundary_policy_2026_05_28
+  - docs/governance/related-docs-taxonomy.md
+  - docs/governance/link-maintenance-policy.md
+  - docs/governance/reusable-model-entry-points.md
+  - docs/governance/existing-doc-reuse-procedure.md
+  - docs/governance/network-boundary-and-decay-prevention.md
+  - _bmad-output/implementation-artifacts/stabilization-status-2026-06-15.md
+time_context: stabilization_epic_4_continuity_migration_governance_review_2026_06_17
 applicability: formal_docs_sidecar_supplemental_material_boundary_governance
 prompt_version: not_applicable
 template_version: governance_asset_v1
-quality_status: draft
+quality_status: reviewed
 related_docs:
   - docs/index.md
   - docs/governance/revision-regeneration-continuity-policy.md
@@ -55,9 +61,14 @@ related_docs:
   - docs/methodology/intake-and-intent-classification.md
   - docs/methodology/concept-document-quality-gate.md
   - docs/methodology/source-discipline-and-real-world-anchor-policy.md
+  - docs/governance/related-docs-taxonomy.md
+  - docs/governance/link-maintenance-policy.md
+  - docs/governance/reusable-model-entry-points.md
+  - docs/governance/existing-doc-reuse-procedure.md
+  - docs/governance/network-boundary-and-decay-prevention.md
 open_questions:
   - "`docs/governance/legacy-migration-guide.md` 已建立后，是否需要在后续审查中为 old sidecar、legacy notes 和 historical support material 补充更细的 worked examples？"
-  - Story 5.1 related-doc taxonomy 与 Story 5.2 link maintenance policy 已建立；后续是否需要区分 sidecar link、supporting link、successor link、related_docs 和 owner entry 的维护关系？
+  - related-doc taxonomy、link maintenance、reusable model entry points、existing-doc reuse 或 network boundary policy 更新后，是否需要区分 sidecar link、supporting link、successor link、related_docs 和 owner entry 的维护关系？
   - Epic 6 建立 batch governance runbook 后，是否需要把 sidecar inventory、bulk disconnect 和 batch support-asset cleanup 转入专门 runbook records？
 ---
 
@@ -77,7 +88,7 @@ open_questions:
 
 本文的 owner entry point 是 `docs/index.md` 的 `governance` 分组。Navigation treatment 是 `listed_in_docs_index`，index treatment 是在 `docs/index.md` 的 `## governance` 下列出 `docs/governance/sidecar-boundary-policy.md`。这些归属信息写在正文中，不是新的全局 frontmatter 字段。
 
-当前 `quality_status: draft` 是保守治理状态。原因是本文是 Epic 4 首版 sidecar boundary policy；`docs/governance/legacy-migration-guide.md` 已细化 legacy migration、old-doc compatibility、legacy notes 和 historical support material 的渐进兼容策略，Story 5.1 已细化 related-doc taxonomy，后续 Story 5.2+ 和 Epic 6 仍会细化 link maintenance、reuse/network governance 和 batch runbook records。
+当前 `quality_status: reviewed` 表示本文已完成 Epic 6 前置稳定化审查：supplemental artifact taxonomy、main document canonical truth、sidecar impact review、outdated sidecar handling、Sidecar Boundary Decision Record、相邻治理依赖和非软件边界已检查。未解决项保留在 `open_questions` 和维护触发点中；本文不声明 `validated`，因为 Epic 6 batch governance runbook、batch review record 和 batch completion report 仍未落地。
 
 本文自身的 Index Impact Decision Record 是：
 
@@ -92,7 +103,7 @@ Index Impact Decision Record
 - action taken: add governance entry and update index metadata
 - reason: Story 4.2 explicitly authorizes the canonical sidecar and supplemental material boundary policy asset
 - validation result: target exists and relative link resolves
-- unresolved risk: legacy migration is referenced via docs/governance/legacy-migration-guide.md; Epic 5 link taxonomy/link maintenance and Epic 6 batch runbook integrations remain open questions
+- unresolved risk: legacy migration and Epic 5 link/reuse/network integrations are referenced as current adjacent assets; Epic 6 batch integrations remain open questions
 ```
 
 ## 职责边界与非目标
@@ -104,7 +115,7 @@ Index Impact Decision Record
 - 创建实际 sidecar assets、report assets、review records、example sets、archive notes 或 completion reports。
 - 从主文档中抽取 sidecar，或把旧材料迁移为 sidecar。
 - 审查现有 sidecars、生成 sidecar inventory、执行 bulk disconnect、批量迁移、批量 link repair、批量 `related_docs` 更新或批量 status conversion。
-- 创建 Epic 5 related-doc taxonomy、link maintenance policy、reusable model entry points、existing-doc reuse procedure 或 Epic 6 batch assets。
+- 创建额外 related-doc taxonomy、link maintenance policy、reusable model entry points、existing-doc reuse procedure、network boundary policy 或 Epic 6 batch assets。
 - 创建 runtime code、package manifest、source tree、software tests、CLI/API/UI/database/deployment/CI、machine-readable schema、validator、generator、link scanner、sidecar scanner、index generator、completion-report generator、decision generator、migration script 或 executable automation。
 
 本文也不创建新的全局 frontmatter 字段。不得为了表达 sidecar 关系或支持资产状态，在正式资产 frontmatter 中新增 `schema_version`、`lifecycle_state`、`sidecar_status`、`support_asset_type`、`owner_entry_point`、`navigation_treatment`、`index_policy_version`、`quality_gate_version`、`methodology_version`、`decision_status`、`successor`、`canonical_asset`、`sidecar_of`、`supersedes`、`supporting_record` 或类似字段。分类、权威关系、支持角色、过期处理和链接影响应写在正文、review evidence、completion evidence、story Dev Agent Record、Revision / Regeneration Continuity Record、Migration Decision Record、Index Impact Decision Record、future runbook record 或明确命名的 sidecar note 中。
@@ -120,7 +131,7 @@ Index Impact Decision Record
 | `revision_note` | 一次修订、重生成、断开、废弃、归档或连续性判断的局部记录 | 需要新增 unauthorized frontmatter fields，或把局部 note 当成新主规范 | 目标资产 owner、revision owner 或 story/review owner | 目标正文、review/completion evidence、story Dev Agent Record、Revision / Regeneration Continuity Record、Migration Decision Record 或明确命名 note | 主文档必须仍说明当前状态、变更原因、source/time impact 和 open questions；note 只补充 evidence | Continuity Record 或 Migration Decision Record；必要时 Sidecar Boundary Decision Record | revision note 分散为 hidden metadata；旧内容处理、identity continuity 或 reference validity 不清 |
 | `example_set` | 成组 examples、counterexamples、failure examples、self-test support 或 reviewer calibration material 支持主文档理解和质量门禁 | 主文档缺失必须理解的核心例子、反例或失败模式，只把它们放在 example set | 主文档 owner、quality/review owner 或 methodology owner | 主文档 section、formal support asset、template evidence、review evidence 或受控 sidecar | 主文档必须保留足够的核心例子职责；example set 可扩展深度、覆盖更多场景或保存 calibration evidence | Sidecar Boundary Decision Record；必要时 Review Record、Completion Report、Quality Gate evidence | 删除/断开 example set 后主文档无法识别概念边界、常见误读或验证入口 |
 | `review_record` | 审查证据、Hard Fail/blocker、score/equivalent checks、未验证/不适用 register 和 final decision 支撑材料 | 试图自动改变正式资产状态、替代 target asset frontmatter/body，或绕过 document decision policy | reviewer、review workflow、template owner | `docs/templates/review-record-template.md` shape、review evidence、story record 或 future runbook record；不默认作为普通主题文档 | 主文档必须自己承载当前事实、状态和修订结果；review record 只提供 evidence trail | Review Record；Document Decision evidence；必要时 Completion Report、specialized records | review record 与主文档状态/质量声明冲突；decision label 缺少 required evidence |
-| `other_support_asset` | 其他被明确授权的 supporting asset，例如 future runbook evidence、source dossier、archive note、owner decision note 或 narrowly scoped support note | 只是因为分类不清而逃避前五类，或需要 future Epic 5/6 资产却提前创建 | 明确命名 owner：Maxwell、future story、runbook owner、source owner 或 target asset owner | 由授权来源决定；必须声明为什么不属于前五类，并说明导航和剩余访问 | 主文档必须说明 support role、trust boundary、是否 required for current use 和断开/过期处理 | Sidecar Boundary Decision Record；必要时 owner decision、Index/Migration/Batch evidence | 不能解释为什么不属于前五类；owner、入口、质量/生命周期影响或 authorized scope 不清 |
+| `other_support_asset` | 其他被明确授权的 supporting asset，例如 future runbook evidence、source dossier、archive note、owner decision note 或 narrowly scoped support note | 只是因为分类不清而逃避前五类，或需要越过现有 Epic 5 资产边界 / 提前创建 future Epic 6 资产 | 明确命名 owner：Maxwell、future story、runbook owner、source owner 或 target asset owner | 由授权来源决定；必须声明为什么不属于前五类，并说明导航和剩余访问 | 主文档必须说明 support role、trust boundary、是否 required for current use 和断开/过期处理 | Sidecar Boundary Decision Record；必要时 owner decision、Index/Migration/Batch evidence | 不能解释为什么不属于前五类；owner、入口、质量/生命周期影响或 authorized scope 不清 |
 
 分类不能只看文件名。Reviewer 必须比较 artifact 的用途、主文档关系、读者入口、状态影响、来源/时间语境、链接形态和维护 owner。分类不清时，使用 `hold_for_clarification`、`defer_with_reason` 或 `not_authorized`，不得先写入正式状态或索引。
 
@@ -277,10 +288,10 @@ Record 可以落在：
 Future-story boundaries：
 
 - `docs/governance/legacy-migration-guide.md` 负责 legacy migration guide、old-doc compatibility、legacy notes 和 historical support material 的渐进兼容策略。
-- Story 5.1 负责 related-doc taxonomy；`docs/governance/link-maintenance-policy.md` 负责 general link maintenance；`docs/governance/reusable-model-entry-points.md` 负责 reusable model entry points；`docs/governance/existing-doc-reuse-procedure.md` 负责 existing-doc reuse procedure；`docs/governance/network-boundary-and-decay-prevention.md` 负责 network boundary assets。
+- `docs/governance/related-docs-taxonomy.md` 负责 related-doc taxonomy；`docs/governance/link-maintenance-policy.md` 负责 general link maintenance；`docs/governance/reusable-model-entry-points.md` 负责 reusable model entry points；`docs/governance/existing-doc-reuse-procedure.md` 负责 existing-doc reuse procedure；`docs/governance/network-boundary-and-decay-prevention.md` 负责 network boundary assets。
 - Epic 6 负责 batch governance runbook、batch change review records、batch completion report 和批量执行记录。
 
-本文可以记录这些 future owner 作为 open question、maintenance trigger 或 `deferred_with_reason`，但不得提前创建它们的资产或执行它们的批量工作。
+本文可以记录这些 adjacent owner 作为 open question、maintenance trigger 或 `deferred_with_reason`，但不得创建额外资产、替代其字段权威或执行它们的批量工作。
 
 ## Validation Checklist and Maintenance Triggers
 
@@ -299,13 +310,13 @@ Future-story boundaries：
 11. Lifecycle vocabulary 使用 `draft`、`reviewed`、`validated`、`maintained_asset`、`deprecated`、`archived` 和 reactivation semantics。
 12. Changed-file links、`related_docs` 和 `docs/index.md` entry 可解析；缺失或 planned targets 进入 `open_questions` 或 future-story dependency。
 13. 没有新增 unauthorized frontmatter fields。
-14. 没有创建实际 sidecar assets、执行 sidecar extraction、review existing sidecars、batch link repair、legacy migration、Epic 5 link/network assets、Epic 6 batch assets 或 actual completion reports。
+14. 没有创建实际 sidecar assets、执行 sidecar extraction、review existing sidecars、batch link repair、legacy migration、额外 Epic 5 link/network assets、Epic 6 batch assets 或 actual completion reports。
 15. 没有创建 runtime code、package manifests、source/test directories、software test framework、schemas、validators、generators、automation、CLI/API/UI/database/deployment/CI、sidecar scanners、link scanners 或 index generators。
 
 维护触发点：
 
 - `docs/governance/legacy-migration-guide.md` 已建立；后续若该指南更新，复核 old sidecar、legacy notes、historical support material、old-doc compatibility 和 support artifact remaining access。
-- Story 5.1 related-doc taxonomy、Story 5.2 link maintenance policy、Story 5.3 reusable model entry points 或 Story 5.4 existing-doc reuse procedure 更新后，在授权窄范围内复核 sidecar link、supporting link、successor link、related_docs、owner entry 和 inbound/outbound evidence。
+- related-doc taxonomy、link maintenance policy、reusable model entry points、existing-doc reuse procedure 或 network boundary policy 更新后，在授权窄范围内复核 sidecar link、supporting link、successor link、related_docs、owner entry 和 inbound/outbound evidence。
 - Epic 6 建立 batch governance runbook、batch change review record 或 batch completion report 后，复核 sidecar inventory、bulk disconnect、batch support-asset cleanup 和 batch completion evidence 的落点。
 - Maxwell 明确授权 machine-readable schema、executable validation tooling、sidecar scanner、link scanner、index generator、new global frontmatter fields 或 batch normalization 后，复核本文非软件边界和字段边界。
 
@@ -328,3 +339,8 @@ Future-story boundaries：
 - [输入摄入与任务意图判定：任务类型、文档路径、深度与缺失输入处理](../methodology/intake-and-intent-classification.md)
 - [统一概念文档质量门禁](../methodology/concept-document-quality-gate.md)
 - [来源纪律与真实世界锚点政策：当前实践、历史路径与不可验证声明处理](../methodology/source-discipline-and-real-world-anchor-policy.md)
+- [related docs 与相邻概念关系分类：关系类型、边界区分、meaningful-link evidence 与 unresolved target handling](./related-docs-taxonomy.md)
+- [跨文档链接维护政策：existence/path/topic/meaning checks、inbound/outbound review、one-way reason 与 boundary conflict handling](./link-maintenance-policy.md)
+- [可复用模型入口政策：core model、boundary rule、decision frame、failure pattern 与 verification method](./reusable-model-entry-points.md)
+- [既有文档复用流程：发现、对齐、复用决策与避免重复生成](./existing-doc-reuse-procedure.md)
+- [知识网络主题边界与退化防护政策](./network-boundary-and-decay-prevention.md)
