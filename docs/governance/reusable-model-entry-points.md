@@ -5,7 +5,7 @@ concept: reusable_model_entry_points
 topic: governance
 depth_mode: standard
 created_at: '2026-05-29T17:37:26+08:00'
-updated_at: '2026-06-15T15:46:07+08:00'
+updated_at: '2026-06-17T11:45:28+08:00'
 source_basis:
   - _bmad-output/project-context.md
   - _bmad-output/planning-artifacts/prd.md
@@ -18,6 +18,11 @@ source_basis:
   - docs/governance/related-docs-taxonomy.md
   - docs/governance/link-maintenance-policy.md
   - docs/governance/existing-doc-reuse-procedure.md
+  - docs/governance/network-boundary-and-decay-prevention.md
+  - docs/governance/batch-readiness-checklist.md
+  - docs/governance/revision-regeneration-continuity-policy.md
+  - docs/governance/legacy-migration-guide.md
+  - docs/governance/sidecar-boundary-policy.md
   - docs/templates/review-record-template.md
   - docs/templates/completion-report-template.md
   - docs/governance/document-decision-policy.md
@@ -26,16 +31,22 @@ source_basis:
   - docs/methodology/document-generation-methodology.md
   - docs/methodology/concept-document-quality-gate.md
   - docs/methodology/concept-document-template.md
-time_context: phase_5_epic_5_reusable_model_entry_points_2026_05_29
+  - _bmad-output/implementation-artifacts/stabilization-status-2026-06-15.md
+time_context: stabilization_epic_5_reusable_model_entry_points_review_2026_06_17
 applicability: formal_docs_reusable_model_entry_point_and_callable_anchor_governance
 prompt_version: not_applicable
 template_version: governance_asset_v1
-quality_status: draft
+quality_status: reviewed
 related_docs:
   - docs/index.md
   - docs/governance/related-docs-taxonomy.md
   - docs/governance/link-maintenance-policy.md
   - docs/governance/existing-doc-reuse-procedure.md
+  - docs/governance/network-boundary-and-decay-prevention.md
+  - docs/governance/batch-readiness-checklist.md
+  - docs/governance/revision-regeneration-continuity-policy.md
+  - docs/governance/legacy-migration-guide.md
+  - docs/governance/sidecar-boundary-policy.md
   - docs/templates/review-record-template.md
   - docs/templates/completion-report-template.md
   - docs/governance/document-decision-policy.md
@@ -45,7 +56,7 @@ related_docs:
   - docs/methodology/concept-document-quality-gate.md
   - docs/methodology/concept-document-template.md
 open_questions:
-  - network boundary and decay prevention policy 已建立后，是否需要继续把 weak/noisy model anchors 映射到更专门的 Epic 6 batch network review records？
+  - network boundary and decay prevention policy 更新后，是否需要继续把 weak/noisy model anchors 映射到更专门的 Epic 6 batch network review records？
   - Epic 6 建立 batch governance records 后，是否需要为批量 entry point gap review 提供专门记录？
 ---
 
@@ -82,7 +93,7 @@ open_questions:
 
 本文的 owner entry point 是 [docs/index.md](../index.md) 的 `governance` 分组。Navigation treatment 是 `listed_in_docs_index`，index treatment 是在 `docs/index.md` 的 `## governance` 下列出 `docs/governance/reusable-model-entry-points.md`。这些归属信息写在正文中，不是新的全局 frontmatter 字段。
 
-当前 `quality_status: draft` 是保守治理状态。原因是本文是 Epic 5 首版 reusable model entry points policy；existing-doc reuse procedure 和 network boundary / decay prevention policy 已落地，Epic 6 后续仍会细化 batch governance records。
+当前 `quality_status: reviewed` 表示本文已完成 Epic 6 前置稳定化审查：reusable entry point types、callable anchor boundary、new-problem mapping、examples/self-tests/open questions 复用证据、missing entry point gap handling、Reusable Model Entry Point Record、相邻治理依赖、链接/索引边界和非软件边界已检查。未解决项保留在 `open_questions` 和维护触发点中；本文不声明 `validated`，因为 Epic 6 batch governance runbook、batch review record 和 batch completion report 仍未落地。
 
 本文自身的 Index Impact Decision Record 是：
 
@@ -96,7 +107,7 @@ Index Impact Decision Record
 - action taken: add governance entry and update index metadata
 - reason: the asset is a formal governance policy with listed_in_docs_index navigation treatment
 - validation result: target exists and relative link resolves
-- unresolved risk: existing-doc reuse procedure and network boundary / decay prevention policy are now direct adjacent authorities; Epic 6 integrations remain future dependencies, recorded in open_questions
+- unresolved risk: existing-doc reuse procedure and network boundary / decay prevention policy are direct adjacent authorities; Epic 6 integrations remain future dependencies, recorded in open_questions
 ```
 
 ## Callable Anchor Boundary
@@ -280,7 +291,7 @@ Record 字段不得拆进未经授权的 frontmatter fields。若未来确实需
 | [concept document quality gate](../methodology/concept-document-quality-gate.md) | Hard Fail、验证/迁移、元数据/仓库纪律和等价治理检查。 | 本文不替代质量门禁评分或 final decision。 |
 | [concept document template](../methodology/concept-document-template.md) | examples、self-tests、open questions、迁移入口和可复用结构信息位点。 | 本文不改写普通概念文档模板。 |
 
-Future story boundaries：
+Adjacent and future boundaries：
 
 - [existing-doc reuse procedure](./existing-doc-reuse-procedure.md) owns topic/index/related-doc/neighboring/duplicate scan sequence and exact/adjacent/prereq/contrast/no-asset scan results。
 - [network boundary and decay prevention policy](./network-boundary-and-decay-prevention.md) owns identification and routing of dense/noisy/weak/stale relationship signals、topic health、repeated overlap、network-decay risk and navigation relevance evidence; actual cleanup remains bounded link maintenance, batch readiness or Epic 6 work。
@@ -310,11 +321,24 @@ Validate this policy or future applications of it with the following checklist:
 16. No existing-doc reuse scan、full-repo model-entry scan、topic directory scan、`docs/index.md` reuse scan、related docs scan、neighboring concepts scan、duplicate scan、batch entry-point assignment、network health review、stale-link cleanup、batch related_docs update or index-wide cleanup is performed.
 17. No runtime code、package manifests、source/test directories、software test framework、schemas、validators、generators、automation、link scanners、model scanners、index generators、CLI/API/UI/database/deployment/CI、runbooks、actual review records or actual completion reports are created.
 
+Maintenance triggers:
+
+- related docs taxonomy、link maintenance policy、existing-doc reuse procedure 或 network boundary and decay prevention policy 更新后，复核 callable anchor、transfer object、scan boundary 和 weak/noisy relationship routing。
+- revision/regeneration continuity、legacy migration 或 sidecar boundary policy 更新后，复核 model-entry note、support artifact 和 old-content continuity 边界。
+- Epic 6 建立 batch governance runbook、batch review record 或 batch completion report 后，复核 batch entry-point inventory、batch gap review 和 runbook record 落点。
+- Maxwell 明确授权 schema、scanner、generator、automation、new global frontmatter fields 或 batch model-entry work 后，复核本文非软件边界和字段边界。
+
 ## 参考资料
 
 - [Knowledge Docs Index](../index.md)
 - [related docs 与相邻概念关系分类：关系类型、边界区分、meaningful-link evidence 与 unresolved target handling](./related-docs-taxonomy.md)
 - [跨文档链接维护政策：existence/path/topic/meaning checks、inbound/outbound review、one-way reason 与 boundary conflict handling](./link-maintenance-policy.md)
+- [既有文档复用流程：发现、对齐、复用决策与避免重复生成](./existing-doc-reuse-procedure.md)
+- [知识网络主题边界与退化防护政策](./network-boundary-and-decay-prevention.md)
+- [批量治理 Readiness Checklist：范围、冲突、停止条件与恢复策略](./batch-readiness-checklist.md)
+- [修订、重生成与版本连续性策略：更新模式、旧内容处理、身份连续性与引用有效性](./revision-regeneration-continuity-policy.md)
+- [旧文档渐进迁移与兼容策略：缺口分类、保留规则、批量风险判定与剩余缺口处理](./legacy-migration-guide.md)
+- [Sidecar 与补充材料边界政策：主文档权威、支持资产分类与过期处理](./sidecar-boundary-policy.md)
 - [Frontmatter schema 与 doc_id 身份规则：正式 docs 资产的元数据基线](./frontmatter-schema.md)
 - [docs/index.md 同步与导航治理规则：正式导航入口的更新、排除与证据要求](./index-synchronization-rules.md)
 - [审查记录模板：任务分类、Hard Fail、评分证据、未验证项与决策记录](../templates/review-record-template.md)
