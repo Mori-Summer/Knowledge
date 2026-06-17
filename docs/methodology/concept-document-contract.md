@@ -5,7 +5,7 @@ concept: concept_document_generation_contract
 topic: methodology
 depth_mode: standard
 created_at: '2026-05-25T10:52:56+08:00'
-updated_at: '2026-05-27T10:29:56+08:00'
+updated_at: '2026-06-17T09:15:48+08:00'
 source_basis:
   - _bmad-output/project-context.md
   - _bmad-output/planning-artifacts/prd.md
@@ -24,11 +24,19 @@ source_basis:
   - docs/governance/governance-asset-navigation-policy.md
   - docs/governance/lifecycle-states.md
   - docs/governance/prompt-template-quality-version-governance.md
-time_context: phase_4_epic_1_source_discipline_2026_05_25
+  - docs/governance/frontmatter-schema.md
+  - docs/governance/index-synchronization-rules.md
+  - docs/governance/candidate-promotion-checklist.md
+  - docs/governance/document-decision-policy.md
+  - docs/governance/rework-loop-examples.md
+  - docs/templates/review-record-template.md
+  - docs/templates/completion-report-template.md
+  - _bmad-output/implementation-artifacts/stabilization-status-2026-06-15.md
+time_context: stabilization_core_methodology_review_2026_06_17
 applicability: concept_document_candidate_generation_contract
 prompt_version: not_applicable
 template_version: concept_document_contract_v1
-quality_status: draft
+quality_status: reviewed
 related_docs:
   - docs/methodology/document-generation-methodology.md
   - docs/methodology/intake-and-intent-classification.md
@@ -42,9 +50,17 @@ related_docs:
   - docs/governance/governance-asset-navigation-policy.md
   - docs/governance/lifecycle-states.md
   - docs/governance/prompt-template-quality-version-governance.md
+  - docs/governance/frontmatter-schema.md
+  - docs/governance/index-synchronization-rules.md
+  - docs/governance/candidate-promotion-checklist.md
+  - docs/governance/document-decision-policy.md
+  - docs/governance/rework-loop-examples.md
+  - docs/templates/review-record-template.md
+  - docs/templates/completion-report-template.md
 open_questions:
-  - Epic 2 frontmatter schema 落地后，是否需要把 intake decision record 或输入缺失处理进一步 schema 化？
-  - Epic 3 建立 review record 和 decision policy 后，是否需要把合同中的来源/时间缺失处理映射到正式审查记录字段？
+  - frontmatter schema 已建立后，是否需要把 intake decision record 或输入缺失处理进一步 schema 化？
+  - review/completion templates 与 document decision policy 已作为 formal assets 存在后，是否需要把合同中的来源/时间缺失处理映射到固定审查记录字段？
+  - Epic 6 batch governance runbook 建立后，是否需要为批量候选生成补充专门合同边界？
 ---
 
 # 概念文档生成合同：输入、输出、边界与必需信息位点
@@ -53,11 +69,13 @@ open_questions:
 
 本文是 `Knowledge` 项目的正式方法论支撑资产，用来定义概念文档候选稿生成时的输入、输出、边界、必需信息位点和验证证据。它回答的是“一个生成任务至少要收什么、产出什么、不能产出什么，以及生成结果必须让审查者看到哪些判断能力”。
 
-本文补充 `docs/methodology/document-generation-methodology.md`、`docs/methodology/intake-and-intent-classification.md`、`docs/methodology/concept-document-template.md`、`docs/methodology/concept-document-quality-gate.md` 和 `docs/methodology/fixed-concept-generation-prompt.md`。主执行入口仍是 `docs/methodology/document-generation-methodology.md`；完整 intake 与任务意图判定入口是 `docs/methodology/intake-and-intent-classification.md`。本文不替代主规范、intake 流程、模板、质量门禁、固定 Prompt、生命周期政策、版本治理政策、导航政策，也不提前定义 Epic 2、Epic 3 或 Epic 6 的未来 schema、审查记录、completion report 或 batch runbook。
+本文补充 `docs/methodology/document-generation-methodology.md`、`docs/methodology/intake-and-intent-classification.md`、`docs/methodology/concept-document-template.md`、`docs/methodology/concept-document-quality-gate.md` 和 `docs/methodology/fixed-concept-generation-prompt.md`。主执行入口仍是 `docs/methodology/document-generation-methodology.md`；完整 intake 与任务意图判定入口是 `docs/methodology/intake-and-intent-classification.md`。本文不替代主规范、intake 流程、模板、质量门禁、固定 Prompt、生命周期政策、版本治理政策、导航政策、frontmatter schema、index synchronization rules、review/completion templates 或 document decision policy，也不提前定义 Epic 6 的 batch governance runbook、batch review record 或 batch completion report。
 
 `docs/methodology/concept-document-example-catalog.md` 提供本文合同的 passing/failing calibration examples。它让 reviewer 看到必需信息位点如何映射到质量门禁证据，但不改变本文的输入/输出合同，也不创建第二套质量门禁。
 
 本文适用于单篇概念文档候选稿的生成合同。候选稿可以来自对话、手工草稿或 BMad workflow，但只有在完成正式晋升检查后，才可以成为 `docs/` 下的正式知识资产。
+
+当前 `quality_status: reviewed` 表示本文已完成 Epic 6 前置稳定化审查：输入/输出合同、必需信息位点、候选/正式边界、source/time discipline、owner/index entry、相关治理依赖、链接/索引边界和非软件边界已检查。未解决项保留在 `open_questions` 中；本文不声明 `validated`，因为 Epic 6 batch governance runbook、batch review record 和 batch completion report 仍未落地。
 
 本文的 owner entry point 是 `docs/index.md` 的 `methodology` 分组。Navigation treatment 为 `listed_in_docs_index`；index treatment 是在 `docs/index.md` 的 `## methodology` 下列出 `docs/methodology/concept-document-contract.md`。这个索引入口表示本文是可发现的支撑合同，不表示它成为平行主规范。
 
@@ -177,11 +195,11 @@ Mandatory 是候选稿必须可审查的信息位点和治理证据；Adaptable 
 - 不替代 `docs/methodology/intake-and-intent-classification.md`；完整任务类型、路径、深度和缺失输入流程由该资产负责。
 - 不把 `docs/methodology/concept-document-example-catalog.md` 的示例片段当成 standalone formal concept documents；该资产只提供 reviewer calibration examples。
 - 不替代 `docs/methodology/source-discipline-and-real-world-anchor-policy.md`；来源纪律、时间语境、历史/废弃实践和真实世界锚点 adequacy 的细则由该资产负责。
-- 不定义 Epic 2 的 frontmatter schema、`doc_id`、topic、path、naming、candidate promotion 或 index synchronization rules。
-- 不定义 Epic 3 的 review record、document decision policy、rework loop 或 completion report template。
+- 不重新定义 frontmatter schema、`doc_id`、topic、path、naming、candidate promotion 或 index synchronization rules。
+- 不重新定义 review record、document decision policy、rework loop 或 completion report template。
 - 不定义 Epic 6 的 batch governance runbook、batch review record 或 batch completion report。
 
-本文不授权 batch generation、batch migration、bulk status changes、批量索引重构或自动化验证。批量工作必须先满足 `docs/governance/batch-readiness-checklist.md` 和后续 Epic 6 规则。
+本文不授权 batch generation、batch migration、bulk status changes、批量索引重构或自动化验证。批量工作必须先满足 `docs/governance/batch-readiness-checklist.md` 和未来 Epic 6 batch governance 规则。
 
 ## 完成与验证证据
 
@@ -212,3 +230,12 @@ Mandatory 是候选稿必须可审查的信息位点和治理证据；Adaptable 
 - [方法论资产边界：主规范、模板、质量门禁、playbook 与固定 Prompt 的职责分工](./governance-asset-boundary-policy.md)
 - [Agent 行为约束：文档治理任务必须先判边界、再执行、可验证](../governance/agent-behavior-constraints.md)
 - [治理资产导航、索引与入口归属政策](../governance/governance-asset-navigation-policy.md)
+- [文档生命周期状态：草稿、审查、验证、废弃与归档转换规则](../governance/lifecycle-states.md)
+- [Prompt、模板与质量规则版本治理：规则演进、字段语义与渐进迁移](../governance/prompt-template-quality-version-governance.md)
+- [Frontmatter schema 与 doc_id 身份规则：正式 docs 资产的元数据基线](../governance/frontmatter-schema.md)
+- [docs/index.md 同步与导航治理规则](../governance/index-synchronization-rules.md)
+- [候选文档晋升 Checklist：canonical 入库、证据门禁与停止条件](../governance/candidate-promotion-checklist.md)
+- [文档决策政策：accept、revise、regenerate、defer、reject 与 lifecycle 结果](../governance/document-decision-policy.md)
+- [返工闭环示例：失败类型、修复路径、重生成边界与复审入口](../governance/rework-loop-examples.md)
+- [审查记录模板：任务分类、Hard Fail、评分证据、未验证项与决策记录](../templates/review-record-template.md)
+- [完成汇报模板：质量状态、入库决策证据、验证证据、未解决风险与非软件边界](../templates/completion-report-template.md)

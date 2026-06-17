@@ -5,7 +5,7 @@ concept: source_discipline_and_real_world_anchor_policy
 topic: methodology
 depth_mode: standard
 created_at: '2026-05-25T16:43:09+08:00'
-updated_at: '2026-05-27T14:52:11+08:00'
+updated_at: '2026-06-17T09:15:48+08:00'
 source_basis:
   - _bmad-output/project-context.md
   - _bmad-output/planning-artifacts/prd.md
@@ -29,11 +29,23 @@ source_basis:
   - docs/governance/lifecycle-states.md
   - docs/governance/prompt-template-quality-version-governance.md
   - docs/governance/batch-readiness-checklist.md
-time_context: phase_4_epic_1_source_discipline_2026_05_25
+  - docs/governance/frontmatter-schema.md
+  - docs/governance/index-synchronization-rules.md
+  - docs/governance/candidate-promotion-checklist.md
+  - docs/governance/document-decision-policy.md
+  - docs/governance/rework-loop-examples.md
+  - docs/governance/related-docs-taxonomy.md
+  - docs/governance/link-maintenance-policy.md
+  - docs/governance/existing-doc-reuse-procedure.md
+  - docs/governance/network-boundary-and-decay-prevention.md
+  - docs/templates/review-record-template.md
+  - docs/templates/completion-report-template.md
+  - _bmad-output/implementation-artifacts/stabilization-status-2026-06-15.md
+time_context: stabilization_core_methodology_review_2026_06_17
 applicability: concept_document_source_discipline_and_real_world_anchor_policy
 prompt_version: not_applicable
 template_version: governance_asset_v1
-quality_status: draft
+quality_status: reviewed
 related_docs:
   - docs/methodology/document-generation-methodology.md
   - docs/methodology/concept-document-contract.md
@@ -48,10 +60,21 @@ related_docs:
   - docs/governance/lifecycle-states.md
   - docs/governance/prompt-template-quality-version-governance.md
   - docs/governance/batch-readiness-checklist.md
+  - docs/governance/frontmatter-schema.md
+  - docs/governance/index-synchronization-rules.md
+  - docs/governance/candidate-promotion-checklist.md
+  - docs/governance/document-decision-policy.md
+  - docs/governance/rework-loop-examples.md
+  - docs/governance/related-docs-taxonomy.md
+  - docs/governance/link-maintenance-policy.md
+  - docs/governance/existing-doc-reuse-procedure.md
+  - docs/governance/network-boundary-and-decay-prevention.md
+  - docs/templates/review-record-template.md
+  - docs/templates/completion-report-template.md
 open_questions:
-  - Epic 2 frontmatter schema 落地后，是否需要把来源声明类型或核对日期进一步 schema 化？
-  - 如果 Epic 3 review/completion templates 后续调整 unverifiable claim evidence 字段，是否需要同步本文的不可验证声明处理记录方式？
-  - Epic 5 建立 related docs taxonomy 后，是否需要区分 source reference、supporting link、related doc 和 successor link？
+  - frontmatter schema 已建立后，是否需要把来源声明类型或核对日期进一步 schema 化？
+  - review/completion templates 后续若调整 unverifiable claim evidence 字段，是否需要同步本文的不可验证声明处理记录方式？
+  - related docs taxonomy 与 link maintenance policy 已建立后，是否需要进一步细分 source reference、supporting link、related doc 和 successor link 的记录模板？
 ---
 
 # 来源纪律与真实世界锚点政策：当前实践、历史路径与不可验证声明处理
@@ -60,7 +83,7 @@ open_questions:
 
 本文是 `Knowledge` 项目的正式方法论支撑资产，用来定义概念文档生成和审查中的来源纪律、时间语境、真实世界锚点、历史/废弃实践和不可验证声明处理规则。
 
-本文补充 `docs/methodology/document-generation-methodology.md`、`docs/methodology/concept-document-contract.md`、`docs/methodology/intake-and-intent-classification.md`、`docs/methodology/concept-document-example-catalog.md`、`docs/methodology/concept-document-template.md`、`docs/methodology/concept-document-quality-gate.md`、`docs/methodology/fixed-concept-generation-prompt.md` 和 Foundation governance assets。它不替代主方法论、合同、intake 流程、模板、质量门禁、固定 Prompt、生命周期政策、版本治理政策、导航政策、最终审查决策政策、review record template、Epic 2 schema/index rules 或 Epic 6 batch rules。
+本文补充 `docs/methodology/document-generation-methodology.md`、`docs/methodology/concept-document-contract.md`、`docs/methodology/intake-and-intent-classification.md`、`docs/methodology/concept-document-example-catalog.md`、`docs/methodology/concept-document-template.md`、`docs/methodology/concept-document-quality-gate.md`、`docs/methodology/fixed-concept-generation-prompt.md` 和 Foundation governance assets。它不替代主方法论、合同、intake 流程、模板、质量门禁、固定 Prompt、生命周期政策、版本治理政策、导航政策、最终审查决策政策、review/completion templates、frontmatter schema/index rules、related-docs/link governance 或 Epic 6 batch rules。
 
 本文的 owner entry point 是 `docs/index.md` 的 `methodology` 分组。Navigation treatment 为 `listed_in_docs_index`；index treatment 是在 `docs/index.md` 的 `## methodology` 下列出 `docs/methodology/source-discipline-and-real-world-anchor-policy.md`。
 
@@ -72,6 +95,8 @@ open_questions:
 - 处理无法验证但会影响 ready、accepted、reviewed、validated、`upgraded_v1`、`maintained_asset` 或等价通过状态的声明。
 
 本文不要求每篇概念文档都做广泛外部研究。证据负担必须和声明类型、当前性风险、质量状态声明、下游使用风险成比例。低当前性、纯项目内规则或明确 illustrative 的例子，可以使用项目内来源；外部 current-practice claim 则需要可追溯来源和核对日期。
+
+当前 `quality_status: reviewed` 表示本文已完成 Epic 6 前置稳定化审查：来源/声明类型、真实世界锚点、current-practice discipline、historical/deprecated handling、不可验证声明处理、owner/index entry、相关治理依赖、链接/索引边界和非软件边界已检查。未解决项保留在 `open_questions` 和维护触发点中；本文不声明 `validated`，因为 Epic 6 batch governance runbook、batch review record 和 batch completion report 仍未落地。
 
 ## 真实世界锚点规则
 
@@ -230,20 +255,20 @@ current-practice claim 必须满足四项要求：
 | unverifiable claims | 不再支撑通过状态或关键结论 |
 | quality-gate fit | 若触发 Hard Fail，输出 failure condition、evidence location、why it blocks、repair guidance |
 
-验证本文自身时，检查 frontmatter、heading hierarchy、索引条目、相关链接、source/time/status 一致性、非软件边界、版本治理影响和未来 story 边界。本文当前 `quality_status: draft` 是保守状态，因为 Epic 2 和 Epic 3 已细化 schema、review record、decision policy、rework/completion evidence 形态，Epic 5 尚未细化 related docs taxonomy。
+验证本文自身时，检查 frontmatter、heading hierarchy、索引条目、相关链接、source/time/status 一致性、非软件边界、版本治理影响和未来 story 边界。本文当前 `quality_status: reviewed` 是 Epic 6 前置稳定化状态：已完成结构、元数据、链接、索引、依赖和状态一致性审查，但尚未完成 Epic 6 batch governance 验证。
 
 ## 维护触发点
 
 以下变化要求复核本文：
 
-- Epic 2 建立 frontmatter schema、doc_id、topic/path/naming、candidate promotion 或 index synchronization rules。
-- Epic 3 review record、document decision policy、rework loop 或 completion report template 发生实质字段或 vocabulary 变更。
-- Epic 5 建立 related docs taxonomy、link maintenance 或 reusable model entry points。
+- frontmatter schema、doc_id、topic/path/naming、candidate promotion 或 index synchronization rules 发生实质字段或 vocabulary 变更。
+- review record、document decision policy、rework loop 或 completion report template 发生实质字段或 vocabulary 变更。
+- related docs taxonomy、link maintenance、existing-doc reuse 或 network boundary policy 发生实质字段或 vocabulary 变更。
 - Epic 6 建立 batch governance runbook、batch review record 或 batch completion report。
 - Maxwell 明确授权 executable tooling、lint/scoring automation、CI 或批量检查工具；当前本文不授权这些自动化。
 - 质量门禁 Hard Fail、prompt/template version governance、lifecycle/status vocabulary 或导航政策发生语义变化。
 
-本文不创建 Epic 2 schema 字段，不创建 Epic 3 决策模板，不创建 Epic 6 batch runbook，不改变 prompt/template/quality 版本，也不执行批量重写。后续 story 可以细化本文，但不得用局部自动化或新字段绕过当前的来源、时间、锚点和不可验证声明纪律。
+本文不创建 schema 字段，不创建审查/决策/完成汇报模板，不创建 Epic 6 batch runbook，不改变 prompt/template/quality 版本，也不执行批量重写。后续 story 可以细化本文，但不得用局部自动化或新字段绕过当前的来源、时间、锚点和不可验证声明纪律。
 
 ## 参考资料
 
@@ -260,3 +285,14 @@ current-practice claim 必须满足四项要求：
 - [文档生命周期状态：草稿、审查、验证、废弃与归档转换规则](../governance/lifecycle-states.md)
 - [Prompt、模板与质量规则版本治理：规则演进、字段语义与渐进迁移](../governance/prompt-template-quality-version-governance.md)
 - [批量治理 Readiness Checklist：范围、冲突、停止条件与恢复策略](../governance/batch-readiness-checklist.md)
+- [Frontmatter schema 与 doc_id 身份规则：正式 docs 资产的元数据基线](../governance/frontmatter-schema.md)
+- [docs/index.md 同步与导航治理规则](../governance/index-synchronization-rules.md)
+- [候选文档晋升 Checklist：canonical 入库、证据门禁与停止条件](../governance/candidate-promotion-checklist.md)
+- [文档决策政策：accept、revise、regenerate、defer、reject 与 lifecycle 结果](../governance/document-decision-policy.md)
+- [返工闭环示例：失败类型、修复路径、重生成边界与复审入口](../governance/rework-loop-examples.md)
+- [related docs 与相邻概念关系分类：关系类型、边界区分、meaningful-link evidence 与 unresolved target handling](../governance/related-docs-taxonomy.md)
+- [跨文档链接维护政策：existence/path/topic/meaning checks、inbound/outbound review、one-way reason 与 boundary conflict handling](../governance/link-maintenance-policy.md)
+- [既有文档复用流程：发现、对齐、复用决策与避免重复生成](../governance/existing-doc-reuse-procedure.md)
+- [知识网络主题边界与退化防护政策](../governance/network-boundary-and-decay-prevention.md)
+- [审查记录模板：任务分类、Hard Fail、评分证据、未验证项与决策记录](../templates/review-record-template.md)
+- [完成汇报模板：质量状态、入库决策证据、验证证据、未解决风险与非软件边界](../templates/completion-report-template.md)
