@@ -5,7 +5,7 @@ concept: batch_readiness_checklist
 topic: governance
 depth_mode: standard
 created_at: '2026-05-25T09:34:08+08:00'
-updated_at: '2026-06-15T17:21:39+08:00'
+updated_at: '2026-06-17T16:20:05+08:00'
 source_basis:
   - _bmad-output/project-context.md
   - _bmad-output/planning-artifacts/prd.md
@@ -36,7 +36,7 @@ source_basis:
   - docs/governance/existing-doc-reuse-procedure.md
   - docs/governance/network-boundary-and-decay-prevention.md
   - _bmad-output/implementation-artifacts/stabilization-status-2026-06-15.md
-time_context: stabilization_key_draft_review_2026_06_15
+time_context: epic_6_story_6_1_batch_governance_runbook_sync_2026_06_17
 applicability: batch_governance_readiness_scope_conflict_and_stop_criteria
 prompt_version: not_applicable
 template_version: governance_asset_v1
@@ -58,10 +58,11 @@ related_docs:
   - docs/governance/reusable-model-entry-points.md
   - docs/governance/existing-doc-reuse-procedure.md
   - docs/governance/network-boundary-and-decay-prevention.md
+  - docs/runbooks/batch-governance-runbook.md
 open_questions:
   - index synchronization rules 已建立后，是否需要细化批量索引更新的 sample/review 规则？
   - 如果 completion-report template 后续调整 Batch Readiness Record summary 字段，是否需要同步本文的 readiness record 汇总方式？
-  - Epic 6 建立 batch governance runbook 后，是否需要把本文中的 readiness decision 与 runbook 执行步骤拆分得更严格？
+  - Story 6.1 batch governance runbook 已建立后，是否需要把本文中的 readiness decision 与 runbook 执行步骤进一步拆分得更严格？
 ---
 
 # 批量治理 Readiness Checklist：范围、冲突、停止条件与恢复策略
@@ -80,13 +81,13 @@ open_questions:
 - `docs/methodology/concept-document-quality-gate.md`
 - `docs/governance/governance-asset-navigation-policy.md`
 
-本资产不替代主方法论、质量门禁、生命周期政策、版本治理、导航政策、`docs/governance/index-synchronization-rules.md`，也不替代未来 Epic 6 batch runbook、batch review template 或 batch completion template。它只规定批量动作写入前的 readiness 判定基线。
+本资产不替代主方法论、质量门禁、生命周期政策、版本治理、导航政策、`docs/governance/index-synchronization-rules.md` 或 `docs/runbooks/batch-governance-runbook.md`，也不替代未来 Story 6.2 batch review template 或 Story 6.3 batch completion template。它只规定批量动作写入前的 readiness 判定基线。
 
 本资产不授权实际批量生成、批量迁移、批量 normalization、批量状态重写、批量重命名、批量删除、批量废弃、批量归档、index-wide restructuring 或 executable validation tooling。完成 readiness 只表示该次命名批量动作具备进入下一步确认或执行的依据；它不是后续无关批量工作的长期授权。
 
 本文自身的 owner entry point 是 `docs/index.md` 的 `governance` 分组；navigation treatment 是 `listed_in_docs_index`。本文的权威范围限于 batch readiness、scope judgment、conflict exposure、stop criteria、downstream impact analysis 和 recovery evidence，不覆盖具体批量执行步骤。
 
-当前 `quality_status: reviewed` 表示本文已完成 Epic 6 前置稳定化审查：batch readiness 范围判定、冲突暴露、停止条件、恢复策略、owner decision、相关治理依赖、链接/索引边界和非软件边界已检查。未解决项保留在 `open_questions` 和维护触发点中；本文不声明 `validated`，因为 Epic 6 batch governance runbook、batch review record 和 batch completion report 仍未落地。
+当前 `quality_status: reviewed` 表示本文已完成 Epic 6 前置稳定化审查：batch readiness 范围判定、冲突暴露、停止条件、恢复策略、owner decision、相关治理依赖、链接/索引边界和非软件边界已检查。未解决项保留在 `open_questions` 和维护触发点中；本文不声明 `validated`，因为 Story 6.2 batch review record 和 Story 6.3 batch completion report 仍未落地，且 readiness policy 尚未在实际命名批量任务中验证。
 
 ## 什么算批量治理
 
@@ -113,7 +114,7 @@ open_questions:
 - 只更新当前 story 的 Dev Agent Record、File List、Change Log、checkbox 或 sprint status。
 - 只记录候选范围、风险或 open question，不对目标文件集写入。
 
-如果任务混合正式 `docs/` 资产、`_bmad-output/` 候选来源、方法论资产、治理资产、workflow/skill 文件或 future templates/runbooks，必须按资产层级拆分 target set，并采用更严格的范围控制。
+如果任务混合正式 `docs/` 资产、`_bmad-output/` 候选来源、方法论资产、治理资产、template/runbook 资产或 workflow/skill 文件，必须按资产层级拆分 target set，并采用更严格的范围控制。
 
 ## Readiness Record
 
@@ -173,7 +174,7 @@ Target set evidence must be concrete. Acceptable evidence is:
 - a topic-derived set with listed topic paths;
 - a manually approved list from Maxwell or an authorized story.
 
-Excluded files must be explicit when a path could reasonably be mistaken as in scope. Common exclusion candidates include `_bmad-output/`, `.agents/skills/`, `docs/methodology/`, `docs/governance/`, `docs/_reports/`, future `docs/templates/`, and future `docs/runbooks/`.
+Excluded files must be explicit when a path could reasonably be mistaken as in scope. Common exclusion candidates include `_bmad-output/`, `.agents/skills/`, `docs/methodology/`, `docs/governance/`, `docs/_reports/`, `docs/templates/`, and `docs/runbooks/`.
 
 Readiness approval permits only the named batch action over the named target set. It does not authorize later batch work with a different target set, operation type, status field, schema, topic, path rule, owner decision or output artifact.
 
@@ -197,7 +198,7 @@ Minimum scope checks:
 
 `_bmad-output/` 是 workflow output 边界。它可以作为 planning context、story evidence、candidate source 或 review record 来源，但不能自动晋升为 `docs/` 正式资产。任何从 `_bmad-output/` 到 `docs/` 的 promotion 都必须重新判定 target path、frontmatter、source basis、navigation treatment、index treatment 和 quality evidence。
 
-Formal docs、methodology assets、governance assets、reports、future templates/runbooks、skills/workflows 必须按 asset class 分开处理。混合批量动作不能用一个总判断覆盖所有资产层级；如果无法拆分，必须 `clarify_before_write` 或 `stop_for_maxwell_confirmation`。
+Formal docs、methodology assets、governance assets、reports、templates、runbooks、skills/workflows 必须按 asset class 分开处理。混合批量动作不能用一个总判断覆盖所有资产层级；如果无法拆分，必须 `clarify_before_write` 或 `stop_for_maxwell_confirmation`。
 
 ## 冲突暴露矩阵
 
@@ -233,8 +234,8 @@ This heightened analysis applies when targets include:
 
 - `docs/methodology/`
 - `docs/governance/`
-- future `docs/templates/`
-- future `docs/runbooks/`
+- `docs/templates/`
+- `docs/runbooks/`
 - `.agents/skills/`
 - `_bmad-output/project-context.md`
 - BMad workflow assets, story files, sprint status, skill instructions or project context outputs
@@ -325,7 +326,7 @@ Story 0.7 itself authorizes creation of this readiness policy only. It does not 
 
 ## 维护触发点
 
-This policy is a Foundation baseline. It must be revisited when later governance stories add stronger schema, records, runbooks or migration rules.
+This policy is a Foundation baseline. It must be revisited when later governance stories add stronger schema, records, runbook revisions or migration rules.
 
 Known maintenance triggers:
 
@@ -334,6 +335,6 @@ Known maintenance triggers:
 - Story 4.1 已建立 revision/regeneration continuity policy；后续若该政策更新，复核 recovery approach、old version preservation、batch regeneration 和 Continuity Record stop conditions。
 - `docs/governance/sidecar-boundary-policy.md` 或 `docs/governance/legacy-migration-guide.md` 更新后，复核 sidecar/legacy migration stop conditions。
 - Related docs taxonomy、link maintenance、reusable model entry points、existing-doc reuse procedure 或 network boundary / decay prevention policy 更新后，复核 related docs、入链/出链、successor 和 navigation evidence。
-- Epic 6 batch governance runbook、batch change review record 和 batch completion report template 落地后，复核本文中的 readiness decision 与具体 batch execution steps 的边界。
+- Story 6.1 batch governance runbook 更新，或 Story 6.2 batch change review record、Story 6.3 batch completion report template 落地后，复核本文中的 readiness decision、batch execution steps 和 batch evidence records 的边界。
 
 This policy should not be maintained by silently expanding scope during unrelated batch work. If future work needs a stronger record format, automation, schema field or runbook step, it must be authorized by the relevant story or Maxwell confirmation.

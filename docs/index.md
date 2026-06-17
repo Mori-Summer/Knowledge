@@ -5,10 +5,10 @@ concept: knowledge_docs_index
 topic: root
 depth_mode: standard
 created_at: '2026-03-16T00:00:00+08:00'
-updated_at: '2026-06-15T14:34:30+08:00'
+updated_at: '2026-06-17T16:20:05+08:00'
 source_basis:
   - derived_repository_index
-time_context: phase_5_epic_5_network_boundary_decay_prevention_2026_06_01
+time_context: epic_6_story_6_1_batch_governance_runbook_2026_06_17
 applicability: repository_navigation
 prompt_version: not_applicable
 template_version: index_v1
@@ -134,6 +134,10 @@ open_questions:
 
 - [审查记录模板：任务分类、Hard Fail、评分证据、未验证项与决策记录](./templates/review-record-template.md)
 - [完成汇报模板：质量状态、入库决策证据、验证证据、未解决风险与非软件边界](./templates/completion-report-template.md)
+
+## runbooks
+
+- [批量治理 Runbook：生成、重构、抽样审查与停止条件](./runbooks/batch-governance-runbook.md)
 
 ## graphics-systems
 
