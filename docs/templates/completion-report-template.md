@@ -5,7 +5,7 @@ concept: completion_report_template
 topic: templates
 depth_mode: standard
 created_at: '2026-05-27T14:52:11+08:00'
-updated_at: '2026-06-17T16:20:05+08:00'
+updated_at: '2026-06-18T09:31:06+08:00'
 source_basis:
   - _bmad-output/planning-artifacts/prd.md
   - _bmad-output/planning-artifacts/architecture.md
@@ -37,7 +37,7 @@ source_basis:
   - docs/governance/existing-doc-reuse-procedure.md
   - docs/governance/network-boundary-and-decay-prevention.md
   - _bmad-output/implementation-artifacts/stabilization-status-2026-06-15.md
-time_context: epic_6_story_6_1_batch_governance_runbook_sync_2026_06_17
+time_context: epic_6_story_6_2_batch_change_review_record_sync_2026_06_18
 applicability: formal_docs_completion_quality_status_and_decision_reporting
 prompt_version: not_applicable
 template_version: template_asset_v1
@@ -66,6 +66,7 @@ related_docs:
   - docs/governance/existing-doc-reuse-procedure.md
   - docs/governance/network-boundary-and-decay-prevention.md
   - docs/runbooks/batch-governance-runbook.md
+  - docs/templates/batch-change-review-record.md
 open_questions:
   - Story 4.1 已建立 revision/regeneration continuity policy；后续若 Continuity Record 字段变化，是否需要同步本文 specialized records summary？
   - related-doc taxonomy、link maintenance、reusable model entry point、existing-doc reuse 或 network boundary policy 更新后，是否需要细分 link impact、related_docs impact、owner entry 和 successor link 字段？
@@ -89,7 +90,7 @@ open_questions:
 
 本文自身的 owner entry point 是 `docs/index.md` 的 `templates` 分组。Navigation treatment 是 `listed_in_docs_index`，index treatment 是在 `docs/index.md` 的 `## templates` 下列出 `docs/templates/completion-report-template.md`。这些归属信息写在正文中，不是新的全局 frontmatter 字段。
 
-当前 `quality_status: reviewed` 表示本文已完成 Epic 6 前置稳定化审查：completion scope classification、changed files evidence、methodology/template/source context、quality gate/equivalent check、`quality_status` impact、final decision/follow-up、specialized records summary、impact scope、completion wording、owner/index entry、相关治理依赖、链接/索引边界和非软件边界已检查。未解决项保留在 `open_questions` 和维护触发点中；本文不声明 `validated`，因为 Story 6.2 batch review record 和 Story 6.3 batch completion report 仍未落地。
+当前 `quality_status: reviewed` 表示本文已完成 Epic 6 前置稳定化审查：completion scope classification、changed files evidence、methodology/template/source context、quality gate/equivalent check、`quality_status` impact、final decision/follow-up、specialized records summary、impact scope、completion wording、owner/index entry、相关治理依赖、链接/索引边界和非软件边界已检查。本轮 Story 6.2 只同步直接引用和相邻依赖表述。未解决项保留在 `open_questions` 和维护触发点中；本文不声明 `validated`，因为 Story 6.3 batch completion report 仍未落地。
 
 本文与相邻资产的关系如下：
 
@@ -101,7 +102,7 @@ open_questions:
 | Story 3.1 review-record template | 引用 review classification、Hard Fail、score/equivalent check、`未验证`/`不适用` register 和 final decision evidence。 |
 | Story 3.2 document-decision policy | 使用其 final decision labels、blocking/status values、allowed wording 和 `quality_status` impact 规则。 |
 | Story 3.3 rework-loop examples | 汇总 failure class、repair instruction、regeneration rationale、prior failure record 和 resubmission outcome。 |
-| Story 4.1 / Story 4.2 / Story 4.3 / Epic 5 / Epic 6 | 汇总 revision/regeneration continuity、sidecar boundary、legacy migration assessment、link taxonomy、reuse、network boundary 和 batch runbook evidence；把 Story 6.2 batch change review record 与 Story 6.3 batch completion template 记录为 future dependencies 和 maintenance triggers。 |
+| Story 4.1 / Story 4.2 / Story 4.3 / Epic 5 / Epic 6 | 汇总 revision/regeneration continuity、sidecar boundary、legacy migration assessment、link taxonomy、reuse、network boundary、batch runbook evidence 和 Story 6.2 batch change review evidence；把 Story 6.3 batch completion template 记录为 future dependency 和 maintenance trigger。 |
 
 本文自身的 Index Impact Decision Record 是：
 
@@ -131,7 +132,7 @@ Index Impact Decision Record
 - Story 3.3 rework-loop examples 的 failure classes、repair instructions、regeneration examples 或 resubmission checks。
 - Story 4.1 revision/regeneration continuity policy 的 Continuity Record 字段；`docs/governance/sidecar-boundary-policy.md` 或 `docs/governance/legacy-migration-guide.md` 的相邻 evidence 规则。
 - related-doc taxonomy、link maintenance、reusable model entry points、existing-doc reuse procedure 或 network boundary policy。
-- Story 6.2 batch change review record 或 Story 6.3 batch completion report template。
+- Story 6.2 batch change review record 的字段权威，或 Story 6.3 batch completion report template。
 - executable tooling、machine-readable schema、JSON/YAML schema、validator、lint/scoring tool、completion-report generator、decision generator、CLI/API/UI/database/deployment/CI、package manifest、`src/` 或 `tests/`。
 
 本文不授权在目标资产 frontmatter 中新增 `schema_version`、`lifecycle_state`、`decision_status`、`review_record_version`、`completion_report_version`、`owner_entry_point`、`navigation_treatment`、`index_policy_version`、`quality_gate_version`、`promotion_policy_version`、`migration_status`、`duplicate_status`、`coexistence_status`、`successor`、`canonical_asset` 或类似字段。Completion evidence 应写在 completion report 正文、review evidence、story Dev Agent Record、目标正文中的合规说明或 future authorized records 中。
@@ -277,7 +278,7 @@ Completion report 可以汇总专门记录，但不得替代它们的 required f
 | Migration Decision Record | rename、move、retitle、split、merge、replacement、successor、deprecation、archive、reactivation | identity continuity、old-content handling、successor/replacement、link/index/lifecycle impact | 字段权威仍属 rename/migration policy |
 | Revision / Regeneration Continuity Record | targeted revision、structural upgrade、regeneration、split、merge、deprecation 或 reference-validity impact | update mode、changed what/why、preserved/removed、old-content disposition、source/time/status impact、reference validity、unresolved risks | 字段权威仍属 revision/regeneration continuity policy |
 | Duplicate / Coexistence Decision Record | duplicate、near duplicate、overlap、same-topic coexistence、reject、merge、link、narrow | chosen outcome、rejected alternatives、distinct concept/purpose/reuse context | taxonomy 和 outcome 权威仍属 duplicate/coexistence policy |
-| Batch Readiness Record | 目标集由规则选出，影响多个 assets/topics/status/index entries，或需要批量治理 | target set、exclusions、stop conditions、owner decision、recovery/sampling | 批量执行和 batch completion template 属 Epic 6 |
+| Batch Readiness Record | 目标集由规则选出，影响多个 assets/topics/status/index entries，或需要批量治理 | target set、exclusions、stop conditions、owner decision、recovery/sampling | 批量执行由 Story 6.1 runbook 约束；batch review/conflict evidence 由 Story 6.2 模板约束；batch completion template 属未来 Story 6.3 |
 | Source Discipline evidence | 涉及 current-practice、historical/deprecated、external fact、real-world anchor 或 unverifiable claim | claim type、source limitation、checked date、inference/open question handling | 来源纪律和质量门禁保持权威 |
 | Rework Loop / Prior Failure evidence | 有 prior failure、repair instruction、regeneration rationale 或 resubmission check | failure id、class、resolution evidence、resubmission outcome、new failure risk | 字段权威仍属 rework-loop examples |
 
@@ -521,7 +522,7 @@ Do not write ready, publication-ready, accepted, promoted, validated, maintained
 14. `docs/index.md` 有 `## templates` entry，relative link 从 `docs/index.md` 可解析。
 15. Changed-file links、body links 和 `related_docs` targets 存在；planned targets 只出现在 `open_questions` 或 future-story dependency。
 16. Lifecycle/quality-status vocabulary 与当前治理规则兼容，不伪造 review、validation、migration、promotion、lifecycle 或 batch evidence。
-17. 未创建 runtime code、package manifest、source tree、software tests、build config、automation、CLI/API/UI/database/deployment/CI、completion-report generator、decision generator、validation script、batch completion template、额外 sidecar/legacy/Epic 5 asset、Story 6.2/6.3 asset 或 actual completion report。
+17. 未创建 runtime code、package manifest、source tree、software tests、build config、automation、CLI/API/UI/database/deployment/CI、completion-report generator、decision generator、validation script、batch completion template、额外 sidecar/legacy/Epic 5 asset、额外 Story 6.2 asset、Story 6.3 asset 或 actual completion report。
 
 以下变化要求复核本文：
 
@@ -530,7 +531,7 @@ Do not write ready, publication-ready, accepted, promoted, validated, maintained
 - `docs/governance/sidecar-boundary-policy.md` 或 `docs/governance/legacy-migration-guide.md` 的相邻 evidence 规则发生实质变更。
 - related-doc taxonomy、link maintenance policy、reusable model entry point、existing-doc reuse procedure 或后续 network governance 更新。
 - `docs/runbooks/batch-governance-runbook.md` 的 completion evidence、formal/workflow separation 或 stop/recovery 规则发生实质变更。
-- Story 6.2 batch change review record 或 Story 6.3 batch completion report template 建立后。
+- Story 6.2 batch change review record 更新，或 Story 6.3 batch completion report template 建立后。
 - Maxwell 明确授权 machine-readable schema、executable validation tooling、completion-report generator、decision generator、review-record generator、lint/scoring automation、batch completion reports 或批量状态迁移。
 - `quality_status`、lifecycle、frontmatter schema、promotion、index、migration、duplicate/coexistence 或 batch readiness vocabulary 发生实质治理变更。
 

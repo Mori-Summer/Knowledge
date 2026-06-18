@@ -5,7 +5,7 @@ concept: index_synchronization_rules
 topic: governance
 depth_mode: standard
 created_at: '2026-05-26T11:48:58+08:00'
-updated_at: '2026-06-17T16:20:05+08:00'
+updated_at: '2026-06-18T09:31:06+08:00'
 source_basis:
   - _bmad-output/project-context.md
   - _bmad-output/planning-artifacts/prd.md
@@ -38,7 +38,7 @@ source_basis:
   - docs/methodology/concept-document-contract.md
   - _bmad-output/implementation-artifacts/deferred-work.md
   - _bmad-output/implementation-artifacts/stabilization-status-2026-06-15.md
-time_context: epic_6_story_6_1_batch_governance_runbook_sync_2026_06_17
+time_context: epic_6_story_6_2_batch_change_review_record_sync_2026_06_18
 applicability: docs_index_synchronization_and_navigation_governance
 prompt_version: not_applicable
 template_version: governance_asset_v1
@@ -69,6 +69,7 @@ related_docs:
   - docs/methodology/concept-document-quality-gate.md
   - docs/methodology/concept-document-contract.md
   - docs/runbooks/batch-governance-runbook.md
+  - docs/templates/batch-change-review-record.md
 open_questions:
   - rename、migration、split、merge、deprecation、successor 和 link-impact policy 已建立后，是否需要把本文中的 rename/move/deprecation 处理改为更细的迁移记录入口？
   - Story 2.6 已建立 duplicate/coexistence policy 后，是否还需要为 secondary reference 和 duplicate-entry exception 增加更细决策表？
@@ -103,7 +104,7 @@ open_questions:
 
 本文自身的 owner entry point 是 `docs/index.md` 的 `governance` 分组。Navigation treatment 是 `listed_in_docs_index`，index treatment 是在 `docs/index.md` 的 `## governance` 下列出 `docs/governance/index-synchronization-rules.md`。这些归属信息写在正文中，不是新的全局 frontmatter 字段。
 
-当前 `quality_status: reviewed` 表示本文已完成 Epic 6 前置稳定化审查：index synchronization 触发器、索引条目格式、Index Impact Decision Record、相邻治理依赖、链接/索引边界和非软件边界已检查。未解决项保留在 `open_questions` 和维护触发点中；本文不声明 `validated`，因为 Story 6.2 batch review record 和 Story 6.3 batch completion report 仍未落地。
+当前 `quality_status: reviewed` 表示本文已完成 Epic 6 前置稳定化审查：index synchronization 触发器、索引条目格式、Index Impact Decision Record、相邻治理依赖、链接/索引边界和非软件边界已检查。本轮 Story 6.2 只同步直接引用和相邻依赖表述。未解决项保留在 `open_questions` 和维护触发点中；本文不声明 `validated`，因为 Story 6.3 batch completion report 仍未落地。
 
 本文只创建 index synchronization governance asset，并为该资产同步 `docs/index.md` 入口。本文不替代 rename/migration policy、duplicate/coexistence policy、link-maintenance policy、review/decision/completion templates 或 Epic 6 batch assets，不执行 index-wide restructuring、批量排序、批量路径修复、生成式索引系统或 executable index tooling。
 
@@ -345,7 +346,7 @@ Index-only update 不得做：
 - `docs/governance/duplicate-and-coexistence-policy.md` 负责 duplicate concept、same-topic coexistence 和 secondary entry exception 的完整决策模型；本文只调用其 outcome，不复制该模型。
 - Review record template、document decision policy、rework loop 和 completion report template 负责 review/decision/completion evidence。
 - Epic 5 related docs taxonomy、link maintenance、reusable model entry points、existing-doc reuse procedure 和 network boundary / decay prevention governance 负责相邻关系、链接维护、复用入口和网络退化路由。
-- Story 6.1 负责 batch governance runbook；Story 6.2 和 Story 6.3 分别负责 batch review record 和 batch completion report。
+- Story 6.1 负责 batch governance runbook；Story 6.2 负责 batch change review record；Story 6.3 负责 future batch completion report。
 
 本文可以引用这些相邻 owners，但不创建对应资产、不替代其完整范围，也不把未来策略提前写成当前可执行迁移规则。
 
@@ -357,7 +358,7 @@ Index-only update 不得做：
 - Story 2.6 已建立 duplicate/coexistence policy；后续若该政策更新，复核本文的 secondary reference 和 duplicate-entry exception 边界。
 - Epic 3 review record、document decision policy、rework loop 或 completion report template 发生实质字段或 vocabulary 变更。
 - Epic 5 related docs taxonomy、link maintenance policy、reusable model entry points 或后续 reuse/network governance 更新。
-- Story 6.1 batch governance runbook 更新，或 Story 6.2 batch review record、Story 6.3 batch completion report 建立后。
+- Story 6.1 batch governance runbook 或 Story 6.2 batch change review record 更新，或 Story 6.3 batch completion report 建立后。
 - Maxwell 明确授权 generated index pages、machine-readable index schema、executable validation tooling、lint/scoring automation、batch normalization 或 index-wide restructuring。
 
 ## 参考资料

@@ -5,7 +5,7 @@ concept: batch_readiness_checklist
 topic: governance
 depth_mode: standard
 created_at: '2026-05-25T09:34:08+08:00'
-updated_at: '2026-06-17T16:20:05+08:00'
+updated_at: '2026-06-18T09:31:06+08:00'
 source_basis:
   - _bmad-output/project-context.md
   - _bmad-output/planning-artifacts/prd.md
@@ -36,7 +36,7 @@ source_basis:
   - docs/governance/existing-doc-reuse-procedure.md
   - docs/governance/network-boundary-and-decay-prevention.md
   - _bmad-output/implementation-artifacts/stabilization-status-2026-06-15.md
-time_context: epic_6_story_6_1_batch_governance_runbook_sync_2026_06_17
+time_context: epic_6_story_6_2_batch_change_review_record_sync_2026_06_18
 applicability: batch_governance_readiness_scope_conflict_and_stop_criteria
 prompt_version: not_applicable
 template_version: governance_asset_v1
@@ -59,6 +59,7 @@ related_docs:
   - docs/governance/existing-doc-reuse-procedure.md
   - docs/governance/network-boundary-and-decay-prevention.md
   - docs/runbooks/batch-governance-runbook.md
+  - docs/templates/batch-change-review-record.md
 open_questions:
   - index synchronization rules 已建立后，是否需要细化批量索引更新的 sample/review 规则？
   - 如果 completion-report template 后续调整 Batch Readiness Record summary 字段，是否需要同步本文的 readiness record 汇总方式？
@@ -81,13 +82,13 @@ open_questions:
 - `docs/methodology/concept-document-quality-gate.md`
 - `docs/governance/governance-asset-navigation-policy.md`
 
-本资产不替代主方法论、质量门禁、生命周期政策、版本治理、导航政策、`docs/governance/index-synchronization-rules.md` 或 `docs/runbooks/batch-governance-runbook.md`，也不替代未来 Story 6.2 batch review template 或 Story 6.3 batch completion template。它只规定批量动作写入前的 readiness 判定基线。
+本资产不替代主方法论、质量门禁、生命周期政策、版本治理、导航政策、`docs/governance/index-synchronization-rules.md`、`docs/runbooks/batch-governance-runbook.md` 或 `docs/templates/batch-change-review-record.md`，也不替代未来 Story 6.3 batch completion template。它只规定批量动作写入前的 readiness 判定基线。
 
 本资产不授权实际批量生成、批量迁移、批量 normalization、批量状态重写、批量重命名、批量删除、批量废弃、批量归档、index-wide restructuring 或 executable validation tooling。完成 readiness 只表示该次命名批量动作具备进入下一步确认或执行的依据；它不是后续无关批量工作的长期授权。
 
 本文自身的 owner entry point 是 `docs/index.md` 的 `governance` 分组；navigation treatment 是 `listed_in_docs_index`。本文的权威范围限于 batch readiness、scope judgment、conflict exposure、stop criteria、downstream impact analysis 和 recovery evidence，不覆盖具体批量执行步骤。
 
-当前 `quality_status: reviewed` 表示本文已完成 Epic 6 前置稳定化审查：batch readiness 范围判定、冲突暴露、停止条件、恢复策略、owner decision、相关治理依赖、链接/索引边界和非软件边界已检查。未解决项保留在 `open_questions` 和维护触发点中；本文不声明 `validated`，因为 Story 6.2 batch review record 和 Story 6.3 batch completion report 仍未落地，且 readiness policy 尚未在实际命名批量任务中验证。
+当前 `quality_status: reviewed` 表示本文已完成 Epic 6 前置稳定化审查：batch readiness 范围判定、冲突暴露、停止条件、恢复策略、owner decision、相关治理依赖、链接/索引边界和非软件边界已检查。本轮 Story 6.2 只同步直接引用和相邻依赖表述。未解决项保留在 `open_questions` 和维护触发点中；本文不声明 `validated`，因为 Story 6.3 batch completion report 仍未落地，且 readiness policy 尚未在实际命名批量任务中验证。
 
 ## 什么算批量治理
 
@@ -104,7 +105,7 @@ open_questions:
 | batch status conversion | 批量改写 `quality_status`、废弃/归档标记或等价状态表达 | 生命周期证据、质量门禁、禁止静默晋升 |
 | batch link/index update | 批量更新正文链接、`related_docs`、入链、出链或 `docs/index.md` 条目 | link evidence、index policy、navigation treatment |
 | batch deprecation/archive | 一次废弃、归档、降级或替换多篇资产 | successor、remaining access、索引可见性 |
-| batch review | 用同一标准审查一组文件、候选文档或治理资产 | 抽样、冲突记录、completion evidence |
+| batch review | 用同一标准审查一组文件、候选文档或治理资产 | 抽样、Story 6.2 review evidence、冲突记录、completion evidence |
 
 以下动作不自动构成批量治理，但仍要按对应任务类型完成验证：
 
@@ -335,6 +336,6 @@ Known maintenance triggers:
 - Story 4.1 已建立 revision/regeneration continuity policy；后续若该政策更新，复核 recovery approach、old version preservation、batch regeneration 和 Continuity Record stop conditions。
 - `docs/governance/sidecar-boundary-policy.md` 或 `docs/governance/legacy-migration-guide.md` 更新后，复核 sidecar/legacy migration stop conditions。
 - Related docs taxonomy、link maintenance、reusable model entry points、existing-doc reuse procedure 或 network boundary / decay prevention policy 更新后，复核 related docs、入链/出链、successor 和 navigation evidence。
-- Story 6.1 batch governance runbook 更新，或 Story 6.2 batch change review record、Story 6.3 batch completion report template 落地后，复核本文中的 readiness decision、batch execution steps 和 batch evidence records 的边界。
+- Story 6.1 batch governance runbook 或 Story 6.2 batch change review record 更新，或 Story 6.3 batch completion report template 落地后，复核本文中的 readiness decision、batch execution steps 和 batch evidence records 的边界。
 
 This policy should not be maintained by silently expanding scope during unrelated batch work. If future work needs a stronger record format, automation, schema field or runbook step, it must be authorized by the relevant story or Maxwell confirmation.
