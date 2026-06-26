@@ -5,7 +5,7 @@ concept: complex_number
 topic: mathematics
 depth_mode: deep
 created_at: '2026-03-23T19:38:30+08:00'
-updated_at: '2026-06-22T09:42:00+08:00'
+updated_at: '2026-06-26T00:00:00+08:00'
 source_basis:
   - classical_algebra_practice
   - complex_analysis_standard_teaching
@@ -17,7 +17,7 @@ source_basis:
   - quantum_mechanics_standard_teaching
   - imaginary_number_doc_merged_2026_06_22
   - imaginary_number_uses_doc_merged_2026_06_22
-  - methodology_document_generation_methodology
+  - docs/methodology/document-generation-methodology.md
   - docs_folder_consolidation_progress_2026_06_23
 time_context: evergreen_mathematical_and_engineering_baseline_and_complex_number_docs_consolidated_2026_06_23
 applicability: concept_boundary_discrimination_for_imaginary_number_complex_number_complex_plane_and_engineering_complex_representation

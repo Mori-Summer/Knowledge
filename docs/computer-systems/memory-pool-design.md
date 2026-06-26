@@ -5,16 +5,15 @@ concept: memory_pool_design
 topic: computer-systems
 depth_mode: deep
 created_at: '2026-03-23T11:13:24+08:00'
-updated_at: '2026-03-23T11:13:24+08:00'
+updated_at: '2026-06-26T00:00:00+08:00'
 source_basis:
   - nginx_development_guide_checked_2026_03_23
   - apr_pool_docs_checked_2026_03_23
   - protobuf_arena_guide_checked_2026_03_23
   - netty_pooled_byte_buf_allocator_docs_checked_2026_03_23
   - repository_malloc_internals_2026_03_23
-  - methodology_operator_guide
-  - concept_document_template
-  - concept_document_quality_gate
+  - docs/methodology/document-generation-methodology.md
+  - docs/methodology/concept-document-quality-gate.md
 time_context: current_practice_checked_2026_03_23
 applicability: memory_pool_architecture_object_lifetime_management_buffer_pooling_allocator_selection_and_performance_debugging
 prompt_version: concept_generation_prompt_v1

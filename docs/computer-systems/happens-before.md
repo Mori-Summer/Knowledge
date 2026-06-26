@@ -5,7 +5,7 @@ concept: happens_before
 topic: computer-systems
 depth_mode: deep
 created_at: '2026-03-16T14:16:47+08:00'
-updated_at: '2026-06-23T00:00:00+08:00'
+updated_at: '2026-06-26T00:00:00+08:00'
 source_basis:
   - cxx_draft_intro_races_2026_03_16
   - cxx_draft_atomics_order_2026_03_16
@@ -15,7 +15,7 @@ source_basis:
   - linux_kernel_lkmm_explanation_2026_03_16
   - wg21_p3475r2_2025
   - concurrency_term_cluster_rewrite_review_2026_04_09
-  - methodology_document_generation_methodology
+  - docs/methodology/document-generation-methodology.md
   - synchronizes_with_and_data_race_docs_merged_2026_06_18
   - docs_folder_consolidation_progress_2026_06_23
 time_context: current_cxx_memory_model_and_tooling_baseline_checked_2026_03_16_and_concurrency_boundary_docs_consolidated_2026_06_23

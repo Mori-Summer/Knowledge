@@ -5,7 +5,7 @@ concept: unified_concept_document_spec
 topic: methodology
 depth_mode: standard
 created_at: '2026-04-01T20:02:19+08:00'
-updated_at: '2026-06-18T17:05:37+08:00'
+updated_at: '2026-06-26T00:00:00+08:00'
 source_basis:
   - methodology_repository_practice
   - consolidation_review_2026_04_01
@@ -16,7 +16,8 @@ source_basis:
   - docs/governance/docs-asset-governance.md
   - docs/governance/docs-change-governance.md
   - docs/templates/governance-record-templates.md
-time_context: methodology_folder_consolidation_2026_06_18
+  - docs/runbooks/batch-governance-runbook.md
+time_context: source_basis_and_navigation_alignment_2026_06_26
 applicability: ai_concept_doc_creation_upgrade_review_and_repository_integration
 prompt_version: concept_generation_prompt_v4
 template_version: unified_spec_v3
@@ -27,6 +28,7 @@ related_docs:
   - docs/governance/docs-asset-governance.md
   - docs/governance/docs-change-governance.md
   - docs/templates/governance-record-templates.md
+  - docs/runbooks/batch-governance-runbook.md
 open_questions:
   - 后续是否需要在一次真实批量文档生成任务中验证 v3 合并规范的可执行性？
 ---
@@ -284,6 +286,7 @@ open_questions:
 - 来源不足时记录限制，不得把推断写成事实。
 - 历史路径必须说明为什么旧、局限在哪里、当前替代是什么，以及旧路径何时仍有解释价值。
 - 正文、frontmatter `source_basis`、`time_context`、参考资料、open questions 和质量状态语义一致。
+- `source_basis` 的仓库路径、外部来源 token、合并/迁移 provenance token 分类由 `docs/governance/docs-asset-governance.md` 负责。
 
 ## 10. 质量门禁
 
@@ -348,6 +351,7 @@ open_questions:
 | 任务摄入、生成合同、正文骨架、固定触发词、仓库集成、方法论边界 | 本文 |
 | Hard Fail、评分、审查输出、质量状态限制、reviewer calibration | `concept-document-quality-gate.md` |
 | 来源、时间语境、当前实践、历史路径、不可验证声明、真实锚点 | `source-discipline-and-real-world-anchor-policy.md` |
+| frontmatter schema、`source_basis` 取值分类、路径、索引、链接、资产身份 | `docs/governance/docs-asset-governance.md` |
 
 只有当新规则同时满足以下条件时，才考虑新增 methodology 文件：
 

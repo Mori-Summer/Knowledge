@@ -7,36 +7,37 @@
 
 ## 当前接受的贡献类型
 
-这个仓库当前主要接受 4 类贡献：
+这个仓库当前主要接受 4 类常用贡献：
 
 1. 新建概念文档
-2. 升级已有概念文档
-3. 审计 / 审查现有文档
-4. 优化方法论文档与仓库规范
+2. 升级旧文档
+3. 审查 / 验收现有文档
+4. 仅更新索引
 
 对应地，常见工作流也是 4 条：
 
 - `新建`
 - `升级`
-- `审计`
-- `方法论维护`
+- `审查 / 验收`
+- `仅更新索引`
+
+此外还有一个长期存在的旁路任务：优化方法论文档与仓库规范。它按方法论维护规则处理，不替代上面的 4 类常用工作流。
 
 ## 开始前先读什么
 
 在开始任何贡献之前，默认先读下面这一份主规范：
 
-- [docs/methodology/document-generation-methodology.md](/Users/maxwell/Knowledge/docs/methodology/document-generation-methodology.md)
+- [docs/methodology/document-generation-methodology.md](docs/methodology/document-generation-methodology.md)
 
-只有在主规范不足以支撑具体任务时，再进入对应参考件：
+按任务需要再进入对应规范：
 
-- [docs/methodology/fixed-concept-generation-prompt.md](/Users/maxwell/Knowledge/docs/methodology/fixed-concept-generation-prompt.md)
-- [docs/methodology/concept-document-template.md](/Users/maxwell/Knowledge/docs/methodology/concept-document-template.md)
-- [docs/methodology/concept-document-quality-gate.md](/Users/maxwell/Knowledge/docs/methodology/concept-document-quality-gate.md)
-- [docs/methodology/learning-new-things-playbook.md](/Users/maxwell/Knowledge/docs/methodology/learning-new-things-playbook.md)
-- [docs/methodology/cognitive-modeling-playbook.md](/Users/maxwell/Knowledge/docs/methodology/cognitive-modeling-playbook.md)
-- [docs/methodology/methodology-operator-guide.md](/Users/maxwell/Knowledge/docs/methodology/methodology-operator-guide.md)
+- [docs/methodology/concept-document-quality-gate.md](docs/methodology/concept-document-quality-gate.md)：审查、验收、质量状态变更
+- [docs/methodology/source-discipline-and-real-world-anchor-policy.md](docs/methodology/source-discipline-and-real-world-anchor-policy.md)：来源、当前实践、历史路径、真实世界锚点
+- [docs/governance/docs-asset-governance.md](docs/governance/docs-asset-governance.md)：资产身份、frontmatter、路径、索引、链接
+- [docs/governance/docs-change-governance.md](docs/governance/docs-change-governance.md)：删除、合并、迁移、批量治理、返工闭环
+- [docs/templates/governance-record-templates.md](docs/templates/governance-record-templates.md)：需要记录审查、批量审查或完成汇报时
 
-默认不再要求每次都把整套方法论文档完整读一遍。
+默认不再要求每次都把整套规范完整读一遍，但不应引用已合并删除的旧 methodology 文件。
 
 ## 目录与主题选择
 
@@ -44,14 +45,20 @@
 
 当前主题包括：
 
+- `docs/methodology/`
+- `docs/governance/`
+- `docs/templates/`
+- `docs/runbooks/`
 - `docs/ai-systems/`
 - `docs/computer-systems/`
 - `docs/economics/`
+- `docs/graphics-systems/`
 - `docs/image-processing/`
+- `docs/mathematics/`
+- `docs/networking/`
 - `docs/programming-languages/`
+- `docs/security/`
 - `docs/systems/`
-- `docs/methodology/`
-- `docs/_reports/`
 
 主题选择原则：
 
@@ -122,7 +129,7 @@ frontmatter 最少应包含：
 按 docs/methodology/document-generation-methodology.md，为概念 {concept} 新建一篇知识库文档。先判断 standard 或 deep，建立可复用内部模型，直接写入合适的 docs/{topic}/ 目录，文件名使用 kebab-case，补齐统一 frontmatter，并在完成后更新 docs/index.md。
 ```
 
-## 工作流 2：升级已有文档
+## 工作流 2：升级旧文档
 
 升级默认遵守“保留高价值内容，补齐短板”，而不是整篇推倒重写。
 
@@ -130,7 +137,7 @@ frontmatter 最少应包含：
 
 1. 先用主规范或质量门禁找 Hard Fail 和低分项
 2. 再补缺失栏目、主链路、tradeoff、验证入口和迁移模型
-3. 必要时回到参考 playbook 补边界、机制和约束
+3. 必要时回到主规范和来源纪律补边界、机制、约束和锚点
 4. 更新 `updated_at`、`source_basis`、`time_context`
 5. 若文档标题变更或新增正式文档，更新 `docs/index.md`
 
@@ -151,9 +158,9 @@ frontmatter 最少应包含：
 按 docs/methodology/document-generation-methodology.md 升级现有文档 {path}。
 ```
 
-## 工作流 3：审计 / 审查现有文档
+## 工作流 3：审查 / 验收现有文档
 
-审计默认以 [concept-document-quality-gate.md](/Users/maxwell/Knowledge/docs/methodology/concept-document-quality-gate.md) 为基线，而不是凭阅读感觉给评价。
+审查 / 验收默认以 [concept-document-quality-gate.md](docs/methodology/concept-document-quality-gate.md) 为基线，而不是凭阅读感觉给评价。系统审计可视为这一工作流的批量或抽样形式。
 
 推荐顺序：
 
@@ -171,19 +178,41 @@ frontmatter 最少应包含：
 
 如果只是想做一轮系统审计，可以直接要求按质量门禁做 review。
 
-## 工作流 4：方法论文档维护
+## 工作流 4：仅更新索引
+
+仅更新索引适用于目标文档已经存在、标题和路径明确，但 `docs/index.md` 缺失、过时或排序需要同步的情况。
+
+推荐顺序：
+
+1. 确认目标文件存在，并且是正式 docs 资产。
+2. 检查目标 frontmatter 的 `title`、`topic`、`quality_status` 和路径。
+3. 只更新 `docs/index.md` 和必要的窄 metadata。
+4. 验证 index 链接存在，不做 hidden promotion。
+
+### 推荐指令
+
+```text
+检查 docs/index.md 是否正确收录 {path}；只做索引和必要 metadata 同步。
+```
+
+## 旁路任务：方法论文档维护
 
 `docs/methodology/` 下的文档不是普通概念文档，它们共同组成仓库的规范层。
 
 维护这部分内容时，优先遵守下面这条新分层：
 
 - 主规范：`document-generation-methodology.md`
-- 参考件：playbook、template、quality gate、prompt、operator guide
+- 质量门禁：`concept-document-quality-gate.md`
+- 来源纪律：`source-discipline-and-real-world-anchor-policy.md`
+- 资产与变更治理：`docs/governance/`
+- 记录模板与批量执行：`docs/templates/`、`docs/runbooks/`
 
 判断原则：
 
 - 任何每次新建、升级、审查都必须遵守的稳定规则，优先写进主规范
-- 只有在需要保留更深背景、完整模板、完整评分细则或快捷触发词时，才写进参考件
+- Hard Fail、评分、状态声明限制写进质量门禁
+- 来源、当前实践、历史路径、不可验证声明和真实世界锚点规则写进来源纪律
+- 资产身份、路径、索引、链接、删除、合并、迁移和批量治理写进 governance / templates / runbooks
 - 默认先收束入口，而不是继续增加并列主入口
 
 ## 正式概念文档的最小信息位点
@@ -277,7 +306,7 @@ frontmatter 最少应包含：
 
 ## 什么时候要更新 `docs/index.md`
 
-以下情况应更新 [docs/index.md](/Users/maxwell/Knowledge/docs/index.md)：
+以下情况应更新 [docs/index.md](docs/index.md)：
 
 - 新增正式文档
 - 文档标题发生变化
@@ -314,8 +343,8 @@ frontmatter 最少应包含：
 
 最稳的维护习惯是：
 
-1. 先判断任务属于 `新建`、`升级`、`审计` 还是 `方法论维护`
-2. 再回到 `docs/methodology/` 选择对应工具文档
+1. 先判断任务属于 `新建`、`升级`、`审查 / 验收`、`仅更新索引`，还是旁路的 `方法论维护`
+2. 再按任务读取主规范、质量门禁、来源纪律或治理执行规范
 3. 执行完成后，用质量门禁做最后一轮自查
 
 这样比自由发挥更稳，也更符合这个仓库现在的结构。

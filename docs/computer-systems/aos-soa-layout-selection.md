@@ -5,7 +5,7 @@ concept: aos_soa_layout_selection
 topic: computer-systems
 depth_mode: deep
 created_at: '2026-03-23T18:06:50+08:00'
-updated_at: '2026-06-23T00:00:00+08:00'
+updated_at: '2026-06-26T00:00:00+08:00'
 source_basis:
   - classical_data_layout_practice
   - apache_arrow_columnar_format_checked_2026_04_02
@@ -16,7 +16,7 @@ source_basis:
   - cabana_aosoa_docs_checked_2026_04_02
   - aos_and_soa_concept_boundaries_merged_2026_06_18
   - docs_folder_consolidation_progress_2026_06_23
-  - methodology_document_generation_methodology
+  - docs/methodology/document-generation-methodology.md
 time_context: current_practice_checked_2026_04_02_and_aos_soa_concept_docs_consolidated_2026_06_23
 applicability: data_layout_selection_hot_loop_design_cpu_vectorization_gpu_memory_coalescing_columnar_execution_layout_refactoring_and_boundary_transcoding
 prompt_version: concept_generation_prompt_v3

@@ -5,9 +5,9 @@ concept: decentralization
 topic: systems
 depth_mode: deep
 created_at: '2026-03-19T17:20:00+08:00'
-updated_at: '2026-03-20T17:09:33+08:00'
+updated_at: '2026-06-26T00:00:00+08:00'
 source_basis:
-  - learning_model_and_cognitive_modeling_playbooks
+  - docs/methodology/document-generation-methodology.md
   - vitalik_buterin_meaning_of_decentralization
   - git_scm_distributed_docs_checked_2026_03_19
   - ietf_rfc_4271_bgp_checked_2026_03_19

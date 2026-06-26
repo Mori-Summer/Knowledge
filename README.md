@@ -16,14 +16,14 @@
 
 如果你只是想开始读：
 
-- 先看 [docs/index.md](/Users/maxwell/Knowledge/docs/index.md)
-- 再看 [docs/methodology/document-generation-methodology.md](/Users/maxwell/Knowledge/docs/methodology/document-generation-methodology.md)
+- 先看 [docs/index.md](docs/index.md)
+- 再看 [docs/methodology/document-generation-methodology.md](docs/methodology/document-generation-methodology.md)
 
 如果你是想继续生产或维护文档：
 
 - 先判断任务属于 `新建`、`升级`、`审查 / 验收`，还是 `仅更新索引`
 - 再判断目标文档更适合走“模型型概念文档”还是“纯概念文档”路径
-- 默认先看 [docs/methodology/document-generation-methodology.md](/Users/maxwell/Knowledge/docs/methodology/document-generation-methodology.md)
+- 默认先看 [docs/methodology/document-generation-methodology.md](docs/methodology/document-generation-methodology.md)
 
 ## 快速开始
 
@@ -31,21 +31,20 @@
 
 最稳的阅读顺序：
 
-1. [docs/index.md](/Users/maxwell/Knowledge/docs/index.md)
-2. [docs/methodology/document-generation-methodology.md](/Users/maxwell/Knowledge/docs/methodology/document-generation-methodology.md)
+1. [docs/index.md](docs/index.md)
+2. [docs/methodology/document-generation-methodology.md](docs/methodology/document-generation-methodology.md)
 3. 任选一个你关心的主题目录进入，例如 `docs/computer-systems/`
 
-### 用法 2：直接用固定 Prompt 处理文档
+### 用法 2：直接用统一规范处理文档
 
-当前已经固化成四段入口：
+当前已经固化成四类常用触发方式：
 
 1. 新建文档
 2. 升级旧文档
 3. 审查 / 验收
 4. 仅更新索引
 
-统一规范见 [docs/methodology/document-generation-methodology.md](/Users/maxwell/Knowledge/docs/methodology/document-generation-methodology.md)。  
-固定触发词版本见 [docs/methodology/fixed-concept-generation-prompt.md](/Users/maxwell/Knowledge/docs/methodology/fixed-concept-generation-prompt.md)。  
+统一规范见 [docs/methodology/document-generation-methodology.md](docs/methodology/document-generation-methodology.md)。固定触发方式已合并到该主规范中。
 如果只想先记住最短触发方式，可以直接这样用：
 
 ```text
@@ -113,16 +112,17 @@ US：把这次确认下来的规则写进 _bmad/_memory/tech-writer-sidecar/docu
 如果你改的是 `docs/methodology/` 下的内容，不要把它当普通概念文档处理。  
 最稳的路径是：
 
-1. 先看 [docs/methodology/document-generation-methodology.md](/Users/maxwell/Knowledge/docs/methodology/document-generation-methodology.md)
-2. 先判断你要改的是“主规范”还是“参考件”
-3. 只有在确实需要更深背景、模板细节或评分细则时，再进入对应参考文件
+1. 先看 [docs/methodology/document-generation-methodology.md](docs/methodology/document-generation-methodology.md)
+2. 判断变更属于主执行规范、质量门禁，还是来源纪律
+3. 涉及资产身份、路径、索引、删除、合并或批量治理时，再看 `docs/governance/`、`docs/templates/` 或 `docs/runbooks/`
 
 ## 仓库现在长什么样
 
-当前仓库已经形成了比较明确的两层结构：
+当前仓库已经形成了比较明确的分层结构：
 
 - `docs/{topic}/`：正式知识文档，按主题分目录归档
 - `docs/methodology/`：文档规范层，负责“怎么新建、怎么升级、怎么审查、怎么集成”
+- `docs/governance/`、`docs/templates/`、`docs/runbooks/`：文档资产治理、记录模板和批量执行规程
 
 也就是说，这里不只是放文档，还放了一套生成、升级、审查和集成文档的工作规程。
 
@@ -131,51 +131,46 @@ US：把这次确认下来的规则写进 _bmad/_memory/tech-writer-sidecar/docu
 ```text
 docs/
   methodology/                方法论文档与执行入口
+  governance/                 文档资产治理、变更治理与治理类概念
+  templates/                  文档治理记录模板
+  runbooks/                   批量治理执行规程
   ai-systems/                 AI 系统相关概念
   computer-systems/           计算机系统相关概念
   economics/                  经济学与制度类概念
+  graphics-systems/           图形系统相关概念
   image-processing/           图像处理相关概念
+  mathematics/                数学与工程数学概念
+  networking/                 网络协议与网络系统概念
   programming-languages/      编程语言相关概念
+  security/                   安全观察面与权限边界概念
   systems/                    系统设计与一般系统概念
-  _reports/                   规范化/升级报告
   index.md                    文档导航
 ```
 
 入口文档：
 
-- [docs/index.md](/Users/maxwell/Knowledge/docs/index.md)：当前知识文档导航
-- [CONTRIBUTING.md](/Users/maxwell/Knowledge/CONTRIBUTING.md)：贡献与维护规则
+- [docs/index.md](docs/index.md)：当前知识文档导航
+- [CONTRIBUTING.md](CONTRIBUTING.md)：贡献与维护规则
 
 ## 方法论规范
 
-`docs/methodology/` 现在按“一份主规范 + 多份参考件”组织。
+`docs/methodology/` 是 AI 执行正式文档任务的规范目录，不是旧式参考文章集合。当前默认只保留三类规范：
 
-- [document-generation-methodology.md](/Users/maxwell/Knowledge/docs/methodology/document-generation-methodology.md)
+- [document-generation-methodology.md](docs/methodology/document-generation-methodology.md)
   作用：主规范，统一定义新建、升级、审查与仓库集成的执行合同
 
-- [fixed-concept-generation-prompt.md](/Users/maxwell/Knowledge/docs/methodology/fixed-concept-generation-prompt.md)
-  作用：快捷入口，适合直接复制固定触发词
+- [concept-document-quality-gate.md](docs/methodology/concept-document-quality-gate.md)
+  作用：质量门禁，定义 Hard Fail、评分、审查输出和状态声明限制
 
-- [concept-document-template.md](/Users/maxwell/Knowledge/docs/methodology/concept-document-template.md)
-  作用：参考模板，补充完整章节骨架和分型细节
-
-- [concept-document-quality-gate.md](/Users/maxwell/Knowledge/docs/methodology/concept-document-quality-gate.md)
-  作用：参考门禁，补充完整 Hard Fail 与评分细则
-
-- [learning-new-things-playbook.md](/Users/maxwell/Knowledge/docs/methodology/learning-new-things-playbook.md)
-  作用：学习参考，补充学习目标与理解路径
-
-- [cognitive-modeling-playbook.md](/Users/maxwell/Knowledge/docs/methodology/cognitive-modeling-playbook.md)
-  作用：建模参考，补充边界、机制、约束与因果纪律
-
-- [methodology-operator-guide.md](/Users/maxwell/Knowledge/docs/methodology/methodology-operator-guide.md)
-  作用：旧版编排说明，保留作参考
+- [source-discipline-and-real-world-anchor-policy.md](docs/methodology/source-discipline-and-real-world-anchor-policy.md)
+  作用：来源纪律，约束当前实践、历史路径、不可验证声明和真实世界锚点
 
 如果你第一次进入这个仓库，默认顺序改成：
 
-1. [document-generation-methodology.md](/Users/maxwell/Knowledge/docs/methodology/document-generation-methodology.md)
-2. [docs/index.md](/Users/maxwell/Knowledge/docs/index.md)
-3. 只有在主规范不足以支撑任务时，再进入对应参考件
+1. [document-generation-methodology.md](docs/methodology/document-generation-methodology.md)
+2. [concept-document-quality-gate.md](docs/methodology/concept-document-quality-gate.md)，仅在审查、验收或状态变更时必读
+3. [source-discipline-and-real-world-anchor-policy.md](docs/methodology/source-discipline-and-real-world-anchor-policy.md)，仅在涉及事实、当前实践、历史路径或真实世界锚点时必读
+4. [docs/index.md](docs/index.md)
 
 ## 现在支持的 4 类主要工作流
 
@@ -300,20 +295,20 @@ frontmatter 最少应包含：
 - 有验证入口和迁移入口
 - frontmatter 与正文语义一致
 
-正式验收时，以 [concept-document-quality-gate.md](/Users/maxwell/Knowledge/docs/methodology/concept-document-quality-gate.md) 为准，不以主观阅读感受为准。
+正式验收时，以 [concept-document-quality-gate.md](docs/methodology/concept-document-quality-gate.md) 为准，不以主观阅读感受为准。
 
 ## 常用入口回顾
 
-- 看导航：读 [docs/index.md](/Users/maxwell/Knowledge/docs/index.md)
-- 看方法：读 [docs/methodology/document-generation-methodology.md](/Users/maxwell/Knowledge/docs/methodology/document-generation-methodology.md)
-- 看固定入口：读 [docs/methodology/fixed-concept-generation-prompt.md](/Users/maxwell/Knowledge/docs/methodology/fixed-concept-generation-prompt.md)
-- 看统一执行流程：读 [docs/methodology/document-generation-methodology.md](/Users/maxwell/Knowledge/docs/methodology/document-generation-methodology.md)
+- 看导航：读 [docs/index.md](docs/index.md)
+- 看方法：读 [docs/methodology/document-generation-methodology.md](docs/methodology/document-generation-methodology.md)
+- 看质量门禁：读 [docs/methodology/concept-document-quality-gate.md](docs/methodology/concept-document-quality-gate.md)
+- 看来源纪律：读 [docs/methodology/source-discipline-and-real-world-anchor-policy.md](docs/methodology/source-discipline-and-real-world-anchor-policy.md)
 - 用 BMAD 帮你判断下一步：输入 `$bmad-help`
 - 用技术写作代理执行任务：输入 `$bmad-tech-writer`
 
 ## 贡献与维护
 
-如果你要继续往仓库里增加、升级或审查文档，直接看 [CONTRIBUTING.md](/Users/maxwell/Knowledge/CONTRIBUTING.md)。
+如果你要继续往仓库里增加、升级或审查文档，直接看 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
 ## 一句话总结
 

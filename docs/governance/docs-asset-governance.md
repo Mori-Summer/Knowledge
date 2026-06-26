@@ -5,7 +5,7 @@ concept: docs_asset_governance
 topic: governance
 depth_mode: deep
 created_at: '2026-06-22T09:47:01+08:00'
-updated_at: '2026-06-22T09:47:01+08:00'
+updated_at: '2026-06-26T00:00:00+08:00'
 source_basis:
   - governance_folder_consolidation_2026_06_22
   - frontmatter_schema_doc_merged_2026_06_22
@@ -19,7 +19,7 @@ source_basis:
   - reusable_model_entry_points_doc_merged_2026_06_22
   - network_boundary_and_decay_prevention_doc_merged_2026_06_22
   - sidecar_boundary_policy_doc_merged_2026_06_22
-time_context: governance_consolidation_2026_06_22
+time_context: governance_source_basis_rule_alignment_2026_06_26
 applicability: formal_docs_asset_identity_metadata_path_lifecycle_index_link_and_network_governance
 prompt_version: not_applicable
 template_version: governance_asset_v2_consolidated
@@ -28,6 +28,8 @@ related_docs:
   - docs/methodology/document-generation-methodology.md
   - docs/methodology/source-discipline-and-real-world-anchor-policy.md
   - docs/governance/docs-change-governance.md
+  - docs/templates/governance-record-templates.md
+  - docs/runbooks/batch-governance-runbook.md
 open_questions:
   - '是否需要把 `schema_version`、`lifecycle_state`、`owner_entry_point` 等字段升级为正式 frontmatter 字段？'
   - 是否需要为大型批量治理任务建立机器可读的 link/index/frontmatter 检查脚本？
@@ -95,6 +97,14 @@ open_questions:
 - 日期使用带时区的 ISO 形式，无法精确时也必须显式说明时间语境。
 - `prompt_version: not_applicable` 比删除字段更好。
 - 不得为单个文档临时发明全局字段。
+
+`source_basis` 允许三类值：
+
+- 可定位仓库路径，例如 `docs/methodology/document-generation-methodology.md`、`docs/governance/docs-change-governance.md`。
+- 外部来源或核对来源 token，例如 `rfc9293_tcp_base_spec_checked_2026_03_23`、`linux_mmap_manpage_checked_2026_03_19`。
+- 合并、迁移或项目内来源 token，例如 `*_doc_merged_YYYY_MM_DD`、`*_folder_consolidation_YYYY_MM_DD`、`docs_folder_consolidation_progress_YYYY_MM_DD`。
+
+当来源实际指向当前仓库内仍存在的规范、治理、模板或 runbook 资产时，优先写成 `docs/.../*.md` 路径。旧文件、已删除文件、候选稿或 `_bmad-output/` 产物只能作为 provenance，不得冒充当前执行入口。
 
 未经明确治理决策，不新增这些字段：
 

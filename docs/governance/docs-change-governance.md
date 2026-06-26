@@ -5,7 +5,7 @@ concept: docs_change_governance
 topic: governance
 depth_mode: deep
 created_at: '2026-06-22T09:47:01+08:00'
-updated_at: '2026-06-22T09:47:01+08:00'
+updated_at: '2026-06-26T00:00:00+08:00'
 source_basis:
   - governance_folder_consolidation_2026_06_22
   - agent_behavior_constraints_doc_merged_2026_06_22
@@ -18,7 +18,7 @@ source_basis:
   - rename_migration_policy_doc_merged_2026_06_22
   - revision_regeneration_continuity_policy_doc_merged_2026_06_22
   - rework_loop_examples_doc_merged_2026_06_22
-time_context: governance_consolidation_2026_06_22
+time_context: governance_control_plane_link_alignment_2026_06_26
 applicability: docs_change_execution_reuse_scan_promotion_merge_migration_revision_batch_decision_and_rework_governance
 prompt_version: not_applicable
 template_version: governance_asset_v2_consolidated
@@ -27,6 +27,8 @@ related_docs:
   - docs/methodology/document-generation-methodology.md
   - docs/methodology/source-discipline-and-real-world-anchor-policy.md
   - docs/governance/docs-asset-governance.md
+  - docs/templates/governance-record-templates.md
+  - docs/runbooks/batch-governance-runbook.md
 open_questions:
   - 批量治理是否需要独立机器可执行 readiness/checkpoint schema？
   - 重生成与定向修订的边界是否需要按资产类型分别细化？
@@ -200,6 +202,8 @@ Readiness record 最少包含：
 - stop conditions
 - recovery approach
 - validation plan
+
+Readiness record 通过后，批量执行顺序、样本审查、失败暂停、恢复证据和完成证据使用 `docs/runbooks/batch-governance-runbook.md`。记录形状使用 `docs/templates/governance-record-templates.md`，除非当前任务或 owner 没有授权写入报告文件。
 
 必须停止的情况：
 

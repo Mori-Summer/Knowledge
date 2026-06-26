@@ -5,7 +5,7 @@ concept: quaternion
 topic: mathematics
 depth_mode: deep
 created_at: '2026-03-23T20:01:00+08:00'
-updated_at: '2026-06-22T09:42:00+08:00'
+updated_at: '2026-06-26T00:00:00+08:00'
 source_basis:
   - hamilton_quaternion_foundation
   - linear_algebra_standard_teaching
@@ -16,7 +16,7 @@ source_basis:
   - control_and_attitude_representation_standard_teaching
   - quaternion_3d_rotation_doc_merged_2026_06_22
   - quaternion_vs_euler_rotation_doc_merged_2026_06_22
-  - methodology_document_generation_methodology
+  - docs/methodology/document-generation-methodology.md
   - docs_folder_consolidation_progress_2026_06_23
 time_context: evergreen_mathematical_and_engineering_baseline_and_quaternion_docs_consolidated_2026_06_23
 applicability: quaternion_concept_boundary_3d_rotation_state_modeling_orientation_composition_interpolation_and_representation_selection

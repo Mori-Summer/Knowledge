@@ -5,10 +5,10 @@ concept: knowledge_docs_index
 topic: root
 depth_mode: standard
 created_at: '2026-03-16T00:00:00+08:00'
-updated_at: '2026-06-24T00:00:00+08:00'
+updated_at: '2026-06-26T00:00:00+08:00'
 source_basis:
   - derived_repository_index
-time_context: docs_folder_consolidation_progress_2026_06_24
+time_context: docs_navigation_alignment_2026_06_26
 applicability: repository_navigation
 prompt_version: not_applicable
 template_version: index_v1
@@ -27,15 +27,23 @@ open_questions: []
 - [统一概念文档质量门禁](./methodology/concept-document-quality-gate.md)
 - [来源纪律与真实世界锚点政策：当前实践、历史路径与不可验证声明处理](./methodology/source-discipline-and-real-world-anchor-policy.md)
 
+## governance
+
+- [正式 docs 资产治理规范：身份、元数据、路径、生命周期、索引、链接与网络边界](./governance/docs-asset-governance.md)
+- [文档治理执行规范：复用扫描、晋升、合并、迁移、修订、批量、决策与返工闭环](./governance/docs-change-governance.md)
+- [法利权情理：把复杂冲突拆成规则、利益、权力、情感与法理的五维模型](./governance/fa-li-quan-qing-li.md)
+
+## templates
+
+- [文档治理记录模板：审查、批量审查、完成汇报与批量完成汇报](./templates/governance-record-templates.md)
+
+## runbooks
+
+- [批量治理 Runbook：生成、重构、抽样审查与停止条件](./runbooks/batch-governance-runbook.md)
+
 ## ai-systems
 
 - [AI 代理栈分层：Agent、Prompt、Skill 与 MCP 的概念边界](./ai-systems/agent-prompt-skill-mcp.md)
-
-## programming-languages
-
-- [回调函数：显式 continuation、异步边界与变量生命周期管理](./programming-languages/callback-lifetime-management.md)
-- [协程：可挂起控制流、运行时恢复与结构化并发的统一模型](./programming-languages/coroutine.md)
-- [PImpl：当你真正想隔离的是 ABI、编译依赖与实现细节](./programming-languages/pimpl.md)
 
 ## computer-systems
 
@@ -56,6 +64,15 @@ open_questions: []
 - [进程的内存布局：从 ELF 装载到堆、mmap 区、栈与共享库的统一模型](./computer-systems/process-memory-layout.md)
 - [虚拟内存：地址抽象、访问控制与工作集行为的统一模型](./computer-systems/virtual-memory.md)
 
+## economics
+
+- [看得见的手与看不见的手：市场、组织与国家如何分工协调资源](./economics/visible-hand-and-invisible-hand.md)
+
+## graphics-systems
+
+- [ANGLE：把 OpenGL ES/EGL 固定为稳定前端的跨后端图形兼容层](./graphics-systems/angle.md)
+- [OpenGL 上下文与 GL 资源释放顺序：大型项目里的生命周期治理模型](./graphics-systems/opengl-context-resource-lifetime-order.md)
+
 ## image-processing
 
 - [导向滤波与快速导向滤波：局部线性模型、低分辨率系数近似与工程选型](./image-processing/guided-filter-derivation.md)
@@ -65,34 +82,17 @@ open_questions: []
 - [复数、虚数与复表示：新轴入口、完整数系与工程用途的统一模型](./mathematics/complex-number.md)
 - [四元数与 3D 旋转：代数本体、姿态状态、欧拉角边界与工程选型](./mathematics/quaternion.md)
 
-## economics
-
-- [看得见的手与看不见的手：市场、组织与国家如何分工协调资源](./economics/visible-hand-and-invisible-hand.md)
-
-## governance
-
-- [正式 docs 资产治理规范：身份、元数据、路径、生命周期、索引、链接与网络边界](./governance/docs-asset-governance.md)
-- [文档治理执行规范：复用扫描、晋升、合并、迁移、修订、批量、决策与返工闭环](./governance/docs-change-governance.md)
-- [法利权情理：把复杂冲突拆成规则、利益、权力、情感与法理的五维模型](./governance/fa-li-quan-qing-li.md)
-
-## templates
-
-- [文档治理记录模板：审查、批量审查、完成汇报与批量完成汇报](./templates/governance-record-templates.md)
-
-## runbooks
-
-- [批量治理 Runbook：生成、重构、抽样审查与停止条件](./runbooks/batch-governance-runbook.md)
-
-## graphics-systems
-
-- [ANGLE：把 OpenGL ES/EGL 固定为稳定前端的跨后端图形兼容层](./graphics-systems/angle.md)
-- [OpenGL 上下文与 GL 资源释放顺序：大型项目里的生命周期治理模型](./graphics-systems/opengl-context-resource-lifetime-order.md)
-
 ## networking
 
 - [DNS：名字解析不是电话簿，而是分层委派、缓存驱动的全球名字控制面](./networking/dns.md)
 - [TCP：可靠字节流、连接状态机与反馈控制闭环的统一模型](./networking/tcp.md)
 - [UDP：最小报文服务、应用自带控制面与路径现实的统一模型](./networking/udp.md)
+
+## programming-languages
+
+- [回调函数：显式 continuation、异步边界与变量生命周期管理](./programming-languages/callback-lifetime-management.md)
+- [协程：可挂起控制流、运行时恢复与结构化并发的统一模型](./programming-languages/coroutine.md)
+- [PImpl：当你真正想隔离的是 ABI、编译依赖与实现细节](./programming-languages/pimpl.md)
 
 ## security
 
