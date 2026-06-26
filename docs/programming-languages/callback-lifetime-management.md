@@ -5,7 +5,7 @@ concept: callback_lifetime_management
 topic: programming-languages
 depth_mode: deep
 created_at: '2026-03-16T18:05:42+08:00'
-updated_at: '2026-03-20T17:09:33+08:00'
+updated_at: '2026-06-23T00:00:00+08:00'
 source_basis:
   - cpp_core_guidelines_f52_f54_2026_03_16
   - mdn_closures_2026_03_16
@@ -13,18 +13,27 @@ source_basis:
   - nodejs_util_promisify_2026_03_16
   - qt_signals_slots_qobject_2026_03_16
   - libuv_handle_async_fs_poll_docs_2026_03_16
-time_context: current_practice_checked_2026_03_16
+  - apple_dispatch_queues_2026_03_18
+  - qt_threads_qobject_2026_03_18
+  - cpp_core_guidelines_cp22_2026_03_18
+  - cppreference_weak_ptr_2026_03_18
+  - apple_working_with_blocks_2026_03_18
+  - apple_practical_memory_management_2026_03_18
+  - callback_failure_modes_merged_2026_06_18
+  - docs_folder_consolidation_progress_2026_06_23
+time_context: current_practice_checked_2026_03_16_and_callback_failure_modes_consolidated_2026_06_23
 applicability: async_api_design_event_driven_programming_and_callback_safety
 prompt_version: concept_generation_prompt_v1
 template_version: concept_doc_v1
-quality_status: upgraded_v1
+quality_status: consolidated_v1
 related_docs:
-  - docs/methodology/learning-new-things-playbook.md
-  - docs/methodology/cognitive-modeling-playbook.md
-  - docs/programming-languages/cpp20-coroutine-playbook.md
+  - docs/methodology/document-generation-methodology.md
+  - docs/programming-languages/coroutine.md
+  - docs/computer-systems/multithreaded-locks.md
 open_questions:
   - 在 callback、promise、coroutine 混用的代码库里，如何把 cancellation、lifetime 和 thread-affinity 做成统一协议而不是三套半规则？
   - 对性能敏感的事件循环系统，怎样在不引入明显分配和引用计数成本的前提下，把 callback 生命周期规则做成可静态检查的约束？
+  - 如何把 callback 的等待图与所有权图自动化成静态分析规则，提前发现“自己等自己”和引用环？
 ---
 
 # 回调函数：显式 continuation、异步边界与变量生命周期管理
@@ -39,6 +48,8 @@ open_questions:
 - 说清回调到底在解决什么问题，以及为什么它本质上是显式 continuation
 - 区分回调、闭包、普通函数参数、observer、promise/future、协程
 - 判断一个回调里捕获的变量到底应该借用、复制、共享拥有，还是弱引用
+- 用等待图判断一个 callback 设计会不会形成自等待、锁内重入或事件循环卡死
+- 用所有权图判断一个 callback 捕获会不会形成强引用环
 - 看懂为什么“代码能编译”远远不代表回调执行时上下文还有效
 - 在 GUI、事件循环、网络 IO、线程池这些真实场景里识别典型生命周期陷阱
 
@@ -69,6 +80,13 @@ open_questions:
 因此，回调函数的真正主问题可以压缩为：
 
 > **如何在“注册时”和“执行时”脱钩的前提下，仍然保证 continuation 依赖的状态在正确线程、正确时机、正确生命周期里可用？**
+
+旧的“回调死锁与强引用循环”文档已经并入本文。现在本文统一处理两张图：
+
+- `等待图`：谁在等谁，是否形成队列、线程、事件循环或锁上的闭环等待。
+- `所有权图`：谁在持有谁，是否形成 owner -> callback -> owner 这类强引用环。
+
+只要等待图成环，就会卡住；只要所有权图成强环，就会放不掉。
 
 ## 3. 对象边界与相邻概念
 
@@ -293,6 +311,42 @@ libuv 就明确规定：句柄关闭是异步的，相关内存只能在 `close_
 
 > **回调把控制流从“同步栈内继续”改成“未来外部系统回调继续”；生命周期管理则要求你让 continuation 依赖的状态与这个未来保持同样长，或者在未来到来前可靠地断开。**
 
+### 5.8 死锁链路：串行执行资源上的“自己等自己”
+
+最典型的 callback 死锁不是“等了很久”，而是当前 callback 占着推进资源，又同步等待一个仍然需要该资源才能执行的动作：
+
+```text
+串行队列 Q 正在执行 callback C
+callback C 同步等待任务 T 在 Q 上完成
+但 Q 只有 callback C 结束后才能开始 T
+=> C 等 T, T 等 C 退出
+```
+
+这个模型可以迁移到主线程回调里同步等主线程任务、事件循环线程里同步等待仍需该事件循环处理的事件、actor / serial executor 上同步回投同一执行器。
+
+### 5.9 死锁链路：锁内调用未知 callback
+
+第二类常见链路是持锁时把控制权交给外部代码，外部代码再回进来抢同一把锁：
+
+```text
+owner 持有 mutex M
+owner 在锁内调用 callback / virtual method / observer
+callback 再次访问 owner，试图申请 M
+=> 锁内重入或闭环等待
+```
+
+C++ Core Guidelines CP.22 的核心就是这条边界：持锁时不要调用未知代码，例如 callback。更稳的结构是先在锁内更新状态并做快照，退出临界区后再通知。
+
+### 5.10 所有权链路：owner 保存 callback，callback 反向强持有 owner
+
+标准引用环形状是：
+
+```text
+owner A -> callback / handle -> captured strong owner -> A
+```
+
+在 Objective-C / Swift block、C++ `std::function` + `std::shared_ptr`、timer / subscription / observer 系统里，这个结构只是语法不同。`weak` / `weak_ptr` 能断所有权边，但不会自动修复等待图，也不会替你决定“owner 消失时任务应完成还是放弃”。
+
 ## 6. 关键 tradeoff 与失败模式
 
 ### 6.1 回调的核心收益
@@ -360,6 +414,18 @@ JavaScript 闭包能保活外层变量，但这不等于没有问题。
 崩溃没了，但对象永远释放不了。  
 生命周期问题从“太短”变成了“太长”。
 
+**失败模式 9：串行队列或主线程回调里同步等待同一执行器**
+
+这类问题的本质是 callback 仍占着唯一推进资源，却等待另一个也需要该资源的动作完成。最常见变体是主线程 / 主队列 / 单线程事件循环上的自等待。
+
+**失败模式 10：锁内调用 callback、virtual method 或 observer**
+
+你以为自己只是在通知别人，实际是在对象不变量尚未封闭时把未知代码塞进临界区。`recursive_mutex` 只能掩盖一部分同线程重入，不能修复队列自等待、跨锁环或错误的通知边界。
+
+**失败模式 11：不区分 one-shot completion 与 repeating subscription**
+
+one-shot callback 可以在完成前短期强保活；长期 listener / timer / subscription 更容易形成 owner 与 callback 之间的长期强环。两者套同一套捕获规则，通常会把生命周期语义写错。
+
 ## 7. 应用场景
 
 ### 7.1 GUI 事件处理
@@ -418,6 +484,18 @@ Node 官方对 `util.promisify()` 的说明也很现实：
 
 这说明“从 callback 迁移到 promise/async”并不会自动消灭上下文绑定问题。
 
+### 8.4 Apple GCD 与 block：等待图和所有权图都是现实事故源
+
+Apple 的 dispatch queue 文档明确指出，不要在正在该队列执行的任务里对同一队列调用同步派发，因为这会形成自等待。Apple 的 block / 内存管理文档也明确展示了 `self` 持有 block、block 又强捕获 `self` 的 strong reference cycle。
+
+这两个锚点说明：callback 的高频事故不是单纯“生命周期”或单纯“死锁”，而是等待图与所有权图同时需要被设计。
+
+### 8.5 Qt BlockingQueuedConnection：阻塞式回调需要真实独立推进资源
+
+Qt 文档指出，同一线程中的对象使用 `BlockingQueuedConnection` 会导致死锁。它的核心条件不是 API 名字，而是发送方阻塞等待 slot 返回，但 slot 又需要同一线程事件循环继续推进。
+
+这可以作为所有阻塞式跨线程回调的判断模板：如果两端其实共享同一个事件资源，就不能假装它们是两条独立推进路径。
+
 ## 9. 当前推荐实践、过时路径与替代
 
 ### 9.1 截至 2026-03-16 更推荐的实践
@@ -434,6 +512,16 @@ Node 官方对 `util.promisify()` 的说明也很现实：
 - one-shot 还是 repeating
 - cancel/close/disconnect 是什么
 - 参数有效期到哪里结束
+
+**先画等待图，再决定能不能同步等**
+
+在 callback 里做任何同步等待前，先问三件事：
+
+1. 这段等待需要哪条线程、哪条队列、哪把锁继续推进？
+2. 当前 callback 是否正占着其中某个资源？
+3. 回调链里是否可能重入当前对象？
+
+只要答案出现闭环，就不要同步等。
 
 **C++：本地 lambda 才优先按引用捕获；一旦非本地，就默认按值或拥有语义设计**
 
@@ -464,6 +552,10 @@ F.54 的核心不是“语法洁癖”，而是降低误判。
 Qt 的 `connect(..., context, functor)` 之所以更稳，不是因为“看起来正规”，而是它把断连条件绑定到了框架已知对象上。  
 任何支持 context / token / subscription handle 的框架，都应该优先用这条路。
 
+**长期监听优先弱观察或显式断边，短期完成任务才考虑受控强保活**
+
+对于 repeating callback / listener，更稳的写法通常是外部只保存弱引用，在 callback 开头临时提升为本次执行所需的强引用；执行结束后释放。对于必须完成的 one-shot 工作，可以使用受控强保活，但完成后 provider 必须释放 callback。
+
 **应用层深链路异步流程，优先考虑 promise / async-await / coroutine，而不是手工嵌套 callback**
 
 这是一个推断型推荐：  
@@ -486,6 +578,14 @@ MDN 已把这类问题明确列为常见错误。
 
 这条路不是不能工作，而是控制流、错误传播和取消会迅速碎裂。  
 当前更推荐的替代通常是 promise / async-await / coroutine。
+
+**为了拿同步语义，在 callback 里直接阻塞等结果**
+
+这条路在事件驱动系统里非常容易把等待边闭成环。当前更稳的替代是 completion callback、future、coroutine、异步状态机，或把同步边界移到真正独立推进的线程上。
+
+**为了防崩溃，默认把所有 owner 都强捕获**
+
+这会把“对象活得不够长”粗暴改成“对象永远死不掉”。当前更稳的替代是按 one-shot / repeating、必须完成 / 可以放弃、框架托管 / 自行托管来选择强弱策略。
 
 **把非本地异步 callback 写成 `[&]`**
 
@@ -518,6 +618,9 @@ libuv 文档已经明确给出反例边界。
 - **只是本地算法回调**：可以按引用捕获，别过度设计
 - **事件循环异步回调**：优先先设计 state ownership 和 cancellation
 - **GUI 信号回调**：优先使用框架提供的 context / auto-disconnect 机制
+- **主线程 / 串行队列回调**：默认先假设不能同步等待同一执行器
+- **锁保护状态的对象回调**：默认先假设 callback 必须在锁外调用
+- **长期 observer / timer / subscription**：默认先怀疑存在 owner 与 callback 的所有权环
 - **多步等待业务流**：优先考虑 promise / async-await / coroutine
 - **底层 C ABI 边界**：接受 callback 形态，但把生命周期协议写得比业务逻辑还清楚
 
@@ -530,7 +633,8 @@ libuv 文档已经明确给出反例边界。
 5. Qt 已经自动断连了，为什么 lambda 里引用的对象仍然可能出问题？
 6. libuv 为什么强调 handle 不能随便移动、内存不能在 `uv_close()` 后立刻释放？
 7. JavaScript 已经有 GC 了，为什么 callback/closure 依然会引发生命周期类 bug？
-8. 什么情况下应该继续使用 callback，什么情况下应该迁移到 promise / coroutine？
+8. 为什么 callback 设计必须同时看等待图和所有权图？
+9. 什么情况下应该继续使用 callback，什么情况下应该迁移到 promise / coroutine？
 
 如果你能把这八题都答成“看它是不是异步”，说明模型还不够细。  
 真正该看的，是 continuation 逃逸、状态所有权、参数有效期、线程语境和取消边界。
@@ -600,6 +704,11 @@ libuv 文档已经明确给出反例边界。
 - [Node.js: `util.promisify()`](https://nodejs.org/download/release/v24.0.1/docs/api/util.html#utilpromisifyoriginal)
 - [Qt 6: Signals & Slots](https://doc.qt.io/qt-6/signalsandslots.html)
 - [Qt 6: `QObject::connect` / `QObject` 生命周期说明](https://doc.qt.io/qt-6.8/qobject.html)
+- [Qt 6: Threads and QObjects](https://doc.qt.io/qt-6.9/threads-qobject.html)
 - [libuv: `uv_handle_t`](https://docs.libuv.org/en/v1.x/handle.html)
 - [libuv: `uv_async_t`](https://docs.libuv.org/en/stable/async.html)
 - [libuv: `uv_fs_poll_t`](https://docs.libuv.org/en/v1.x/fs_poll.html)
+- [cppreference: `std::weak_ptr`](https://en.cppreference.com/w/cpp/memory/weak_ptr.html)
+- [Apple: Dispatch Queues](https://developer.apple.com/library/archive/documentation/General/Conceptual/ConcurrencyProgrammingGuide/OperationQueues/OperationQueues.html)
+- [Apple: Working with Blocks](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ProgrammingWithObjectiveC/WorkingwithBlocks/WorkingwithBlocks.html)
+- [Apple: Practical Memory Management](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/MemoryMgmt/Articles/mmPractical.html)

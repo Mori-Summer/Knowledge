@@ -5,7 +5,7 @@ concept: concept_document_quality_gate
 topic: methodology
 depth_mode: standard
 created_at: '2026-03-19T18:10:00+08:00'
-updated_at: '2026-05-28T15:29:36+08:00'
+updated_at: '2026-06-23T00:00:00+08:00'
 source_basis:
   - _bmad-output/project-context.md
   - _bmad-output/planning-artifacts/prd.md
@@ -17,37 +17,27 @@ source_basis:
   - _bmad-output/implementation-artifacts/0-3-lifecycle-states.md
   - _bmad-output/implementation-artifacts/0-4-prompt-template-quality-version-governance.md
   - _bmad-output/implementation-artifacts/0-5-quality-gate-baseline.md
+  - methodology_folder_consolidation_2026_06_18
+  - docs_folder_consolidation_progress_2026_06_23
   - docs/methodology/document-generation-methodology.md
-  - docs/methodology/concept-document-template.md
-  - docs/methodology/fixed-concept-generation-prompt.md
-  - docs/methodology/concept-document-example-catalog.md
   - docs/methodology/source-discipline-and-real-world-anchor-policy.md
-  - docs/governance/agent-behavior-constraints.md
-  - docs/methodology/governance-asset-boundary-policy.md
-  - docs/governance/lifecycle-states.md
-  - docs/governance/prompt-template-quality-version-governance.md
-  - docs/governance/batch-readiness-checklist.md
-  - docs/governance/revision-regeneration-continuity-policy.md
-time_context: phase_4_epic_4_revision_regeneration_continuity_policy_2026_05_28
+  - docs/governance/docs-change-governance.md
+  - docs/governance/docs-asset-governance.md
+  - docs/templates/governance-record-templates.md
+time_context: docs_folder_consolidation_progress_2026_06_23
 applicability: concept_doc_acceptance_review_upgrade_and_quality_status_decisions
-prompt_version: concept_generation_prompt_v3
-template_version: quality_gate_v3
+prompt_version: concept_generation_prompt_v4
+template_version: quality_gate_v4
 quality_status: maintained_asset
 related_docs:
   - docs/methodology/document-generation-methodology.md
-  - docs/methodology/concept-document-template.md
-  - docs/methodology/fixed-concept-generation-prompt.md
-  - docs/methodology/concept-document-example-catalog.md
   - docs/methodology/source-discipline-and-real-world-anchor-policy.md
-  - docs/governance/agent-behavior-constraints.md
-  - docs/methodology/governance-asset-boundary-policy.md
-  - docs/governance/lifecycle-states.md
-  - docs/governance/prompt-template-quality-version-governance.md
-  - docs/governance/batch-readiness-checklist.md
-  - docs/governance/revision-regeneration-continuity-policy.md
+  - docs/governance/docs-change-governance.md
+  - docs/governance/docs-asset-governance.md
+  - docs/templates/governance-record-templates.md
 open_questions:
-  - Epic 2 定义正式 frontmatter schema 后，是否需要新增独立 quality_gate_version 字段？
-  - 如果 Epic 3 review/completion templates 后续调整 Hard Fail evidence 字段，是否需要同步本门禁的审查输出格式？
+  - 如果 `docs/governance/docs-asset-governance.md` 定义新的 frontmatter schema 字段，是否需要新增独立 quality_gate_version 字段？
+  - 如果 `docs/templates/governance-record-templates.md` 后续调整 Hard Fail evidence 字段，是否需要同步本门禁的审查输出格式？
   - Maxwell 另行明确授权 executable tooling 后，是否需要评估只读 lint/scoring 辅助检查？当前 batch readiness policy 不授权自动化工具。
 ---
 
@@ -70,7 +60,7 @@ open_questions:
 
 本质量门禁资产自身属于方法论治理资产。验证它时应检查 `doc_id`、路径、frontmatter、角色/权威、与主规范关系、来源/时间语境、版本治理记录、链接和维护触发点，而不是把它当成一篇普通概念文档打分。
 
-`prompt_version: concept_generation_prompt_v3` 保留为本资产历史生成与规则来源信号，不表示 Story 0.5 是一次普通概念文档生成。`template_version: quality_gate_v3` 表示 Story 0.5 已改变 Hard Fail、评分解释、质量状态与完成汇报语义，因此属于质量规则版本治理事件。
+`prompt_version: concept_generation_prompt_v4` 与 `template_version: quality_gate_v4` 表示 2026-06-18 的 methodology folder consolidation 已把旧样例目录的 reviewer calibration 语义并入本门禁，并删除并列支撑入口。
 
 ## 审查前置分类
 
@@ -122,7 +112,7 @@ open_questions:
 - frontmatter 的 `doc_id`、`title`、`concept`、`topic`、`depth_mode`、`source_basis`、`time_context`、`prompt_version`、`template_version` 或 `quality_status` 与正文、来源、索引或审查结论矛盾。
 - 正式概念文档缺少 `depth_mode`，或正文声称按 `deep`/`standard` 审查但 frontmatter 没有相应语境。
 - `quality_status`、版本字段或正文结论暗示已审查、已迁移、已验证或已升级，但没有对应证据。
-- 新增全局 frontmatter 字段、迁移状态字段或质量版本字段来规避 Epic 2 schema 决策，例如未经授权添加 `quality_gate_version`、`methodology_version`、`version_history` 或 `migration_status`。
+- 新增全局 frontmatter 字段、迁移状态字段或质量版本字段来规避资产治理决策，例如未经授权添加 `quality_gate_version`、`methodology_version`、`version_history` 或 `migration_status`。
 
 ### 文档类型结构 Hard Fail
 
@@ -353,9 +343,9 @@ open_questions:
 
 ## 版本、迁移与完成汇报
 
-Hard Fail、评分维度、分数解释、质量状态、审查结论、完成汇报义务或迁移规则发生语义变化时，必须按 `docs/governance/prompt-template-quality-version-governance.md` 记录版本治理事件。
+Hard Fail、评分维度、分数解释、质量状态、审查结论、完成汇报义务或迁移规则发生语义变化时，必须按 `docs/governance/docs-asset-governance.md` 记录版本治理事件。
 
-Story 0.5 将本门禁从 `quality_gate_v2` 提升为 `quality_gate_v3`。最小版本变更记录如下：
+历史版本治理事件曾将本门禁从 `quality_gate_v2` 提升为 `quality_gate_v3`。最小版本变更记录如下：
 
 ```yaml
 version_change_record:
@@ -363,7 +353,7 @@ version_change_record:
   old_value: quality_gate_v2
   new_value: quality_gate_v3
   change_type: quality_gate
-  reason: Story 0.5 固化 Hard Fail、评分维度、质量状态与完成汇报语义
+  reason: 固化 Hard Fail、评分维度、质量状态与完成汇报语义
   affected_docs_or_assets:
     - docs/methodology/concept-document-quality-gate.md
     - docs/methodology/document-generation-methodology.md
@@ -375,8 +365,8 @@ version_change_record:
   lifecycle_quality_status_impact: status_policy_review_without_bulk_rewrite
   approved_deviations: []
   unresolved_risks:
-    - "nonblocking future risk: Epic 2 尚未定义独立 quality_gate_version/frontmatter schema"
-    - "historical Story 0.5 context only: Epic 3 当时尚未建立正式 review/completion assets；当前维护应使用已落地 Epic 3 assets"
+    - "historical risk at the time: 独立 quality_gate_version/frontmatter schema 尚未定义"
+    - "historical context only: review/completion assets 当时尚未建立；当前维护应使用 docs/templates/governance-record-templates.md"
     - "nonblocking future risk: batch readiness policy 已落地，但 executable lint/scoring/CI/tooling 仍需 Maxwell 另行授权和新的范围/架构判断"
 ```
 
@@ -387,24 +377,23 @@ version_change_record:
 - Hard Fail 检查结果、六项评分结果或等价治理检查结果。
 - `quality_status`、生命周期状态、BMad story 状态的边界和影响。
 - `docs/index.md`、`related_docs`、正文链接、路径、标题、topic 和 `doc_id` 影响。
-- 涉及 targeted revision、structural upgrade、regeneration、old-content handling 或 reference-validity impact 时，记录 Story 4.1 update mode、Continuity Record、reference validity，并在适用时引用 Migration/Index records。
+- 涉及 targeted revision、structural upgrade、regeneration、old-content handling 或 reference-validity impact 时，记录 update mode、continuity evidence、reference validity，并在适用时引用 migration/index records。
 - 版本治理事件、迁移计划、approved deviations 和 unresolved risks。
 - 非软件边界确认：未新增未授权 package manifest、source tree、software tests、build config、runtime automation、CLI/API/UI/database/deployment/CI artifact。
 
-本门禁不授权 executable lint、评分脚本、CI 检查或其他自动化工具。`docs/governance/batch-readiness-checklist.md` 只提供手动文档治理 readiness 判定；任何自动化仍只能在 Maxwell 明确授权 executable tooling 后，经过新的范围、架构和文件影响判断。
+本门禁不授权 executable lint、评分脚本、CI 检查或其他自动化工具。`docs/governance/docs-change-governance.md` 只提供手动文档治理 readiness 判定；任何自动化仍只能在 Maxwell 明确授权 executable tooling 后，经过新的范围、架构和文件影响判断。
 
 ## 维护触发点
 
 以下变化要求复核本门禁：
 
-- Epic 1 固化概念文档生成合同、输入摄入、样例目录或来源纪律时。
-- Epic 2 定义正式 frontmatter schema、`doc_id`、topic、路径、命名、candidate promotion 或 index synchronization 时。
-- Epic 3 review record template、document decision policy、rework loop 或 completion report template 发生实质字段或 vocabulary 变更时。
-- Story 4.1 已建立修订、重生成与版本连续性策略；后续若该政策更新，复核旧文档升级、重生成和质量状态证据。
-- `docs/governance/sidecar-boundary-policy.md` 或 `docs/governance/legacy-migration-guide.md` 更新时。
-- Epic 5 建立 related docs taxonomy、link maintenance 或 reusable model entry points 时。
-- Epic 6 建立 batch governance runbook、batch review record 或 batch completion report 时。
-- `docs/governance/batch-readiness-checklist.md` 已定义批量治理 readiness；未来如 Maxwell 明确授权批量状态迁移或自动化辅助检查，仍需重新复核本门禁。
+- 主方法论、来源纪律或 reviewer calibration 语义发生变化时。
+- `docs/governance/docs-asset-governance.md` 的 frontmatter、`doc_id`、topic、路径、命名、index 或 lifecycle 规则发生实质字段或 vocabulary 变更时。
+- `docs/governance/docs-change-governance.md` 的 candidate promotion、document decision、rework loop、revision/regeneration 或 batch 规则发生实质字段或 vocabulary 变更时。
+- `docs/templates/governance-record-templates.md` 的 review/completion evidence 字段发生实质变化时。
+- `docs/governance/docs-asset-governance.md` 或 `docs/governance/docs-change-governance.md` 更新时。
+- `docs/runbooks/batch-governance-runbook.md` 的 batch evidence 要求发生实质变化时。
+- `docs/governance/docs-change-governance.md` 已定义批量治理 readiness；未来如 Maxwell 明确授权批量状态迁移或自动化辅助检查，仍需重新复核本门禁。
 
 维护时必须重新确认：本门禁仍是 `docs/methodology/concept-document-quality-gate.md` 的 canonical asset；`docs/methodology/document-generation-methodology.md` 仍是主执行规范；没有创建平行质量门禁；没有批量改写既有概念文档状态。
 
@@ -423,14 +412,30 @@ version_change_record:
 
 这类文档应退回修复，而不是通过门禁。
 
+## Reviewer action calibration
+
+Reviewer 可以用下面的紧凑表判断候选稿该补写、重生成还是接受。正式结论仍必须使用本门禁的 Hard Fail、六项评分、必改项、可改进项和最终结论格式。
+
+| action signal | 适用信号 | 不适用信号 |
+| --- | --- | --- |
+| `targeted_revision` | 高价值结构已经存在；缺失证据位置具体；identity、path、source status 没有根本错误；补写不会改变核心判断链 | 对象边界、来源、状态和主链路都不可信 |
+| `regeneration_candidate` | path/type 错误；结构是模板填空；多个核心信息点命中 Hard Fail；source/time claims 广泛 unsupported；内容太泛，保留会延续错误判断 | 只有少数可定位缺口，且修复不会改变主结构 |
+| `acceptance_candidate` | 无 Hard Fail；frontmatter/path/index discipline sound；必需信息点可定位；未决风险 nonblocking；状态声明保守 | 存在阻塞来源缺口、断链、状态过度声明或不可定位锚点 |
+
+来源和时间语境证据至少按以下标签理解：
+
+| label | 含义 |
+| --- | --- |
+| `verified fact` | 已从本地正式资产或合适来源核对的事实，并有检查日期或时间语境 |
+| `project rule` | 来自本项目正式方法论、治理资产、story 或 Maxwell 指令的规则 |
+| `user context` | 来自 Maxwell 当前请求、story、intake 或对话语境的使用背景 |
+| `inference` | Agent 对项目规则的操作化整理、归纳或推导，不是新增规则 |
+| `open question` | 当前任务不解决、尚待后续核查或归属后续治理工作的事项 |
+
 ## 参考资料
 
-- [统一概念文档规范：新建、升级、审查与仓库集成](./document-generation-methodology.md)
-- [统一概念文档模板](./concept-document-template.md)
-- [固定概念文档生成 Prompt](./fixed-concept-generation-prompt.md)
-- [概念文档样例目录：合格、不合格与质量门禁证据](./concept-document-example-catalog.md)
+- [统一概念文档规范：AI 生成、升级、审查与仓库集成](./document-generation-methodology.md)
 - [来源纪律与真实世界锚点政策：当前实践、历史路径与不可验证声明处理](./source-discipline-and-real-world-anchor-policy.md)
-- [Agent 行为约束：文档治理任务必须先判边界、再执行、可验证](../governance/agent-behavior-constraints.md)
-- [方法论资产边界：主规范、模板、质量门禁、playbook 与固定 Prompt 的职责分工](./governance-asset-boundary-policy.md)
-- [文档生命周期状态：草稿、审查、验证、废弃与归档转换规则](../governance/lifecycle-states.md)
-- [Prompt、模板与质量规则版本治理：规则演进、字段语义与渐进迁移](../governance/prompt-template-quality-version-governance.md)
+- [正式 docs 资产治理规范：身份、元数据、路径、生命周期、索引、链接与网络边界](../governance/docs-asset-governance.md)
+- [文档治理执行规范：复用扫描、晋升、合并、迁移、修订、批量、决策与返工闭环](../governance/docs-change-governance.md)
+- [文档治理记录模板：审查、批量审查、完成汇报与批量完成汇报](../templates/governance-record-templates.md)

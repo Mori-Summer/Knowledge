@@ -20,14 +20,11 @@ prompt_version: concept_generation_prompt_v1
 template_version: concept_doc_v1
 quality_status: upgraded_v1
 related_docs:
-  - docs/methodology/methodology-operator-guide.md
-  - docs/methodology/learning-new-things-playbook.md
-  - docs/methodology/cognitive-modeling-playbook.md
-  - docs/methodology/concept-document-template.md
+  - docs/methodology/document-generation-methodology.md
   - docs/methodology/concept-document-quality-gate.md
   - docs/computer-systems/thread.md
   - docs/computer-systems/process-memory-layout.md
-  - docs/computer-systems/virtual-memory-learning-model.md
+  - docs/computer-systems/virtual-memory.md
 open_questions:
   - 是否需要再单独补一篇“fork/exec/spawn 的工程选型”文档，把 `fork`、`vfork`、`posix_spawn`、`clone` 的使用边界专门展开？
   - cgroup、namespace、capability 与进程故障域之间，是否值得再补一篇“容器里进程边界”的专门文档？
@@ -91,9 +88,9 @@ open_questions:
 
 最值得一起看的相邻概念是：
 
-- [线程：共享地址空间里的调度执行流，不是更轻量的进程，也不是协程](/Users/maxwell/Knowledge/docs/computer-systems/thread.md)
-- [进程的内存布局：从 ELF 装载到堆、mmap 区、栈与共享库的统一模型](/Users/maxwell/Knowledge/docs/computer-systems/process-memory-layout.md)
-- [虚拟内存：地址抽象、访问控制与工作集行为的统一模型](/Users/maxwell/Knowledge/docs/computer-systems/virtual-memory-learning-model.md)
+- [线程：共享地址空间里的调度执行流，不是更轻量的进程，也不是协程](thread.md)
+- [进程的内存布局：从 ELF 装载到堆、mmap 区、栈与共享库的统一模型](process-memory-layout.md)
+- [虚拟内存：地址抽象、访问控制与工作集行为的统一模型](virtual-memory.md)
 - `fork(2)` / `execve(2)` / `waitpid(2)` / `pidfd_open(2)` / `posix_spawn(3)`
 - PID namespace / `/proc`
 

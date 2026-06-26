@@ -5,7 +5,7 @@ concept: batch_governance_runbook
 topic: runbooks
 depth_mode: standard
 created_at: '2026-06-17T16:20:05+08:00'
-updated_at: '2026-06-18T09:31:06+08:00'
+updated_at: '2026-06-23T00:00:00+08:00'
 source_basis:
   - _bmad-output/project-context.md
   - _bmad-output/planning-artifacts/prd.md
@@ -14,25 +14,15 @@ source_basis:
   - _bmad-output/implementation-artifacts/0-7-batch-readiness.md
   - _bmad-output/implementation-artifacts/epic-6-context.md
   - _bmad-output/implementation-artifacts/spec-6-1-batch-governance-runbook.md
+  - docs_folder_consolidation_progress_2026_06_23
   - docs/index.md
   - docs/methodology/document-generation-methodology.md
-  - docs/methodology/concept-document-contract.md
-  - docs/methodology/intake-and-intent-classification.md
   - docs/methodology/concept-document-quality-gate.md
   - docs/methodology/source-discipline-and-real-world-anchor-policy.md
-  - docs/governance/agent-behavior-constraints.md
-  - docs/governance/governance-asset-navigation-policy.md
-  - docs/governance/batch-readiness-checklist.md
-  - docs/governance/frontmatter-schema.md
-  - docs/governance/topic-path-naming-policy.md
-  - docs/governance/candidate-promotion-checklist.md
-  - docs/governance/index-synchronization-rules.md
-  - docs/governance/link-maintenance-policy.md
-  - docs/governance/document-decision-policy.md
-  - docs/governance/rework-loop-examples.md
-  - docs/templates/review-record-template.md
-  - docs/templates/completion-report-template.md
-time_context: epic_6_story_6_2_batch_change_review_record_sync_2026_06_18
+  - docs/governance/docs-change-governance.md
+  - docs/governance/docs-asset-governance.md
+  - docs/templates/governance-record-templates.md
+time_context: docs_folder_consolidation_progress_2026_06_23
 applicability: batch_generation_and_batch_refactor_execution_after_readiness
 prompt_version: not_applicable
 template_version: runbook_asset_v1
@@ -40,26 +30,13 @@ quality_status: reviewed
 related_docs:
   - docs/index.md
   - docs/methodology/document-generation-methodology.md
-  - docs/methodology/concept-document-contract.md
-  - docs/methodology/intake-and-intent-classification.md
   - docs/methodology/concept-document-quality-gate.md
   - docs/methodology/source-discipline-and-real-world-anchor-policy.md
-  - docs/governance/agent-behavior-constraints.md
-  - docs/governance/governance-asset-navigation-policy.md
-  - docs/governance/batch-readiness-checklist.md
-  - docs/governance/frontmatter-schema.md
-  - docs/governance/topic-path-naming-policy.md
-  - docs/governance/candidate-promotion-checklist.md
-  - docs/governance/index-synchronization-rules.md
-  - docs/governance/link-maintenance-policy.md
-  - docs/governance/document-decision-policy.md
-  - docs/governance/rework-loop-examples.md
-  - docs/templates/review-record-template.md
-  - docs/templates/batch-change-review-record.md
-  - docs/templates/completion-report-template.md
+  - docs/governance/docs-change-governance.md
+  - docs/governance/docs-asset-governance.md
+  - docs/templates/governance-record-templates.md
 open_questions:
-  - Story 6.2 batch change review record 已建立；后续实际批量任务使用后，是否需要进一步收紧本文 sample review 与 conflict evidence 的必填字段？
-  - Story 6.3 建立 batch completion report template 后，是否需要把本文的完成证据部分收敛到批量完成汇报字段？
+  - 后续实际批量任务使用 `docs/templates/governance-record-templates.md` 后，是否需要进一步收紧 sample review、conflict evidence 和 completion evidence 的必填字段？
   - 后续如 Maxwell 授权 executable validation tooling，是否需要为本 runbook 补充独立 tooling-readiness 与 architecture/ADR 前置条件？
 ---
 
@@ -67,17 +44,17 @@ open_questions:
 
 ## 资产角色、权威与适用范围
 
-本文是 `Knowledge` 项目的正式 runbook 资产，规定在 `docs/governance/batch-readiness-checklist.md` 已经完成、owner decision 已经由外部 story 或 Maxwell 明确授权之后，Agent 如何约束一次命名的批量生成或批量重构任务。
+本文是 `Knowledge` 项目的正式 runbook 资产，规定在 `docs/governance/docs-change-governance.md` 已经完成、owner decision 已经由当前任务或 Maxwell 明确授权之后，Agent 如何约束一次命名的批量生成或批量重构任务。
 
-本文补充 `docs/governance/batch-readiness-checklist.md`、`docs/governance/agent-behavior-constraints.md`、`docs/methodology/document-generation-methodology.md`、`docs/methodology/concept-document-contract.md`、`docs/methodology/intake-and-intent-classification.md`、`docs/methodology/concept-document-quality-gate.md`、`docs/governance/frontmatter-schema.md`、`docs/governance/index-synchronization-rules.md`、`docs/templates/review-record-template.md`、`docs/templates/batch-change-review-record.md` 和 `docs/templates/completion-report-template.md`。Readiness checklist 仍负责写入前范围、冲突、排除、停止条件和 owner decision；本文只负责外部授权之后的批量执行顺序、检查点、样本审查、失败暂停、恢复证据和完成证据位置。
+本文补充 `docs/governance/docs-change-governance.md`、`docs/governance/docs-asset-governance.md`、`docs/methodology/document-generation-methodology.md`、`docs/methodology/concept-document-quality-gate.md` 和 `docs/templates/governance-record-templates.md`。Readiness checklist 仍负责写入前范围、冲突、排除、停止条件和 owner decision；本文只负责外部授权之后的批量执行顺序、检查点、样本审查、失败暂停、恢复证据和完成证据位置。
 
-本文不替代主方法论、质量门禁、frontmatter schema、index synchronization rules、review record template、document decision policy、rework-loop examples 或 completion report template。本文也不替代 `docs/templates/batch-change-review-record.md`，也不替代未来 Story 6.3 的 batch completion report template。
+本文不替代主方法论、质量门禁、资产治理、变更治理或记录模板；本文只规定批量任务获得授权后的执行顺序和停止条件。
 
-本文不授权实际批量工作本身，也不把 `owner_decision` 从禁止状态改成允许状态。一次批量生成或批量重构仍必须有独立 readiness record、明确 target set、allowed files、excluded files、owner decision、外部 story/owner 授权和 recovery approach。本文不创建 actual batch records、actual review records、actual completion reports、额外 batch review templates、Story 6.3 batch completion template、schema fields、automation、validators、scanners、generators、CLI/API/UI/database/deployment/CI、package manifest、`src/` 或 `tests/`。
+本文不授权实际批量工作本身，也不把 `owner_decision` 从禁止状态改成允许状态。一次批量生成或批量重构仍必须有独立 readiness record、明确 target set、allowed files、excluded files、owner decision、当前任务或 owner 授权和 recovery approach。本文不创建 actual batch records、actual review records、actual completion reports、额外 batch review templates、额外 batch completion templates、schema fields、automation、validators、scanners、generators、CLI/API/UI/database/deployment/CI、package manifest、`src/` 或 `tests/`。
 
 本文的 owner entry point 是 `docs/index.md` 的 `runbooks` 分组。Navigation treatment 是 `listed_in_docs_index`，index treatment 是在 `docs/index.md` 的 `## runbooks` 下列出 `docs/runbooks/batch-governance-runbook.md`。这些归属信息写在正文中，不是新的全局 frontmatter 字段。
 
-当前 `quality_status: reviewed` 表示本文在 Story 6.1 范围内按治理资产标准进行人工审查并保守入库：runbook role、readiness handoff、batch generation path、batch refactor path、sample review、failure/stop handling、recovery evidence、artifact separation、owner/index entry、相邻治理依赖、链接/索引边界和非软件边界已检查。本轮 Story 6.2 只同步直接引用和相邻依赖表述。本文不声明 `validated`，因为 Story 6.3 batch completion report template 仍未落地，且本文尚未在实际命名批量任务中验证。
+当前 `quality_status: reviewed` 表示本文已按治理资产标准进行人工审查并保守入库：runbook role、readiness handoff、batch generation path、batch refactor path、sample review、failure/stop handling、recovery evidence、artifact separation、owner/index entry、相邻治理依赖、链接/索引边界和非软件边界已检查。2026-06-23 consolidation 只同步直接引用和相邻依赖表述。本文不声明 `validated`，因为本文尚未在实际命名批量任务中验证。
 
 ## 前置条件
 
@@ -85,15 +62,15 @@ open_questions:
 
 | 前置条件 | 必须看到的证据 | 不满足时 |
 | --- | --- | --- |
-| readiness record exists | 有命名的 Batch Readiness Record，包含 operation type、target set、allowed/excluded files、expected output、non-output、recovery approach、sample/review plan、conflict summary 和 owner decision | 回到 `docs/governance/batch-readiness-checklist.md` |
-| external authorization permits writes | readiness `owner_decision` 是 `proceed` 或 `proceed_with_exclusions`，且当前 story 或 Maxwell 明确允许本次写入 | `clarify_before_write`、`defer_to_later_story`、`stop_for_maxwell_confirmation`、`not_authorized` 或缺少当前写入授权时都必须停止 |
-| operation type fits this runbook | operation type 是 `batch_generation`、`batch_refactor` 或先拆分成这两类的 mixed task；mixed task 必须为每条路径分别冻结 target、sample 和 recovery evidence | 其他批量类型先回 readiness 或等待对应 future story 明确授权；不得从 Story 6.2 review evidence 或 future Story 6.3 completion evidence 推导执行授权 |
+| readiness record exists | 有命名的 Batch Readiness Record，包含 operation type、target set、allowed/excluded files、expected output、non-output、recovery approach、sample/review plan、conflict summary 和 owner decision | 回到 `docs/governance/docs-change-governance.md` |
+| external authorization permits writes | readiness `owner_decision` 是 `proceed` 或 `proceed_with_exclusions`，且当前任务或 Maxwell 明确允许本次写入 | `clarify_before_write`、`defer_to_later_story`、`stop_for_maxwell_confirmation`、`not_authorized` 或缺少当前写入授权时都必须停止 |
+| operation type fits this runbook | operation type 是 `batch_generation`、`batch_refactor` 或先拆分成这两类的 mixed task；mixed task 必须为每条路径分别冻结 target、sample 和 recovery evidence | 其他批量类型先回 readiness 或等待对应 owner/task 明确授权；不得从 review evidence 或 completion evidence 推导执行授权 |
 | target set concrete | explicit file list、index-derived set 或 topic-derived set 已展开为可复查文件清单，或 Maxwell manually approved list 可复查 | 目标集未冻结或只能用 glob-like rule 推导时停止 |
 | excluded files explicit | `_bmad-output/`、`.agents/skills/`、`docs/methodology/`、`docs/governance/`、`docs/templates/`、`docs/runbooks/` 等相邻路径是否排除或允许已写明；frozen target set 与 excluded files 交集必须为空 | 排除边界不清或交集非空时停止 |
 | recovery approach ready | 写入前知道如何恢复、如何保留旧状态、如何区分 changed/skipped/unchanged-reviewed files | 没有恢复路径时停止 |
 | non-software boundary intact | 不需要可执行工具、脚本、CI、软件测试或自动化 | 需要 tooling 时停止并请求 Maxwell 确认与新架构决策 |
 
-Readiness approval 加当前 story/owner 授权，只能覆盖 readiness record 中命名的那一次批量动作。不得把一次批准扩展成后续无关批量工作，也不得把本文当作长期批量写入授权。
+Readiness approval 加当前任务/owner 授权，只能覆盖 readiness record 中命名的那一次批量动作。不得把一次批准扩展成后续无关批量工作，也不得把本文当作长期批量写入授权。
 
 如果 frozen target set 为空，任务必须停止并记录 `not_applicable` 或 `deferred_with_reason`；不得写出暗示已经执行批量工作的完成证据。
 
@@ -111,7 +88,7 @@ Readiness approval 加当前 story/owner 授权，只能覆盖 readiness record 
 | 6 | 处理失败或冲突 | stop、revise rule、shrink scope、defer 或 ask Maxwell |
 | 7 | 处理剩余目标 | 只在样本通过、stop conditions 未触发、且外部授权覆盖剩余目标后继续 |
 | 8 | 完成验证 | changed/skipped/unchanged-reviewed files、index/link impact、status impact、unresolved risks |
-| 9 | 汇报或交给后续记录 | Story 6.2 batch change review record 或当前 story/review/completion evidence；未来 Story 6.3 负责专门 batch completion report |
+| 9 | 汇报或交给后续记录 | 使用 `docs/templates/governance-record-templates.md`；实际 report storage 仍需当前任务或 owner 授权 |
 
 如果任务会影响 governance、methodology、template、runbook、quality gate、prompt、BMad workflow、skill 或 project context，必须在 Step 2 前额外确认 downstream impact analysis 已完成。影响不确定时停止，不得在批量执行中顺手改规则。
 
@@ -124,8 +101,8 @@ Batch generation 指一次生成多篇候选文档、正式文档、模板化草
 | 输入项 | 最低要求 |
 | --- | --- |
 | concept/topic source | 每个目标对象的 concept、topic、path expectation 和 user context 可定位 |
-| generation contract | 使用 `docs/methodology/concept-document-contract.md` 的输入/输出合同 |
-| intake route | 使用 `docs/methodology/intake-and-intent-classification.md` 区分任务类型、文档路径类型和 depth mode |
+| generation contract | 使用 `docs/methodology/document-generation-methodology.md` 的输入/输出合同 |
+| intake route | 使用 `docs/methodology/document-generation-methodology.md` 区分任务类型、文档路径类型和 depth mode |
 | prompt/template version | 写明使用的 prompt/template/source rule，不得伪造版本 bump |
 | source/time context | 每个 candidate 都有 source basis、time context、verified/inference/open question 边界 |
 | promotion criteria | 候选进入 `docs/` 前必须满足 candidate promotion、frontmatter、quality gate、index 和 link checks |
@@ -144,7 +121,7 @@ Batch generation 不得做：
 - 把 `_bmad-output/` 候选直接复制为正式资产并跳过 promotion。
 - 批量声明 `quality_status: reviewed` 或 `validated`，除非每个目标都有对应审查证据。
 - 为了批量方便新增 schema fields、index schema、生成器配置或自动化工具。
-- 在同一次任务中顺手生成实际 batch records、Story 6.3 template 或未经授权的额外 Epic 6 assets。
+- 在同一次任务中顺手生成实际 batch records、actual batch completion reports 或未经授权的额外治理/模板资产。
 
 ## 批量重构路径
 
@@ -227,7 +204,7 @@ Link checks:
 
 - changed-file Markdown links resolve or are recorded as unresolved with owner/future action;
 - `related_docs` targets exist unless intentionally planned and recorded in open questions;
-- inbound/outbound review scope follows `docs/governance/link-maintenance-policy.md` when applicable;
+- inbound/outbound review scope follows `docs/governance/docs-asset-governance.md` when applicable;
 - successor/replacement, duplicate/coexistence or migration implications route to their owning policies.
 
 ## Failure、Stop 与 Recovery
@@ -245,13 +222,13 @@ Failure evidence minimum:
 | proposed next step | revise rule、shrink target set、defer、ask Maxwell、regenerate sample、stop |
 | current status | stopped、deferred、waiting owner、rule revised、sample rerun or resolved |
 
-Mandatory stop conditions are inherited from `docs/governance/batch-readiness-checklist.md`. In this runbook, also stop when:
+Mandatory stop conditions are inherited from `docs/governance/docs-change-governance.md`. In this runbook, also stop when:
 
 - sample review fails and the rule has not been revised;
 - generated candidates do not meet promotion criteria;
 - refactor rule changes meaning or quality/status claims;
 - target set expands beyond readiness approval;
-- required Story 6.2 batch change review evidence or future Story 6.3 completion evidence is needed before evidence can be trusted, but the current story has not authorized that record/report;
+- required batch review or completion evidence is needed before evidence can be trusted, but the current task has not authorized that record/report;
 - completion wording would need to claim `validated`;
 - execution requires code, scripts, automation, scanners, generated reports, package manifests or CI.
 
@@ -276,16 +253,16 @@ Formal `docs/` assets and `_bmad-output/` workflow artifacts have different life
 | candidate output | sample or draft for review | treated as formal asset before promotion |
 | review evidence | supports decision and failure handling | changes target state without decision policy |
 | completion evidence | summarizes work and risk | substitutes for missing validation |
-| Story 6.2 batch change review record | structured review, conflict and operator-decision evidence when explicitly authorized | created as an actual record without current-story authorization, or treated as execution authorization |
-| future Story 6.3 batch completion report | future structured completion evidence | created, assumed or treated as already available before Story 6.3 |
+| batch change review record | structured review, conflict and operator-decision evidence when explicitly authorized | created as an actual record without current-task authorization, or treated as execution authorization |
+| batch completion report | structured completion summary fields for named batch tasks | created as an actual completion report without current-task authorization, or treated as execution authorization |
 
 If a batch task produces candidate documents, reports, review notes or completion summaries, they remain workflow/planning artifacts until a separate promotion or formal asset story approves their target path, frontmatter, index treatment and quality status.
 
 ## Completion Evidence For This Runbook
 
-After Story 6.2, batch review and conflict evidence can use `docs/templates/batch-change-review-record.md` when the current story or owner authorizes an actual record location. Until Story 6.3 lands, final completion evidence for a batch task using this runbook remains a temporary summary inside the current story completion note, review evidence, existing completion report template, or authorized Story 6.2 review evidence. It must not create a standalone batch completion report or template that pretends the future batch completion asset already exists.
+Batch review, conflict evidence and named batch completion evidence should use `docs/templates/governance-record-templates.md` fields when the current task or owner authorizes an actual report location. Without report storage authorization, final completion evidence remains a summary inside the current response, review evidence, existing completion report or authorized workflow note. It must not create a standalone batch completion report or extra template without authorization.
 
-Minimum temporary completion summary:
+Minimum batch completion summary:
 
 | Evidence category | Required statement |
 | --- | --- |
@@ -313,9 +290,9 @@ Index Impact Decision Record
 - target section: docs/index.md ## runbooks
 - outcome: updated
 - action taken: add runbooks section and runbook entry
-- reason: Story 6.1 explicitly authorizes the first formal runbook asset under docs/runbooks/
-- validation result: to be checked by Story 6.1 implementation verification; expected target exists and relative link resolves
-- unresolved risk: Story 6.3 batch completion report template remains a future dependency
+- reason: formal runbook asset under docs/runbooks/
+- validation result: expected target exists and relative link resolves
+- unresolved risk: none for this index entry; actual batch completion report storage remains subject to current story or owner authorization
 ```
 
 ## 验证清单
@@ -325,41 +302,31 @@ Index Impact Decision Record
 1. Frontmatter required fields exist; `source_basis`、`related_docs` and `open_questions` are YAML arrays.
 2. H1 matches the title meaning and the path `docs/runbooks/batch-governance-runbook.md`.
 3. Body states role, authority, applicable scope, owner entry point, navigation treatment and index treatment.
-4. Body explains readiness handoff and does not replace `docs/governance/batch-readiness-checklist.md`.
+4. Body explains readiness handoff and does not replace `docs/governance/docs-change-governance.md`.
 5. Batch generation path includes common input rules, prompt/template version selection, topic assignment, candidate review and promotion criteria.
 6. Batch refactor path includes transformation rule, target file list, exclusions, sample review set, frontmatter/index/link impact and stop conditions.
 7. Failure handling records failure type, affected files, risk and proposed next step.
 8. Recovery separates changed, skipped, unchanged-reviewed, candidate and formal docs changes.
-9. `docs/templates/batch-change-review-record.md` is referenced as the structured review evidence owner; Story 6.3 batch completion report remains a future dependency.
+9. `docs/templates/governance-record-templates.md` is referenced as the structured review and completion evidence template.
 10. `docs/index.md` has a valid `## runbooks` entry.
-11. No unauthorized schema field, actual batch record, actual review record, actual completion report, additional batch review template, Story 6.3 batch completion template, runtime code, package manifest, `src/`, `tests/`, automation, validator, scanner, generator, CLI/API/UI/database/deployment/CI or software test framework was introduced.
+11. No unauthorized schema field, actual batch record, actual review record, actual completion report, additional batch review template, additional batch completion template, runtime code, package manifest, `src/`, `tests/`, automation, validator, scanner, generator, CLI/API/UI/database/deployment/CI or software test framework was introduced.
 
 ## 维护触发点
 
 本文需要在以下情况下复核：
 
-- Story 6.2 batch change review record 模板更新，或实际批量任务暴露本文 sample review、failure record 和 conflict evidence 落点不足。
-- Story 6.3 建立 batch completion report template 后，复核 completion evidence 与 changed/skipped/unchanged-reviewed 汇报字段。
-- `docs/governance/batch-readiness-checklist.md` 修改 owner decision、conflict matrix、stop condition 或 recovery approach。
-- `docs/governance/frontmatter-schema.md`、`docs/governance/index-synchronization-rules.md`、`docs/governance/link-maintenance-policy.md` 或 `docs/templates/review-record-template.md` / `docs/templates/completion-report-template.md` 改变相关证据要求。
+- `docs/templates/governance-record-templates.md` 更新 batch review、failure record、conflict evidence 或 completion evidence 字段。
+- 实际批量任务暴露 completion evidence 与 changed/skipped/unchanged-reviewed 汇报字段不足。
+- `docs/governance/docs-change-governance.md` 修改 owner decision、conflict matrix、stop condition 或 recovery approach。
+- `docs/governance/docs-asset-governance.md` 或 `docs/templates/governance-record-templates.md` 改变相关证据要求。
 - Maxwell 明确授权 executable validation tooling、machine-readable schema、generated reports、batch scanner、lint/scoring automation 或 CI；此时必须先做新的 architecture/ADR 和 scope decision，不能从本文直接推导软件实现。
 
 ## 参考资料
 
 - [Knowledge Docs Index](../index.md)
-- [统一概念文档规范：新建、升级、审查与仓库集成](../methodology/document-generation-methodology.md)
-- [概念文档生成合同：输入、输出、边界与必需信息位点](../methodology/concept-document-contract.md)
-- [输入摄入与任务意图判定：任务类型、文档路径、深度与缺失输入处理](../methodology/intake-and-intent-classification.md)
+- [统一概念文档规范：AI 生成、升级、审查与仓库集成](../methodology/document-generation-methodology.md)
 - [统一概念文档质量门禁](../methodology/concept-document-quality-gate.md)
 - [来源纪律与真实世界锚点政策：当前实践、历史路径与不可验证声明处理](../methodology/source-discipline-and-real-world-anchor-policy.md)
-- [Agent 行为约束：文档治理任务必须先判边界、再执行、可验证](../governance/agent-behavior-constraints.md)
-- [治理资产导航、索引与入口归属政策](../governance/governance-asset-navigation-policy.md)
-- [批量治理 Readiness Checklist：范围、冲突、停止条件与恢复策略](../governance/batch-readiness-checklist.md)
-- [Frontmatter schema 与 doc_id 身份规则：正式 docs 资产的元数据基线](../governance/frontmatter-schema.md)
-- [Topic、文件命名与路径归属策略：正式 docs 资产的位置、命名与一致性规则](../governance/topic-path-naming-policy.md)
-- [候选文档晋升 Checklist：从工作流输出到正式 docs 资产的治理门禁](../governance/candidate-promotion-checklist.md)
-- [docs/index.md 同步与导航治理规则](../governance/index-synchronization-rules.md)
-- [文档决策政策：accept、revise、regenerate、defer、reject 与 lifecycle 结果](../governance/document-decision-policy.md)
-- [返工闭环示例：失败类型、修复路径、重生成边界与复审入口](../governance/rework-loop-examples.md)
-- [审查记录模板：任务分类、Hard Fail、评分证据、未验证项与决策记录](../templates/review-record-template.md)
-- [完成汇报模板：质量状态、入库决策证据、验证证据、未解决风险与非软件边界](../templates/completion-report-template.md)
+- [正式 docs 资产治理规范：身份、元数据、路径、生命周期、索引、链接与网络边界](../governance/docs-asset-governance.md)
+- [文档治理执行规范：复用扫描、晋升、合并、迁移、修订、批量、决策与返工闭环](../governance/docs-change-governance.md)
+- [文档治理记录模板：审查、批量审查、完成汇报与批量完成汇报](../templates/governance-record-templates.md)

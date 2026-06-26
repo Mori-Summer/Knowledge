@@ -19,17 +19,11 @@ prompt_version: concept_generation_prompt_v1
 template_version: concept_doc_v1
 quality_status: upgraded_v1
 related_docs:
-  - docs/methodology/methodology-operator-guide.md
-  - docs/methodology/learning-new-things-playbook.md
-  - docs/methodology/cognitive-modeling-playbook.md
-  - docs/methodology/concept-document-template.md
+  - docs/methodology/document-generation-methodology.md
   - docs/methodology/concept-document-quality-gate.md
   - docs/computer-systems/process.md
   - docs/computer-systems/multithreaded-locks.md
-  - docs/computer-systems/mutex.md
-  - docs/computer-systems/condition-variable.md
-  - docs/computer-systems/semaphore.md
-  - docs/programming-languages/cpp20-coroutine-playbook.md
+  - docs/programming-languages/coroutine.md
 open_questions:
   - 是否需要补一篇专门解释 Linux NPTL、`clone` 标志组合与用户态线程库之间关系的实现文档？
   - 线程数、CPU 亲和性、NUMA、本地缓存与线程池 sizing 之间，是否值得再写一篇性能导向文档？
@@ -85,7 +79,7 @@ open_questions:
 
 - **进程。** 进程是资源容器和生命周期边界；线程是容器内执行流。
 - **CPU 核心。** 线程是调度对象，不等于物理核心数量；线程数远大于核心数并不罕见。
-- **协程。** 协程是可挂起控制流结构，不是内核调度对象；协程文章已经在 [cpp20-coroutine-playbook.md](/Users/maxwell/Knowledge/docs/programming-languages/cpp20-coroutine-playbook.md) 单独展开。
+- **协程。** 协程是可挂起控制流结构，不是内核调度对象；协程文章已经在 [coroutine.md](../programming-languages/coroutine.md) 单独展开。
 - **任务 / future / actor。** 这些是更高层的并发抽象，不自动等价于一个 OS thread。
 - **单纯“更轻量的进程”。** 这句类比能帮你入门，但会遮住线程最重要的共享语义和同步代价。
 
@@ -93,12 +87,9 @@ open_questions:
 
 最值得一起看的相邻概念是：
 
-- [进程：执行实例、资源容器与隔离边界的统一模型](/Users/maxwell/Knowledge/docs/computer-systems/process.md)
-- [多线程中的各种锁：不要先问 API 名字，先问所有权、等待方式与读写形状](/Users/maxwell/Knowledge/docs/computer-systems/multithreaded-locks.md)
-- [Mutex：你真正买到的不是“挡别人一下”，而是互斥区间和同步边](/Users/maxwell/Knowledge/docs/computer-systems/mutex.md)
-- [Condition Variable：你等的不是通知，而是条件何时在同步关系下成立](/Users/maxwell/Knowledge/docs/computer-systems/condition-variable.md)
-- [Semaphore：当问题是“还有没有令牌”，而不是“谁拥有锁”](/Users/maxwell/Knowledge/docs/computer-systems/semaphore.md)
-- [C++20 协程：可挂起控制流、语言机制与运行时边界](/Users/maxwell/Knowledge/docs/programming-languages/cpp20-coroutine-playbook.md)
+- [进程：执行实例、资源容器与隔离边界的统一模型](process.md)
+- [多线程中的各种锁：不要先问 API 名字，先问所有权、等待方式与读写形状](multithreaded-locks.md)
+- [协程：可挂起控制流、运行时恢复与结构化并发的统一模型](../programming-languages/coroutine.md)
 
 ### 3.4 本文的默认适用边界
 

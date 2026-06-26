@@ -23,8 +23,7 @@ prompt_version: concept_generation_prompt_v1
 template_version: concept_doc_v1
 quality_status: upgraded_v1
 related_docs:
-  - docs/methodology/learning-new-things-playbook.md
-  - docs/methodology/cognitive-modeling-playbook.md
+  - docs/methodology/document-generation-methodology.md
 open_questions:
   - 在平台经济与 AI 基础设施里，竞争政策、市场设计与产业政策的最优接口应如何划分？
   - 当目标函数同时包含效率、韧性、公平与国家安全时，如何避免以“看得见的手”之名吞掉必要的价格发现？

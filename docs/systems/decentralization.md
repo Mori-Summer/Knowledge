@@ -20,8 +20,7 @@ prompt_version: concept_generation_prompt_v1
 template_version: concept_doc_v1
 quality_status: upgraded_v1
 related_docs:
-  - docs/methodology/learning-new-things-playbook.md
-  - docs/methodology/cognitive-modeling-playbook.md
+  - docs/methodology/document-generation-methodology.md
   - docs/economics/visible-hand-and-invisible-hand.md
 open_questions:
   - 在 AI 基础设施、模型分发与算力市场里，哪些层真正值得去中心化，哪些层更适合保持受控中心？
@@ -542,7 +541,7 @@ Ethereum 官方扩容文档到 2026-02-25 已明确把重点放在 rollups，而
 
 ### 11.4 迁移到经济学和协调机制
 
-这篇文档还能和 [visible-hand-and-invisible-hand.md](/Users/maxwell/Knowledge/docs/economics/visible-hand-and-invisible-hand.md) 里的模型联动：
+这篇文档还能和 [visible-hand-and-invisible-hand.md](../economics/visible-hand-and-invisible-hand.md) 里的模型联动：
 
 - 去中心化更像把协调权分散给更多主体
 - 中心化更像用显式层级获得更高协调效率

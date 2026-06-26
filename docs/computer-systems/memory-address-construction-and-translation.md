@@ -16,17 +16,12 @@ prompt_version: concept_generation_prompt_v1
 template_version: concept_doc_v1
 quality_status: upgraded_v1
 related_docs:
-  - docs/methodology/methodology-operator-guide.md
-  - docs/methodology/learning-new-things-playbook.md
-  - docs/methodology/cognitive-modeling-playbook.md
-  - docs/methodology/concept-document-template.md
+  - docs/methodology/document-generation-methodology.md
   - docs/methodology/concept-document-quality-gate.md
-  - docs/computer-systems/dma-view-of-program-memory.md
   - docs/computer-systems/dma.md
-  - docs/computer-systems/virtual-memory-learning-model.md
+  - docs/computer-systems/virtual-memory.md
   - docs/computer-systems/process-memory-layout.md
-  - docs/computer-systems/dma-buffer-lifetime-and-address-stability.md
-  - docs/computer-systems/usb-host-controller-data-path.md
+  - docs/computer-systems/usb-transfer-protocol.md
 open_questions:
   - 在共享虚拟地址、PASID 和设备页表继续普及后，通用软件栈是否应该把“地址命名空间”做成更显式的一等类型？
   - 对于现代 heterogeneous memory，地址转换里哪些不变量仍然稳固，哪些已经从“地址问题”变成“路由与一致性问题”？
@@ -112,11 +107,10 @@ open_questions:
 
 最值得一起看的相邻概念是：
 
-- [从 DMA 看程序内存：虚拟地址、物理页与设备可达窗口的统一模型](/Users/maxwell/Knowledge/docs/computer-systems/dma-view-of-program-memory.md)
-- [DMA 技术：地址可达性、缓冲区所有权与可见性同步的统一模型](/Users/maxwell/Knowledge/docs/computer-systems/dma.md)
-- [虚拟内存：地址抽象、访问控制与工作集行为的统一模型](/Users/maxwell/Knowledge/docs/computer-systems/virtual-memory-learning-model.md)
-- [进程的内存布局：从 ELF 装载到堆、mmap 区、栈与共享库的统一模型](/Users/maxwell/Knowledge/docs/computer-systems/process-memory-layout.md)
-- [USB 主机控制器数据路径：从 URB、传输环到 DMA 缓冲区的统一模型](/Users/maxwell/Knowledge/docs/computer-systems/usb-host-controller-data-path.md)
+- [DMA 技术：地址可达性、缓冲区所有权与可见性同步的统一模型](dma.md)
+- [虚拟内存：地址抽象、访问控制与工作集行为的统一模型](virtual-memory.md)
+- [进程的内存布局：从 ELF 装载到堆、mmap 区、栈与共享库的统一模型](process-memory-layout.md)
+- [USB 传输协议：主机调度、端点契约与传输类型取舍的统一模型](usb-transfer-protocol.md)
 
 ### 3.4 三组最容易混淆的边界
 
@@ -388,9 +382,7 @@ IOMMU fault 是现实锚点，因为它会直接告诉你：
 
 ## 13. 参考资料
 
-- [从 DMA 看程序内存：虚拟地址、物理页与设备可达窗口的统一模型](/Users/maxwell/Knowledge/docs/computer-systems/dma-view-of-program-memory.md)
-- [DMA 技术：地址可达性、缓冲区所有权与可见性同步的统一模型](/Users/maxwell/Knowledge/docs/computer-systems/dma.md)
-- [虚拟内存：地址抽象、访问控制与工作集行为的统一模型](/Users/maxwell/Knowledge/docs/computer-systems/virtual-memory-learning-model.md)
-- [进程的内存布局：从 ELF 装载到堆、mmap 区、栈与共享库的统一模型](/Users/maxwell/Knowledge/docs/computer-systems/process-memory-layout.md)
-- [USB 主机控制器数据路径：从 URB、传输环到 DMA 缓冲区的统一模型](/Users/maxwell/Knowledge/docs/computer-systems/usb-host-controller-data-path.md)
-- [DMA 缓冲区生命周期与地址稳定性：pin、映射、同步、完成与回收的统一模型](/Users/maxwell/Knowledge/docs/computer-systems/dma-buffer-lifetime-and-address-stability.md)
+- [DMA 技术：地址可达性、缓冲区所有权与可见性同步的统一模型](dma.md)
+- [虚拟内存：地址抽象、访问控制与工作集行为的统一模型](virtual-memory.md)
+- [进程的内存布局：从 ELF 装载到堆、mmap 区、栈与共享库的统一模型](process-memory-layout.md)
+- [USB 传输协议：主机调度、端点契约与传输类型取舍的统一模型](usb-transfer-protocol.md)

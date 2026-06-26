@@ -5,7 +5,7 @@ concept: coroutine
 topic: programming-languages
 depth_mode: deep
 created_at: '2026-03-23T10:47:29+08:00'
-updated_at: '2026-03-23T10:47:29+08:00'
+updated_at: '2026-06-23T00:00:00+08:00'
 source_basis:
   - python_asyncio_coroutines_tasks_docs_checked_2026_03_23
   - python_asyncio_overview_docs_checked_2026_03_23
@@ -13,18 +13,18 @@ source_basis:
   - kotlin_coroutine_context_dispatchers_docs_checked_2026_03_23
   - cpp_draft_coroutine_definition_checked_2026_03_23
   - cpp_draft_coroutine_support_library_checked_2026_03_23
-time_context: current_practice_checked_2026_03_23
+  - boost_asio_cpp20_coroutines_docs_checked_2026_03_19
+  - lewissbaker_cppcoro_repository_checked_2026_03_19
+  - cpp_coroutine_specialization_merged_2026_06_18
+  - docs_folder_consolidation_progress_2026_06_23
+time_context: current_practice_checked_2026_03_23_and_programming_languages_consolidated_2026_06_23
 applicability: async_control_flow_modeling_runtime_boundary_analysis_and_language_runtime_judgment
 prompt_version: concept_generation_prompt_v1
 template_version: concept_doc_v1
-quality_status: upgraded_v1
+quality_status: consolidated_v1
 related_docs:
-  - docs/methodology/methodology-operator-guide.md
-  - docs/methodology/learning-new-things-playbook.md
-  - docs/methodology/cognitive-modeling-playbook.md
-  - docs/methodology/concept-document-template.md
+  - docs/methodology/document-generation-methodology.md
   - docs/methodology/concept-document-quality-gate.md
-  - docs/programming-languages/cpp20-coroutine-playbook.md
   - docs/programming-languages/callback-lifetime-management.md
   - docs/computer-systems/thread.md
   - docs/computer-systems/process.md
@@ -92,9 +92,9 @@ open_questions:
 
 最值得一起看的相邻概念是：
 
-- [C++20 协程：可挂起控制流、语言机制与运行时边界](/Users/maxwell/Knowledge/docs/programming-languages/cpp20-coroutine-playbook.md)
-- [回调函数：显式 continuation、异步边界与变量生命周期管理](/Users/maxwell/Knowledge/docs/programming-languages/callback-lifetime-management.md)
-- [线程：共享地址空间里的调度执行流，不是更轻量的进程，也不是协程](/Users/maxwell/Knowledge/docs/computer-systems/thread.md)
+- [回调函数：显式 continuation、异步边界与变量生命周期管理](callback-lifetime-management.md)
+- [线程：共享地址空间里的调度执行流，不是更轻量的进程，也不是协程](../computer-systems/thread.md)
+- C++20 coroutine 的 frame / promise / handle / awaiter 特化模型，已并入本文的 C++20 小节。
 - future / promise / task / job
 - event loop / dispatcher / executor
 - 结构化并发与取消传播
@@ -250,6 +250,15 @@ C++ draft 和 `<coroutine>` 支持库给出的关键事实是：
 - 语言负责“怎样变成 coroutine”
 - 但“由谁恢复、在哪恢复、怎样和 executor 集成”仍经常是运行时 / 库设计问题
 
+把旧 C++20 协程 playbook 压缩进本文后，C++20 特化模型只保留六个必须区分的部件：
+
+- `coroutine function`：包含 `co_await` / `co_yield` / `co_return`，触发语言级 coroutine transform。
+- `coroutine frame`：保存跨 suspend point 仍需存在的局部状态。
+- `promise_type`：把协程内部状态、返回对象、异常和完成路径接到外部协议上。
+- `std::coroutine_handle`：提供恢复、销毁和访问 promise 的低层句柄。
+- `awaiter / awaitable`：决定是否挂起、挂起时如何登记 continuation、恢复后返回什么。
+- `runtime / executor`：决定何时恢复、在哪条线程或执行资源上恢复；它不是 C++20 语言关键字自动提供的东西。
+
 ### 5.5 为什么协程能省线程，但不能省掉设计
 
 协程常被看成“线程省钱工具”，这只说对了一半。
@@ -370,7 +379,11 @@ C++ draft 和 `<coroutine>` 支持库给出的关键事实是：
 - 同时也暴露了“语言支持 != 完整 runtime”的事实
 - 这让它特别适合作为理解 coroutine 本体与运行时边界的锚点
 
-仓库里已有的 [cpp20-coroutine-playbook.md](/Users/maxwell/Knowledge/docs/programming-languages/cpp20-coroutine-playbook.md) 就是这个特化方向的展开版。
+C++20 特化内容已并入本文，不再单独保留一篇 playbook；它在本文中作为“语言机制最显式、运行时边界最容易看清”的特化锚点存在。
+
+### 8.4 Boost.Asio 与 cppcoro：语言协议之外仍需要库和运行时形态
+
+Boost.Asio 的 `awaitable` / `co_spawn` 与 `cppcoro` 的 task / generator / async sequence 说明同一件事：C++20 标准给出 coroutine 语言机制和低层支持库，但工程可用性通常还依赖返回对象、executor、取消、异常传播和生命周期策略。
 
 ## 9. 当前推荐实践、过时路径与替代
 
@@ -455,6 +468,8 @@ C++ draft 和 `<coroutine>` 支持库给出的关键事实是：
 - 显式设计恢复线程 / executor 合同
 - 不跨 suspend point 默认假设一致线程身份
 - 不把锁、thread-affine 对象和“永远同线程”的假设偷偷塞进 coroutine 代码
+- 不把阻塞 API 包一层 `co_await` 就当成非阻塞；底层能力不变，线程仍会被卡住
+- 明确 handle / frame 的销毁责任，避免悬空恢复、重复恢复或永不销毁
 
 ## 10. 自测题 / 验证入口
 
@@ -491,3 +506,5 @@ C++ draft 和 `<coroutine>` 支持库给出的关键事实是：
 - Kotlin coroutine context and dispatchers: https://kotlinlang.org/docs/coroutine-context-and-dispatchers.html
 - C++ draft, coroutine definitions: https://eel.is/c++draft/dcl.fct.def.coroutine
 - C++ draft, `<coroutine>` support library: https://eel.is/c++draft/support.coroutine
+- Boost.Asio, C++20 Coroutines overview: https://www.boost.org/doc/libs/1_88_0/doc/html/boost_asio/overview/composition/cpp20_coroutines.html
+- Lewis Baker, `cppcoro` repository: https://github.com/lewissbaker/cppcoro

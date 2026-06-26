@@ -5,26 +5,25 @@ concept: aos_soa_layout_selection
 topic: computer-systems
 depth_mode: deep
 created_at: '2026-03-23T18:06:50+08:00'
-updated_at: '2026-04-02T09:39:04+08:00'
+updated_at: '2026-06-23T00:00:00+08:00'
 source_basis:
+  - classical_data_layout_practice
   - apache_arrow_columnar_format_checked_2026_04_02
   - unity_entities_archetypes_checked_2026_04_02
   - numpy_structured_arrays_docs_checked_2026_04_02
   - khronos_opengl_vertex_specification_checked_2026_04_02
   - nvidia_cuda_best_practices_coalesced_access_checked_2026_04_02
   - cabana_aosoa_docs_checked_2026_04_02
+  - aos_and_soa_concept_boundaries_merged_2026_06_18
+  - docs_folder_consolidation_progress_2026_06_23
   - methodology_document_generation_methodology
-time_context: current_practice_checked_2026_04_02
+time_context: current_practice_checked_2026_04_02_and_aos_soa_concept_docs_consolidated_2026_06_23
 applicability: data_layout_selection_hot_loop_design_cpu_vectorization_gpu_memory_coalescing_columnar_execution_layout_refactoring_and_boundary_transcoding
 prompt_version: concept_generation_prompt_v3
 template_version: unified_spec_v1
-quality_status: upgraded_v1
+quality_status: consolidated_v1
 related_docs:
   - docs/methodology/document-generation-methodology.md
-  - docs/methodology/learning-new-things-playbook.md
-  - docs/methodology/cognitive-modeling-playbook.md
-  - docs/computer-systems/array-of-structs.md
-  - docs/computer-systems/struct-of-arrays.md
   - docs/computer-systems/false-sharing.md
 open_questions:
   - 对同时存在作者态对象模型、运行时批处理模型和设备端 kernel 模型的系统，什么条件下应该接受双表示甚至三表示为常态，而不是继续追求单一 canonical layout？
@@ -40,6 +39,7 @@ open_questions:
 
 读完后，你应该至少能做到：
 
+- 说清 AoS 与 SoA 分别在命名什么物理连续方向，而不是把它们当成性能口号
 - 解释为什么 AoS / SoA 选型本质上是在选“最贵执行面的连续方向”
 - 把 CPU 标量对象逻辑、CPU SIMD、GPU warp、列式算子和边界协议放进同一张图
 - 判断何时应保留单一布局，何时应做 hot/cold split、chunked SoA、AoSoA 或双表示
@@ -88,14 +88,39 @@ open_questions:
 
 最值得一起看的相邻概念是：
 
-- [Array of Structs：按记录聚合、按对象边界取数的数据布局](./array-of-structs.md)
-- [Struct of Arrays：按字段拆流、按批量同构操作取数的数据布局](./struct-of-arrays.md)
 - [False Sharing：明明线程没抢同一个变量，为什么缓存行还在疯狂打架](./false-sharing.md)
 - row-store / column-store
 - interleaved / deinterleaved streams
 - hot/cold split / chunked SoA / AoSoA / dual representation
 
-### 3.4 本文的时间边界
+### 3.4 AoS 与 SoA 的最小定义
+
+`Array of Structs` 是一种记录优先布局：先把一个逻辑对象的多个字段放进同一条记录，再把这些记录按数组顺序排开。最典型表达是 `Particle particles[N]`，连续方向沿“完整记录”前进。
+
+`Struct of Arrays` 是一种字段优先布局：把同一逻辑对象群的每个字段分别存成独立连续数组，并靠共享索引域把这些数组对齐起来。最典型表达是 `float x[N], y[N], z[N]`，连续方向沿“同一字段的一串值”前进。
+
+最短判别句是：
+
+**AoS 连续的是记录，SoA 连续的是字段。**
+
+### 3.5 什么算 AoS，什么算 SoA
+
+| 表达或布局 | 本文判断 | 原因 |
+| --- | --- | --- |
+| `Particle particles[N]`，每个 `Particle` 里有 `x/y/z/vx/vy/vz` | AoS | 数组元素就是完整粒子记录 |
+| 顶点 buffer 中 `position/normal/uv` 按每顶点交错排布 | AoS 风格 | 一个 stride 对应一个顶点记录 |
+| `float x[N], y[N], z[N]`，下标 `i` 表示同一个粒子 | SoA | 字段连续，数组共享同一索引域 |
+| ECS 里的 `position[]`、`velocity[]`、`health[]` 组件数组 | SoA 风格 | 多列共同描述对象群 |
+| 一组对象指针数组，指向分散分配的 heap 对象 | 不能简单视为纯 AoS | 逻辑像对象集合，物理连续性已经被指针间接打散 |
+| 几条彼此无关的统计数组 | 不是 SoA | 没有共享索引语义 |
+
+最常见的误读也可以一起收口：
+
+- 有 `struct` 语法不自动等于 AoS；要看物理存储是否按记录连续。
+- 有很多数组不自动等于 SoA；要看它们是否共享同一索引语义。
+- AoS 不是“更直观”的同义词，SoA 也不是“更高级”的同义词；这些都是布局取舍，不是定义。
+
+### 3.6 本文的时间边界
 
 本文的基础判断是 evergreen 的，但“当前推荐实践”部分依赖 Arrow、Unity Entities、CUDA、Khronos、NumPy 和 Cabana 的当前资料。  
 所有外部资料在这次升级中统一重新核对到 `2026-04-02`。
@@ -479,9 +504,7 @@ AoS / SoA 选型里最常见的失败模式有七类：
 
 ## 13. 参考资料
 
-- [统一概念文档规范：新建、升级、审查与仓库集成](../methodology/document-generation-methodology.md)
-- [Array of Structs：按记录聚合、按对象边界取数的数据布局](./array-of-structs.md)
-- [Struct of Arrays：按字段拆流、按批量同构操作取数的数据布局](./struct-of-arrays.md)
+- [统一概念文档规范：AI 生成、升级、审查与仓库集成](../methodology/document-generation-methodology.md)
 - [False Sharing：明明线程没抢同一个变量，为什么缓存行还在疯狂打架](./false-sharing.md)
 - Apache Arrow Columnar Format: <https://arrow.apache.org/docs/format/Columnar.html>
 - Unity Entities 1.0.11, Archetypes concepts: <https://docs.unity.cn/Packages/com.unity.entities%401.0/manual/concepts-archetypes.html>

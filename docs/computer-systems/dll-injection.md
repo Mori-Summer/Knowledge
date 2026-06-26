@@ -26,15 +26,12 @@ prompt_version: concept_generation_prompt_v1
 template_version: concept_doc_v1
 quality_status: upgraded_v1
 related_docs:
-  - docs/methodology/methodology-operator-guide.md
-  - docs/methodology/learning-new-things-playbook.md
-  - docs/methodology/cognitive-modeling-playbook.md
-  - docs/methodology/concept-document-template.md
+  - docs/methodology/document-generation-methodology.md
   - docs/methodology/concept-document-quality-gate.md
   - docs/computer-systems/process.md
   - docs/computer-systems/thread.md
   - docs/computer-systems/process-memory-layout.md
-  - docs/computer-systems/virtual-memory-learning-model.md
+  - docs/computer-systems/virtual-memory.md
 open_questions:
   - Windows 上受保护进程、Code Integrity Guard、CFG 与 EDR 用户态 hook 之间，哪些组合最值得单独拆成“注入失败定位矩阵”？
   - 是否需要再补一篇专门解释 reflective DLL loading、manual mapping 与普通 loader 路径差异的文档？

@@ -23,12 +23,9 @@ prompt_version: concept_generation_prompt_v1
 template_version: concept_doc_v1
 quality_status: upgraded_v1
 related_docs:
-  - docs/methodology/methodology-operator-guide.md
-  - docs/methodology/learning-new-things-playbook.md
-  - docs/methodology/cognitive-modeling-playbook.md
-  - docs/methodology/concept-document-template.md
+  - docs/methodology/document-generation-methodology.md
   - docs/methodology/concept-document-quality-gate.md
-  - docs/computer-systems/virtual-memory-learning-model.md
+  - docs/computer-systems/virtual-memory.md
 open_questions:
   - 是否需要补一篇专门解释 PIE、ASLR、RELRO 与地址稳定性预期的配套文档？
   - 是否需要进一步比较 glibc、jemalloc、tcmalloc、JVM 在地址空间占用形态上的差异？

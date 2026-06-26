@@ -5,7 +5,7 @@ concept: multithreaded_locks
 topic: computer-systems
 depth_mode: deep
 created_at: '2026-03-20T09:57:44+08:00'
-updated_at: '2026-03-20T14:42:35+08:00'
+updated_at: '2026-06-23T00:00:00+08:00'
 source_basis:
   - posix_pthread_mutex_lock_checked_2026_03_20
   - posix_pthread_mutexattr_gettype_checked_2026_03_20
@@ -18,21 +18,18 @@ source_basis:
   - linux_kernel_locktypes_docs_checked_2026_03_20
   - linux_kernel_seqlock_docs_checked_2026_03_20
   - linux_kernel_rcu_whatis_docs_checked_2026_03_20
-time_context: foundations_plus_current_practice_checked_2026_03_20
+  - mutex_condition_variable_semaphore_atomic_wait_docs_merged_2026_06_18
+  - docs_folder_consolidation_progress_2026_06_23
+time_context: foundations_plus_current_practice_checked_2026_03_20_and_sync_primitive_docs_consolidated_2026_06_23
 applicability: multithreaded_design_lock_selection_and_contention_debugging
 prompt_version: concept_generation_prompt_v1
 template_version: concept_doc_v1
-quality_status: upgraded_v1
+quality_status: consolidated_v1
 related_docs:
-  - docs/methodology/methodology-operator-guide.md
-  - docs/methodology/learning-new-things-playbook.md
-  - docs/methodology/cognitive-modeling-playbook.md
-  - docs/methodology/concept-document-template.md
+  - docs/methodology/document-generation-methodology.md
   - docs/methodology/concept-document-quality-gate.md
-  - docs/computer-systems/mutex.md
-  - docs/computer-systems/semaphore.md
-  - docs/computer-systems/condition-variable.md
-  - docs/computer-systems/atomic-wait-notify.md
+  - docs/computer-systems/happens-before.md
+  - docs/computer-systems/memory-order.md
 open_questions:
   - 现代用户态运行时里的 parking mutex、公平队列锁和 NUMA-aware 锁，什么时候值得单独抽出一篇文档比较？
   - 在混合 CPU/GPU、用户态 IO 和协程调度场景里，传统“线程锁选型”模型还需要补哪些维度？
@@ -68,24 +65,21 @@ open_questions:
 
 ## 3. 对象边界与相邻概念
 
-这篇文档里的“各种锁”，主要指多线程共享状态访问里常见的这些家族：
+这篇文档里的“各种锁”和相邻等待原语，主要指多线程共享状态访问里常见的这些家族：
 
 - `mutex` / 独占阻塞锁
 - `rwlock` / 读写锁或共享互斥锁
 - `spinlock` / 自旋锁
 - `recursive mutex` / 递归锁
 - `robust mutex` / 健壮锁
+- `condition variable` / 围绕 predicate 的等待
+- `semaphore` / permit 计数与准入控制
+- `atomic_wait` / 围绕单个 atomic value 的等待
 - `seqcount` / `seqlock`
 - `RCU`
 
 它不等于：
 
-- `semaphore`
-  semaphore 关注 permit 计数和准入，不关心 owner 语义
-- `condition variable`
-  它处理“条件未满足时怎么睡、条件变化时怎么醒”，不是临界区所有权
-- `atomic_wait`
-  它围绕单个 atomic 值等待，不是通用共享不变量保护工具
 - `lock-free`
   那是另一条设计路线，不是“更快的锁”
 
@@ -147,6 +141,9 @@ open_questions:
 | `spinlock` | 强 owner 语义 | 忙等 / 自旋 | 独占 | 不适用 | 立刻回收通常没额外困难，但不能长持有 |
 | `recursive mutex` | owner + 计数 | 阻塞 / 睡眠 | 独占 | 不适用 | 不改变回收本质，只改变重入语义 |
 | `robust mutex` | owner + 崩溃恢复通知 | 阻塞 / 睡眠 | 独占 | 不适用 | 需要恢复共享状态一致性 |
+| `condition variable` | 无临界区 ownership，依赖配套 mutex | 释放锁后睡眠，醒来再拿锁 | 等待复杂 predicate | 醒来必须重查 predicate | 回收仍由共享状态和锁纪律决定 |
+| `semaphore` | 无 owner，只有 permit | permit 不足时阻塞 | 准入控制 / 额度控制 | 不适用 | 重点是 permit 不泄漏 |
+| `atomic_wait` | 无 owner，围绕一个 atomic object | 值仍等于 old 时睡眠 | 单对象状态变化等待 | 醒来必须重查值 | 小心 ABA 和短暂状态 |
 | `seqcount` / `seqlock` | writer 侧需串行化 | 读者 lockless retry，写者持锁 | 读多写少、快照读取 | 是 | 只适合能安全重试的快照数据 |
 | `RCU` | 读者近似无锁，更新者需额外串行化 | 读者不阻塞，回收延后 | 读多写少、替换式更新 | 读者通常不重试，但必须容忍旧版本 | 必须显式延迟回收 |
 
@@ -162,6 +159,24 @@ open_questions:
 2. 再辨认等待模型
 3. 再辨认读写形状
 4. 最后才落到 API 家族
+
+### 4.5 四个基础原语的最小语义
+
+旧的 `mutex`、`condition-variable`、`semaphore`、`atomic-wait-notify` 文档已经合并进本文。AI 写作或代码审查时，不要再把它们展开成四个重复入口，而要用下面这张压缩表：
+
+| 原语 | 本体 | 最关键边界 | 高频误用 |
+| --- | --- | --- | --- |
+| `mutex` | owner-based exclusion + `unlock -> lock` 同步边 | 适合保护一组共享不变量 | 用多个 atomic 硬凑复杂状态一致性 |
+| `condition variable` | 围绕共享 predicate 的睡眠 / 唤醒机制 | 等的是 predicate，不是 notify | 不在循环里重查 predicate，或 predicate 不受同一把 mutex 保护 |
+| `semaphore` | internal counter / permit 模型 | 控制名额，不表达“谁拥有临界区” | 拿 permit 当共享不变量保护锁 |
+| `atomic_wait` | 如果 atomic value 仍等于 old 就睡眠 | 适合单个 atomic 状态位、阶段号、generation counter | 把 notify 当事件存储，忽略 spurious wake 和 ABA |
+
+最短判别句：
+
+- 多字段必须一起成立，用 `mutex` 先站稳。
+- 等复杂 predicate，用 `mutex + condition variable`。
+- 等 permit 或控制并发度，用 `semaphore`。
+- 等单个 atomic 值离开 old，用 `atomic_wait`。
 
 ## 5. 核心机制 / 主链路 / 因果链
 
@@ -190,16 +205,54 @@ open_questions:
 7. **旧代码存在重入、外部回调或崩溃恢复需求吗？**
    这时才考虑 `recursive mutex` 或 `robust mutex` 这类变体，但它们通常是特定约束下的补丁，不是默认答案。
 
-### 5.2 这条主链背后的因果
+### 5.2 基础原语的具体链路
+
+**Mutex 链路**
+
+1. 线程 A 持有 mutex 并维护一组共享状态。
+2. A `unlock`。
+3. 线程 B 后续成功 `lock` 同一把 mutex。
+4. A 解锁前的更新通过同步边传到 B 加锁后的读取。
+
+所以 mutex 不只是“挡住别人”，它还给临界区之间的状态传递提供稳定边界。
+
+**Condition variable 链路**
+
+1. predicate 依赖的共享状态在 mutex 下修改。
+2. 等待者以 `while (!predicate()) wait(lock)` 或等价形式等待。
+3. `wait` 会释放锁并睡眠，被唤醒后重新拿锁。
+4. 醒来后必须重查 predicate，因为 notify 只说明条件可能变化。
+
+所以 condition variable 的本体不是通知，而是“共享状态 + predicate + mutex + 循环检查”。
+
+**Semaphore 链路**
+
+1. `release` 增加 permit。
+2. `acquire` 成功拿走 permit；permit 不足时阻塞。
+3. 这个模型适合资源池、并发度限制、槽位控制和 handoff。
+4. `try_acquire` 失败可能是 spurious failure，不能当作绝对状态证明。
+
+所以 semaphore 的本体是额度，不是 owner。
+
+**Atomic wait 链路**
+
+1. waiter 观察到 atomic object 的 old 值。
+2. 如果值仍等于 old，waiter 可以睡眠。
+3. 修改方先改变值，再 notify。
+4. waiter 醒来后重新检查值。
+
+所以 `atomic_wait` 是“单对象状态变化等待”，不是复杂 predicate 或事件队列。
+
+### 5.3 这条主链背后的因果
 
 - 只要问题是“保护复杂共享状态”，`mutex` 的 owner 语义和同步边最值钱
 - 一旦目标从“互斥进入”变成“提高读并发”，就会引入 writer latency 和公平性问题
 - 一旦目标从“阻塞等待”变成“忙等”或“乐观重试”，你就把 CPU 时间和正确性约束拿来换延迟
 - 一旦读者开始 lockless，更新路径几乎总会变复杂，且内存回收不再免费
 
-### 5.3 两条特别容易走错的分支
+### 5.4 两条特别容易走错的分支
 
-#### 5.3.1 等待分支：别把“等条件成立”误判成“拿锁保护”
+#### 5.4.1 等待分支：别把“等条件成立”误判成“拿锁保护”
 
 很多代码的问题不是“临界区不安全”，而是“线程需要等某个谓词改变”。  
 这里最容易犯的错误是：
@@ -216,7 +269,7 @@ open_questions:
 
 **锁负责保护不变量，条件变量 / `atomic_wait` / semaphore 才负责让线程以正确方式等待。**
 
-#### 5.3.2 回收分支：别把“读多写少”直接等同于 `rwlock`
+#### 5.4.2 回收分支：别把“读多写少”直接等同于 `rwlock`
 
 “读多写少”其实有三种完全不同的形状：
 
@@ -228,7 +281,7 @@ open_questions:
 
 把这三类问题都叫“读多写少”会直接毁掉选型。
 
-### 5.4 一条可用于代码审查的最小判断句
+### 5.5 一条可用于代码审查的最小判断句
 
 看到一段并发代码时，可以先问：
 
@@ -285,6 +338,15 @@ open_questions:
 - **把等待问题硬塞进锁问题**
   线程真正缺的是“何时唤醒”的语义时，只加锁通常只会让临界区更大、等待更糊。
 
+- **把 condition variable 当事件队列**
+  notify 不保存业务状态；如果 predicate 没有在共享状态里留下来，等待者就可能错过条件。
+
+- **把 semaphore 当 mutex**
+  permit 没有 owner 语义，不能天然表达“这一组字段现在由谁维护”。
+
+- **把 `atomic_wait` 当复杂条件等待**
+  它只围绕一个 atomic value 的 old/new 关系工作，复杂 predicate 仍要回到 mutex + condition variable。
+
 ## 7. 应用场景
 
 ### 7.1 复杂共享不变量：`mutex` 仍是默认基线
@@ -316,6 +378,16 @@ open_questions:
 
 读者遍历指针结构、更新者替换旧版本、旧对象稍后再回收的读多写少结构，是 `RCU` 的典型主场。  
 这里最关键的已经不是锁本身，而是发布与回收协议。
+
+### 7.7 单个状态位或阶段号等待：`atomic_wait`
+
+ready flag、phase number、generation counter 这类单 atomic 状态，适合用 `atomic_wait` 避免轮询。
+如果等待条件跨多个字段，或者需要业务 predicate，就不要用它硬凑。
+
+### 7.8 资源池和并发度限制：`semaphore`
+
+连接池、槽位池、限流和 admission control 更像 permit 问题。
+这时 semaphore 比 mutex 更贴题，但共享对象本身的一致性仍可能需要额外锁纪律。
 
 ## 8. 工业 / 现实世界锚点
 
@@ -395,6 +467,9 @@ Linux kernel 的 seqlock 文档直接把它定义为 lockless readers + retry lo
 ### 9.2 当前更推荐的实践
 
 - 默认先用 `mutex` 保护复杂共享不变量，再拿 profiling 和尾延迟数据证明你真的需要更激进的锁形状。
+- 等待复杂 predicate 时，把 predicate 写进共享状态，并用同一把 mutex 保护修改和检查；notify 只是推进等待者重新检查。
+- 等单个 atomic 状态值变化时，优先考虑 `atomic_wait`，但用 generation counter 避免 ABA 和短暂状态被错过。
+- 控制并发额度、资源池槽位和 handoff 时，优先考虑 semaphore；不要用它替代共享不变量保护。
 - 只在读临界区足够长、读者足够多、写者延迟可以接受时再考虑 `rwlock`。这是对 POSIX 读写锁语义和 Linux kernel 公平性差异的工程推断，不是“读多写少就一定更快”的结论。
 - 在普通用户态程序里避免把 `spinlock` 当通用优化手段；Linux 手册已经明确说大多数程序应使用 mutex，spin lock 主要适合 real-time scheduling policies。
 - 避免把 semaphore 继续当“互斥 + 等待”二合一通用方案；Linux kernel docs 已明确说新的 use case 更推荐把 serialization 和 waiting 分开。对应到用户态，通常就是 `mutex + condition variable` 或 `mutex + atomic_wait` 这类更可推理组合。
@@ -439,6 +514,9 @@ Linux kernel 的 seqlock 文档直接把它定义为 lockless readers + retry lo
 6. 什么时候你真正该比较的是 `condition variable`、`atomic_wait` 和 semaphore，而不是各种锁家族？
 7. 如果一个读多写少结构里的读者会跟随指针，为什么 `RCU` 和 `rwlock` 才是同一层级的候选，而 `seqlock` 不是？
 8. 你在代码评审里看到“为了性能把 mutex 改成 spinlock”，最先该追问哪三个约束？
+9. 为什么 condition variable 等的是 predicate，不是 notify？
+10. 为什么 semaphore 的 permit 不等价于 mutex 的 ownership？
+11. 为什么 `atomic_wait` 醒来后仍要重新检查值？
 
 ## 11. 迁移与关联模型
 

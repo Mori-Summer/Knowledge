@@ -1,563 +1,370 @@
 ---
 doc_id: methodology-document-generation-methodology
-title: 统一概念文档规范：新建、升级、审查与仓库集成
+title: 统一概念文档规范：AI 生成、升级、审查与仓库集成
 concept: unified_concept_document_spec
 topic: methodology
 depth_mode: standard
 created_at: '2026-04-01T20:02:19+08:00'
-updated_at: '2026-05-27T10:29:56+08:00'
+updated_at: '2026-06-18T17:05:37+08:00'
 source_basis:
   - methodology_repository_practice
-  - methodology_operator_guide
-  - learning_new_things_playbook
-  - cognitive_modeling_playbook
-  - concept_document_template
-  - concept_document_quality_gate
-  - fixed_concept_generation_prompt
   - consolidation_review_2026_04_01
   - pure_concept_doc_split_review_2026_04_08
+  - methodology_folder_consolidation_2026_06_18
   - docs/methodology/concept-document-quality-gate.md
-  - docs/methodology/concept-document-contract.md
-  - docs/methodology/intake-and-intent-classification.md
-  - docs/methodology/concept-document-example-catalog.md
   - docs/methodology/source-discipline-and-real-world-anchor-policy.md
-  - docs/governance/lifecycle-states.md
-  - docs/governance/prompt-template-quality-version-governance.md
-time_context: phase_4_epic_1_source_discipline_2026_05_25
-applicability: concept_doc_creation_upgrade_review_and_repository_integration
-prompt_version: concept_generation_prompt_v3
-template_version: unified_spec_v2
+  - docs/governance/docs-asset-governance.md
+  - docs/governance/docs-change-governance.md
+  - docs/templates/governance-record-templates.md
+time_context: methodology_folder_consolidation_2026_06_18
+applicability: ai_concept_doc_creation_upgrade_review_and_repository_integration
+prompt_version: concept_generation_prompt_v4
+template_version: unified_spec_v3
 quality_status: maintained_asset
 related_docs:
-  - docs/methodology/methodology-operator-guide.md
-  - docs/methodology/learning-new-things-playbook.md
-  - docs/methodology/cognitive-modeling-playbook.md
-  - docs/methodology/concept-document-template.md
   - docs/methodology/concept-document-quality-gate.md
-  - docs/methodology/concept-document-contract.md
-  - docs/methodology/intake-and-intent-classification.md
-  - docs/methodology/concept-document-example-catalog.md
   - docs/methodology/source-discipline-and-real-world-anchor-policy.md
-  - docs/methodology/fixed-concept-generation-prompt.md
+  - docs/governance/docs-asset-governance.md
+  - docs/governance/docs-change-governance.md
+  - docs/templates/governance-record-templates.md
 open_questions:
-  - 是否需要把本规范再压成 machine-readable checklist 与 prompt snippet 两个衍生件？
+  - 后续是否需要在一次真实批量文档生成任务中验证 v3 合并规范的可执行性？
 ---
 
-# 统一概念文档规范：新建、升级、审查与仓库集成
+# 统一概念文档规范：AI 生成、升级、审查与仓库集成
 
-这份文件现在是 `docs/methodology/` 下的**主规范**。  
-如果你的目标是新建、升级、审查或集成正式概念文档，默认先看这一份，而不是在多个方法论文档之间来回跳转。
+`docs/methodology/` 是给 AI 执行正式文档任务看的规范目录，不是给人阅读的方法论文章集合。合并后默认只保留三类规范：
 
-其余文件仍然保留，但角色已经收束为：
+| 文件 | 角色 | AI 读取时机 |
+| --- | --- | --- |
+| `document-generation-methodology.md` | 主执行规范；负责任务摄入、生成合同、正文骨架、固定入口、仓库集成和方法论维护边界 | 新建、升级、审查、索引、方法论维护时默认先读 |
+| `concept-document-quality-gate.md` | 质量门禁；负责 Hard Fail、六项评分、审查输出和状态声明限制 | 审查、验收、升级 gap analysis、质量状态变更时读 |
+| `source-discipline-and-real-world-anchor-policy.md` | 来源纪律；负责当前实践、历史路径、不可验证声明和真实世界锚点 | 涉及事实、当前性、产品/标准/监管/市场/历史路径时读 |
 
-- 需要更深入的学习方法背景时，看 `learning-new-things-playbook.md`
-- 需要更深入的建模纪律时，看 `cognitive-modeling-playbook.md`
-- 需要看完整模板骨架时，看 `concept-document-template.md`
-- 需要看完整评分细则时，看 `concept-document-quality-gate.md`
-- 需要确认候选稿的输入、输出、必需信息位点和出界边界时，看 `concept-document-contract.md`
-- 需要先判断任务类型、资产层级、文档路径、深度、缺失输入和 `_bmad-output/` 边界时，看 `intake-and-intent-classification.md`
-- 需要用合格/不合格样例校准 reviewer 证据判断时，看 `concept-document-example-catalog.md`
-- 需要判断来源类型、当前实践、历史/废弃路径、不可验证声明和真实世界锚点是否合格时，看 `source-discipline-and-real-world-anchor-policy.md`
-- 需要复制固定触发词时，看 `fixed-concept-generation-prompt.md`
-- 需要看旧版编排说明时，看 `methodology-operator-guide.md`
+已合并或删除的旧文件不再是执行入口：
 
-一句话说：  
-**这份文件负责执行合同，其他文件负责补充背景、细则和参考材料。**
+| 旧文件 | 继任位置 |
+| --- | --- |
+| `intake-and-intent-classification.md` | 本文的任务摄入、缺失输入、停止条件和 `_bmad-output` 边界 |
+| `concept-document-contract.md` | 本文的输入合同、输出合同、必需信息位点和候选边界 |
+| `concept-document-template.md` | 本文的正文骨架、深度模式和特殊主题规则 |
+| `fixed-concept-generation-prompt.md` | 本文的固定触发词 |
+| `governance-asset-boundary-policy.md` | 本文的方法论维护边界 |
+| `concept-document-example-catalog.md` | `concept-document-quality-gate.md` 的审查校准语义 |
+| `methodology-operator-guide.md` | 本文的合并记录；不再保留历史编排说明 |
+| `learning-new-things-playbook.md` / `cognitive-modeling-playbook.md` | 本文的最小建模要求；不再作为 AI 执行规范 |
 
-从这次版本开始，这份主规范明确区分两条正式路径：
+## 1. 适用范围与非目标
 
-- 模型型概念文档
-- 纯概念文档
+本文适用于：
 
-## 1. 适用范围与边界
+- `docs/{topic}/` 下正式概念文档的新建、升级、审查和仓库集成。
+- 现有正式文档的结构补强、来源补强、质量门禁修复和索引同步。
+- 方法论目录自身的维护，尤其是避免继续新增平行规范。
+- 从对话、草稿或 `_bmad-output/` 候选内容晋升为正式 `docs/` 资产前的判断。
 
-这份规范当前主要适用于：
+本文不授权：
 
-- `docs/{topic}/` 下的正式知识库概念文档
-- 现有概念文档的升级
-- 概念文档的审查 / 验收
-- 文档落盘后的仓库集成，包括 `docs/index.md`
+- 生成代码、CLI、API、UI、数据库、部署、CI、软件测试、自动化检查器或运行时工具。
+- 把 `_bmad-output/`、review output、story 文件或对话文本直接加入 `docs/index.md`。
+- 无明确目标集地批量移动、删除、重命名、改状态或重写多个 topic。
+- 为了保留旧结构继续新增 methodology 支撑文件。
 
-这份规范当前**不直接覆盖**以下文档类型：
+## 2. 执行顺序
 
-- 项目 README
-- 教程 / 操作指南
-- ADR / 决策记录
-- API 参考
-- 一次性报告
+AI 处理 Knowledge 文档任务时按固定顺序执行：
 
-如果要系统支持这些类型，应该为它们补专用模板和门禁，而不是把概念文档规范无限扩张。
+1. 读取当前用户指令、目标文件、允许范围和最新上下文。
+2. 判断任务类型、资产层级和是否涉及批量范围。
+3. 若是正式概念文档，判断文档路径：模型型概念文档或纯概念文档。
+4. 判断展开密度：`standard` 或 `deep`。
+5. 检查输入是否足够；不足时澄清、记录 open question、显式假设、延期或停止。
+6. 写作、升级或审查正文。
+7. 按质量门禁、来源纪律、frontmatter、路径、索引和链接完成验证。
+8. 汇报变更、验证证据、未解决项和非软件边界。
 
-## 2. 核心目标
+不要先写正文、先改索引或先改状态字段。
 
-正式概念文档的目标，不是把一个词解释完就结束，而是建立一个可反复调用的理解资产。  
-但这个资产不只有一种形态。
+## 3. 任务类型与停止条件
 
-### 2.1 模型型概念文档
+先把请求归入一个主任务类型。混合任务先拆分；拆不开时按更严格的类型处理。
 
-当一个主题本身具有稳定结构、机制、主链路、失败模式或选型价值时，文档应优先建立可复用内部模型，至少支持：
+| 任务类型 | 允许范围 | 最低验证证据 |
+| --- | --- | --- |
+| `new document creation` | 新建一个正式 Markdown 资产，必要时同步索引和相邻链接 | frontmatter、路径/topic、正文合同、来源、质量门禁、索引 |
+| `upgrade` | 修改一个既有正式资产和必要的窄同步文件 | 保留 `doc_id`、修复 gap、记录来源/索引/状态影响 |
+| `review` | 默认只输出审查结论；除非用户要求修复 | 前置分类、Hard Fail、评分或等价治理检查、最终结论 |
+| `index-only update` | 只改 `docs/index.md` 和必要 metadata | 目标存在、标题/路径/topic 一致、无 hidden promotion |
+| `methodology maintenance` | 改本文、质量门禁或来源纪律，必要时同步索引/引用 | 角色边界、版本影响、下游影响、删除/合并映射 |
+| `planning artifact` | 改 `_bmad-output/` 的 story/report/status | workflow 边界，不自动晋升正式 `docs/` |
+| `archive/deprecation` | 目标文件、successor、索引和链接影响 | 废弃理由、剩余访问方式、替代入口 |
+| `batch governance` | 多文件、多 topic、多状态或多索引入口 | 先通过 batch readiness，再写目标集 |
 
-- 解释：能说清它在解决什么问题
-- 预测：能推断某个条件变化后会发生什么
-- 调试：出现异常时知道从哪里切入
-- 取舍判断：知道它何时值得选、何时不该选
-- 迁移：能把模型带到相邻问题上
+以下情况必须停止或请求确认：
 
-### 2.2 纯概念文档
+- 目标文件、topic、`doc_id`、资产层级或 owner entry point 不清。
+- 候选内容被要求直接发布为正式资产，但缺少 promotion 证据。
+- 要声明 current、reviewed、validated、maintained、deprecated 或 archived，但来源和状态证据不足。
+- 要批量处理，却没有目标集、排除项、恢复策略和 owner decision。
+- 需要删除、重命名、迁移或废弃正式资产，但 successor/index/link impact 不清。
+- 出现代码、自动化、测试、CI、部署或运行时工具要求，但用户没有明确授权。
 
-当一个主题本身更像：
+## 4. 正式概念文档分型
 
-- 基础概念
-- 分类边界
-- 命名区分
-- 对比概念
-- 上层模型会反复引用的核心术语
+路径判断先于深度判断。
 
-而不是一个独立机制时，文档可以走纯概念路径。
+### 4.1 模型型概念文档
 
-这类文档的主要目标不是硬造机制链，而是建立稳定的概念辨识力，至少支持：
+主题具有稳定结构、机制、主链路、因果链、失败模式、tradeoff、选型价值、诊断价值或系统行为时，走模型型路径。
 
-- 解释：这个概念到底在命名什么
-- 区分：它和相邻概念到底怎么分
-- 分类：什么算它，什么不算它
-- 纠错：常见误读、泛化和误用是什么
-- 迁移：它后来会进入哪些更大的模型、判断或解释框架
+必须让读者能回答：
 
-### 2.3 默认禁止的坏写法
+- 它解决什么结构性问题。
+- 它由哪些部件、层次或分面构成。
+- 它如何运转，主链路或因果链是什么。
+- 哪些条件下适用，哪些条件下失效。
+- 关键 tradeoff 和 failure modes 是什么。
+- 如何用它解释、预测、调试、取舍或迁移。
 
-无论文档走哪条路径，默认都禁止下面这些形态：
+### 4.2 纯概念文档
 
-- 术语解释
-- 百科式摘要
-- 只列定义、不建立边界或判断力的说明
-- 只列章节、不提供真实结构的模板填空
-- 为了满足模板而硬造伪机制、伪 tradeoff 或伪工业锚点
+主题主要解决命名、分类、边界、相邻概念区分、例子/反例、误读或上层模型术语稳定性时，走纯概念路径。
 
-## 3. 先判断你在做什么
+必须让读者能回答：
 
-开始前，先判断请求是否属于正式概念文档工作。完整的 Knowledge 任务意图分类由 `docs/methodology/intake-and-intent-classification.md` 负责；如果请求已经明确属于正式概念文档工作，再把它归到四类之一：
+- 这个概念到底在命名什么，为什么需要单独命名。
+- 什么算它，什么不算它。
+- 它和相邻概念怎么稳定区分。
+- 代表性例子、反例、误读和误用是什么。
+- 它后续会进入哪些更大的模型、解释框架或判断流程。
 
-- `新建`：仓库里还没有对应正式文档
-- `升级`：仓库里已有文档，但结构、模型、时效或证据不足
-- `审查`：你要判断一篇文档是否达标
-- `仅更新索引`：正文不一定改，只补仓库导航
+不得把纯概念硬写成伪机制文档，也不得把需要机制判断的对象降成术语说明。
 
-不要把这四种动作混成一次模糊请求。  
-先分类，后执行，才能减少返工。
-
-## 4. 一张图看完整流程
-
-下面这张图是主流程，不是附加说明。
-
-```mermaid
-flowchart TD
-    Start[收到文档任务] --> Classify{任务类型?}
-    Classify -->|新建| New[明确输入与目标]
-    Classify -->|升级| Upgrade[定位 Hard Fail 与低分项]
-    Classify -->|审查| Review[按门禁输出结论]
-    Classify -->|仅更新索引| Index[核对并更新 docs/index.md]
-    New --> Type{文档类型?}
-    Upgrade --> Type
-    Type -->|模型型概念文档| Model[建立边界 结构 主链路 取舍]
-    Type -->|纯概念文档| Concept[建立命名问题 边界 对比 例子反例]
-    Model --> Depth[判断 standard 或 deep]
-    Concept --> Depth
-    Depth --> Draft[按对应合同组织正文]
-    Draft --> Gate[按质量门禁自查]
-    Gate --> Integrate[更新 frontmatter 与仓库索引]
-    Review --> End[交付结果]
-    Index --> End
-    Integrate --> End
-```
+### 4.3 `standard` 与 `deep`
 
-## 5. 新建文档规范
+`standard` 适合单主机制、单时间尺度、边界清楚、相邻概念集合较小的主题。
 
-### 5.1 新建前的最小输入
+`deep` 适合多层抽象、多后端、多 actor、多执行面、多时间尺度、历史路径重要、failure modes 复杂、常用于架构判断/排障/选型/迁移的主题。命中两条及以上时默认按 `deep`，除非用户明确要求先产出受限 `standard` 候选稿并记录限制。
 
-至少先明确这些信息：
+`standard` 和 `deep` 改变的是证据密度，不改变必需信息位点。
 
-- 概念名 `concept`
-- 所属主题 `topic`
-- 你在什么场景下遇到它
-- 你现在最不理解的点
-- 你后续想拿它分析什么问题
-- 它是否包含时间敏感内容
-- 你希望看到哪些真实工业 / 现实世界锚点
+## 5. 输入合同与缺失输入
 
-如果这些输入不清楚，文档很容易滑向泛泛解释。
+新建或实质升级概念文档前，至少确认六项输入：
 
-### 5.2 新建时先判断文档类型
+| 输入 | 必须知道什么 |
+| --- | --- |
+| `concept name` | 要处理的概念、知识点或问题对象 |
+| `topic` | 预期归属主题或目录 |
+| `user context` | 用户是在什么学习、工作、阅读或问题场景下遇到它 |
+| `current confusion` | 用户当前最不理解、最容易混淆或最需要判断的点 |
+| `intended downstream use` | 用户后续想拿它分析、判断、排查或迁移到哪里 |
+| `time-sensitivity notes` | 是否涉及当前实践、标准、产品、监管、市场、历史路径或废弃做法 |
 
-在开始组织正文之前，先判断这篇文档更适合走哪条路径：
+缺失输入处理：
 
-- `模型型概念文档`：主题本身具有稳定结构、主链路、机制、失败模式或选型价值
-- `纯概念文档`：主题本身主要解决命名、分类、边界或相邻概念区分问题
+- 影响路径、topic、来源、时间语境、状态、候选晋升或批量范围时，先澄清。
+- 不阻塞候选稿但限制质量判断时，写入 open questions、来源限制或正文假设。
+- 只影响表达密度时，可以显式假设后继续。
+- 不得静默发明 topic、路径、来源、当前性、下游用途、真实锚点、related docs、状态或 owner decision。
 
-这个判断先于 `standard` / `deep`。  
-`standard` / `deep` 解决的是展开密度问题，不解决“这篇文档到底该不该强写机制链”的问题。
+## 6. 输出合同与候选边界
 
-### 5.3 如果是模型型概念文档，新建前必须先完成的建模动作
+正式概念文档输出必须是 Markdown 知识资产，不是软件产物。
 
-至少先回答：
+候选稿准备晋升到 `docs/` 时，必须具备：
 
-- 它到底在解决什么问题
-- 它的边界在哪里，不是什么
-- 它由哪些关键结构构成
-- 它如何运转，主链路或因果链是什么
-- 它的关键 tradeoff 是什么
-- 它在什么条件下失效
-- 现实里谁在关心它，为什么关心
-- 如果后续要验证是否真的理解了，应从哪里下手
+- YAML frontmatter。
+- 唯一稳定的 `doc_id`。
+- 与路径一致的 `topic`。
+- 明确 `depth_mode`、`source_basis`、`time_context`、`quality_status`、`related_docs` 和 `open_questions`。
+- 正文中可定位的角色、边界、验证入口、迁移入口和来源/时间限制。
+- `docs/index.md` 入口，或受控的非索引理由。
 
-### 5.4 如果是纯概念文档，新建前必须先完成的判别动作
-
-至少先回答：
-
-- 这个概念到底在命名什么，为什么需要单独命名
-- 它试图消除的混淆、分类问题或命名空洞是什么
-- 它的边界在哪里，哪些对象算它，哪些不算
-- 它最容易和哪些相邻概念混淆
-- 哪些例子、反例和误用最能帮助辨识它
-- 它在后续会进入哪些更大的模型、判断或解释框架
-- 如果后续要验证是否真的理解了，应从哪里下手
-
-如果这些问题没有先回答，后面的写作只是排版，不是理解资产构建。
-
-## 6. 升级旧文档规范
-
-升级默认遵守一条原则：  
-**保留高价值内容，优先补结构和判断能力，不要为了“统一风格”整篇推倒重写。**
-
-升级时的标准顺序：
-
-1. 先按质量门禁找 Hard Fail 和低分项
-2. 再判断这篇文档应走模型型概念文档还是纯概念文档路径
-3. 再判断该主题应该按 `standard` 还是 `deep` 审视
-4. 再补对应路径下的结构缺口、验证入口和迁移入口
-5. 再补工业锚点、当前实践、旧路径与替代路径，或删除本来就不该硬写的伪章节
-6. 最后更新 `updated_at`、必要的 `source_basis`、`time_context` 和 `docs/index.md`
-
-升级时优先补的缺口是：
-
-- 问题定义不清
-- 对象边界不清
-- 把纯概念硬写成伪机制文档，或把模型型主题误降成术语说明
-- 对模型型主题缺少核心机制 / 主链路 / 因果链
-- 对纯概念主题缺少分类边界、例子 / 反例和误读纠偏
-- tradeoff、失败模式或误读点写得太虚
-- 工业锚点不真实或不可定位
-- 当前实践没有日期或来源纪律
-- 没有自测题 / 验证入口
-- 没有迁移入口
-- 没有未解问题
-
-## 7. 先判断文档类型，再判断展开密度
-
-### 7.1 模型型概念文档
-
-更适合下面这类对象：
-
-- 本体就是一个机制、协议、结构或系统对象
-- 读者后续要拿它做预测、调试、取舍或选型
-- 如果不写主链路，就无法真正理解它
-- 失败模式和 tradeoff 本身构成理解核心
-
-### 7.2 纯概念文档
-
-更适合下面这类对象：
-
-- 本体更像一个分类概念、边界概念、命名区分或对比概念
-- 主要困难不在“它怎么运转”，而在“它到底在说什么、和什么不同”
-- 强行写机制链只会制造假结构
-- 文档的主要价值是帮助后续阅读更大模型时不再混淆术语
-
-目前不要求为这两类路径新增单独 frontmatter 字段。  
-但在新建、升级和审查时，必须先显式做这个判断。
-
-### 7.3 `standard`
-
-更适合下面这类对象：
-
-- 单主机制
-- 单时间尺度
-- 边界清楚
-- 或相邻概念集合较小、判别负担较低
-- 主要目标是建立稳定定义、边界和最小判断力
-
-### 7.4 `deep`
-
-更适合下面这类对象：
-
-- 多层抽象同时存在
-- 多参与方、多后端或多执行面同时存在
-- 当前实践与历史路径都重要
-- 相邻概念很多，误读路径很多，边界网络本身就复杂
-- 文档会被用于选型、排障、架构判断，而不只是记忆
-- 失败模式和 tradeoff 本身比定义更关键
-
-如果一个主题命中上面两条及以上，默认按 `deep` 写。
-
-### 7.5 `deep` 模式的额外要求
-
-`deep` 不是篇幅更长，而是判断支撑更强。  
-至少额外做到：
-
-- 如果是模型型概念文档：
-  - `核心结构` 必须是层次或分面框架，而不只是名词列表
-  - `核心机制` 至少给出一条完整端到端链路；必要时补变体链路
-  - `应用场景` 至少给出 `3` 类有差异的使用场景
-  - `工业 / 现实世界锚点` 至少给出 `2` 个真实对象，并解释为什么能作为锚点
-  - `当前推荐实践、过时路径与替代` 不能只报结论，必须写清原因链
-  - `自测题 / 验证入口` 不能只停留在术语回忆
-- 如果是纯概念文档：
-  - 必须把相邻概念网络展开到足以稳定区分
-  - 至少给出一组代表性例子和一组反例或误用
-  - 必须写清最常见的误读、过度泛化或错误类比
-  - 必须写清它会进入哪些更大的模型、解释框架或后续判断
-  - 如果涉及时间敏感用法或现实语境，再补当前实践与来源纪律；不涉及时不要硬塞
-
-## 8. 正式概念文档的统一合同
-
-### 8.1 必需 frontmatter
-
-正式概念文档默认至少包含：
-
-- `doc_id`
-- `title`
-- `concept`
-- `topic`
-- `depth_mode`
-- `created_at`
-- `updated_at`
-- `source_basis`
-- `time_context`
-- `applicability`
-- `prompt_version`
-- `template_version`
-- `quality_status`
-- `related_docs`
-- `open_questions`
-
-### 8.2 必需信息位点按文档类型分流
-
-所有正式概念文档都至少要回答：
-
-1. 这份文档要帮你学会什么
-2. 一句话结论 / 问题定义，或一条清晰的命名 / 分类结论
-3. 边界与相邻概念
-4. 自测题 / 验证入口
-5. 迁移与关联模型
-6. 未解问题与继续深挖
-7. 参考资料
-
-如果是模型型概念文档，默认还应覆盖：
-
-1. 核心结构
-2. 核心机制 / 主链路 / 因果链
-3. 关键 tradeoff 与失败模式
-4. 应用场景
-5. 工业 / 现实世界锚点
-6. 当前推荐实践、过时路径与替代
-
-如果是纯概念文档，默认还应覆盖：
-
-1. 这个概念试图解决的命名、分类或区分问题
-2. 什么算它，什么不算它
-3. 代表性例子、反例与常见误用
-4. 它最容易与哪些相邻概念混淆
-5. 它会进入哪些更大的模型、解释或判断框架
-
-纯概念文档只有在这些内容真的属于概念本体时，才补“机制链”“tradeoff”“工业锚点”或“当前实践”。
-
-标题不必逐字照抄，但对应路径下的信息位点不能缺。
-
-### 8.3 时间敏感内容的纪律
-
-只要正文讨论以下内容，就必须显式遵守时间与来源纪律：
-
-- 当前实践
-- 当前产品行为
-- 当前标准或制度
-- 已过时路径与替代建议
-
-至少做到：
-
-- 在正文里写明核对日期
-- 优先使用一手或官方来源
-- 区分事实、推断和建议
-- 让 `time_context`、`source_basis` 与正文一致
-
-### 8.4 真实锚点纪律
-
-工业 / 现实世界锚点不能写成抽象口号。  
-至少要能定位到：
-
-- 真实组织
-- 真实系统
-- 真实产品
-- 真实标准
-- 真实制度
-
-并解释：
-
-- 为什么这个对象能作为锚点
-- 工程或现实里为什么关心它
-- 理解错后会造成什么判断偏差
-
-## 9. 质量门禁的统一基线
-
-完整门禁以 `docs/methodology/concept-document-quality-gate.md` 为准。
-本节只保留主规范中的执行摘要，避免主流程和完整门禁互相矛盾。
-
-正式审查必须先输出前置分类，再执行 Hard Fail，再评分，最后给出审查结论和允许状态。前置分类至少包括：
-
-- 任务类型：新建、升级、审查、仅更新索引、迁移/废弃或规范维护
-- 资产层级：普通概念文档、方法论资产、治理资产、模板、索引、runbook、workflow output 或报告
-- 文档路径类型：模型型概念文档、纯概念文档或不适用
-- 展开密度：`standard`、`deep` 或不适用
-
-缺少前置分类时，审查结论无效。
-
-### 9.1 Hard Fail
-
-命中任意一条，就不能视为正式合格稿，也不得宣称 ready、accepted、validated、`upgraded_v1`、`maintained_asset` 或等价通过状态。
-
-Hard Fail 至少覆盖：
-
-- 仓库集成：canonical 路径、`kebab-case` 文件名、稳定 `doc_id`、索引影响、changed-file links、`related_docs` 与正文链接
-- 必需 frontmatter：必填字段、数组字段、`depth_mode`、source/time/version/status 与正文一致性
-- 文档类型结构：模型型文档的问题定义、对象边界、核心结构、机制链、tradeoff/失败模式、验证入口和迁移入口；纯概念文档的命名/分类问题、什么算/不算、相邻概念、例子/反例/误读、验证入口和迁移入口
-- 边界清晰度：对象边界、相邻概念、误等价、适用条件、失效条件和可判别性
-- 来源依据与真实世界锚点：真实可定位对象、当前实践、历史路径、来源限制和事实/推断区分
-- 时间语境与一致性：`updated_at`、`time_context`、`source_basis`、正文、索引、链接和审查结论互相一致
-
-每个 Hard Fail 输出都必须包含失败条件、证据位置、为什么阻塞和修复指导。
-
-### 9.2 六项评分
-
-没有 Hard Fail 的前提下，再按 `0-2` 分评分。分数不能抵消 Hard Fail。对治理、方法论、模板、索引、runbook 或 workflow output 等非概念资产，跳过概念文档六项评分，改用角色、权威、范围、frontmatter、来源/时间语境、索引/链接、版本记录和 workflow contract fit 的等价治理检查。
-
-- 问题定义与边界
-- 结构与因果 / 判别框架
-- Tradeoff / 失败模式 / 误读纠偏
-- 真实世界锚点 / 当前实践
-- 验证 / 迁移
-- 元数据 / 仓库纪律
-
-评分解释：
-
-- `10-12` 分且无 Hard Fail：可通过当前质量门禁，并可考虑 `upgraded_v1` 或相应通过结论
-- `7-9` 分且无 Hard Fail：可保留或进入受控修订，但不建议标 `upgraded_v1`、`validated` 或强通过状态
-- `0-6` 分或有 Hard Fail：应退回补强
-
-`standard` 要求稳定理解和最小复用；`deep` 要求更强的信息密度、判断支撑、来源纪律、失败模式和迁移能力，不是只要求篇幅更长。
-
-### 9.3 质量状态与审查结论
-
-`quality_status`、生命周期状态和 BMad story 状态必须分开理解。
-
-当前兼容的 `quality_status` 值包括 `draft`、`reviewed`、`validated`、`maintained_asset`、`upgraded_v1`、`deprecated` 和 `archived`。其中 `upgraded_v1` 是既有概念文档质量信号，不是完整生命周期状态；`maintained_asset` 适用于 active methodology/governance/template/index/support asset，前提是角色、权威、版本、来源/时间语境、链接和维护触发点仍当前。
-
-审查结论应单独表达，例如 `blocked_by_hard_fail`、`needs_revision`、`accepted_for_current_use`、`validated_candidate` 或 `hold_for_maxwell_confirmation`。本规范不授权批量改写既有文档的 `quality_status`。
-
-## 10. 审查输出必须长成什么样
-
-每次正式审查，输出结构保持稳定：
-
-- `前置分类`：任务类型、资产层级、模型型/纯概念/不适用路径、`standard`/`deep`/不适用及依据
-- `Hard Fail`：是否命中；每项必须包含失败条件、证据位置、为什么阻塞和修复指导
-- `文档类型判定`：模型型概念文档还是纯概念文档，以及依据
-- `复杂度判定`：按 `standard` 还是 `deep` 审视，以及依据
-- `六项评分`：逐项 `0-2`；非概念资产写明不适用，并输出等价治理检查
-- `必改项`：不改就不能过门禁
-- `可改进项`：不影响过门禁，但能显著提高复用性
-- `最终结论`：审查决策、是否允许通过状态、是否允许改 `quality_status`、index/link/version/lifecycle 影响、approved deviations 与 unresolved risks
-
-不要只给“整体不错”或“建议更完整”这类软评价。
-
-## 11. 仓库集成规范
-
-概念文档只有在完成仓库集成后，才算真正完成。  
-至少要检查：
-
-- 路径是否正确
-- 文件名是否正确
-- frontmatter 是否完整且一致
-- 标题、路径、`topic` 是否一致
-- 新增正式文档后是否更新 `docs/index.md`
-- 若路径、标题或 topic 改变，是否同步更新索引
-
-## 12. 版本治理记录
-
-Story 1.2 将本主规范从 `unified_spec_v1` 提升为 `unified_spec_v2`。最小版本变更记录如下：
+最低 frontmatter 字段：
 
 ```yaml
-version_change_record:
-  changed_asset: docs/methodology/document-generation-methodology.md
-  old_value: unified_spec_v1
-  new_value: unified_spec_v2
-  change_type: methodology
-  reason: Story 1.2 将正式概念文档入口接到 intake and intent classification，并同步审查前置分类与等价治理检查摘要
-  affected_docs_or_assets:
-    - docs/methodology/document-generation-methodology.md
-    - docs/methodology/intake-and-intent-classification.md
-    - docs/methodology/concept-document-quality-gate.md
-    - docs/methodology/fixed-concept-generation-prompt.md
-  expected_generation_impact: 正式概念文档新建、升级、审查或索引动作前，先确认请求属于正式概念文档工作；任务意图、资产层级或缺失输入不清时转入 intake asset
-  expected_review_impact: 正式审查必须输出前置分类；非概念资产使用等价治理检查而不是概念文档六项评分
-  migration_plan: targeted_review
-  index_navigation_impact: none
-  lifecycle_quality_status_impact: none
-  approved_deviations: []
-  unresolved_risks:
-    - "Epic 2 尚未定义独立 methodology_version/frontmatter schema；当前用 template_version 表达主规范规则集"
+doc_id: stable-topic-slug
+title: Human readable title
+concept: stable_concept_identifier
+topic: topic-name
+depth_mode: standard
+created_at: 'YYYY-MM-DDTHH:MM:SS+08:00'
+updated_at: 'YYYY-MM-DDTHH:MM:SS+08:00'
+source_basis:
+  - source_or_related_asset
+time_context: explicit_time_context
+applicability: where_this_doc_applies
+prompt_version: prompt_or_not_applicable
+template_version: template_or_asset_version
+quality_status: draft
+related_docs: []
+open_questions:
+  - unresolved_question
 ```
 
-## 13. 固定触发词
+`source_basis`、`related_docs`、`open_questions` 必须是 YAML arrays。
 
-如果你只是想直接执行任务，默认用这四段入口：
+## 7. 必需信息位点
 
-### 13.1 新建文档
+每篇正式概念文档都必须让审查者定位到以下信息：
+
+- problem definition、概念结论，或 naming/classification problem。
+- object boundary：什么属于本文对象。
+- non-object scope：什么不属于本文对象。
+- adjacent concept distinction：最容易混淆的相邻概念和判别差异。
+- applicable conditions：判断成立的条件、上下文或使用场景。
+- failure/misreading：模型型写失效条件和 failure modes；纯概念写误读、误用和 false equivalence。
+- real-world anchor：可定位的真实组织、系统、产品、标准、制度、论文、公开实践或具体场景；确实不适用时说明理由。
+- source/time context：当前实践、历史路径、产品、标准、监管或市场相关内容必须有时间语境。
+- verification entry：自测题、预测题、诊断题、纠错题或边界判断题。
+- transfer entry：可迁移到哪些相邻问题、模型或判断流程。
+- open questions：仍待核查、待澄清或后续 story 才会收束的问题。
+
+标题和小节顺序可以调整，信息位点不能静默缺失。
+
+## 8. 推荐正文骨架
+
+### 8.1 模型型概念文档
+
+```markdown
+# 标题
+
+## 1. 这份文档要帮你学会什么
+## 2. 一句话结论 / 问题定义
+## 3. 对象边界与相邻概念
+## 4. 核心结构
+## 5. 核心机制 / 主链路 / 因果链
+## 6. 关键 tradeoff 与失败模式
+## 7. 应用场景
+## 8. 工业 / 现实世界锚点
+## 9. 当前推荐实践、过时路径与替代
+## 10. 自测题 / 验证入口
+## 11. 迁移与关联模型
+## 12. 未解问题与继续深挖
+## 13. 参考资料
+```
+
+### 8.2 纯概念文档
+
+```markdown
+# 标题
+
+## 1. 这份文档要帮你学会什么
+## 2. 一句话结论 / 概念结论
+## 3. 这个概念试图解决什么命名或分类问题
+## 4. 概念边界与相邻概念
+## 5. 什么算它，什么不算它
+## 6. 代表性例子、反例与常见误读
+## 7. 它会进入哪些更大的模型或判断框架
+## 8. 自测题 / 验证入口
+## 9. 迁移与关联模型
+## 10. 未解问题与继续深挖
+## 11. 参考资料
+```
+
+不是每篇都必须逐字照抄目录，但对应路径的信息位点必须可审查。
+
+### 8.3 特殊主题
+
+- 数学推导型：补现实问题、工程用途、适用边界、样例/反例和迁移入口。
+- 时间敏感型：写明核对日期、事实/推断区分、来源限制和当前性风险。
+- 制度/政策/监管/市场型：给出真实制度或市场对象，说明规则如何落地、旧路径局限和常见失败模式。
+- 历史/经典理论型：区分原始语境、后世误读、当前可迁移结构和不可迁移结论。
+
+## 9. 来源纪律与真实世界锚点
+
+涉及当前实践、产品行为、标准、监管、市场状态、历史路径、废弃方案或替代建议时，必须调用 `source-discipline-and-real-world-anchor-policy.md`。
+
+最低要求：
+
+- 写明核对日期或时间语境。
+- 区分已核查事实、基于来源的归纳、作者推断、示例化说明和待核查问题。
+- 优先使用一手、官方或可定位来源。
+- 来源不足时记录限制，不得把推断写成事实。
+- 历史路径必须说明为什么旧、局限在哪里、当前替代是什么，以及旧路径何时仍有解释价值。
+- 正文、frontmatter `source_basis`、`time_context`、参考资料、open questions 和质量状态语义一致。
+
+## 10. 质量门禁
+
+审查、验收、升级 gap analysis 和质量状态变更必须调用 `concept-document-quality-gate.md`。
+
+最低审查输出：
+
+- 前置分类：任务类型、资产层级、文档路径、深度模式、来源/时间敏感性。
+- Hard Fail 表：问题、证据位置、修复要求。
+- 六项评分：问题定义与边界、结构与因果/判别框架、tradeoff/失败模式/误读纠偏、真实锚点/当前实践、验证/迁移、元数据/仓库纪律。
+- 必改项。
+- 可改进项。
+- 最终结论：是否允许进入目标状态、是否允许改 `quality_status`、index/link/version/lifecycle 影响和 unresolved risks。
+
+任意 Hard Fail 存在时，不得宣称 ready、accepted、validated、upgraded、reviewed 或 maintained。
+
+## 11. 仓库集成
+
+正式文档完成前必须检查：
+
+- 路径位于正确 `docs/{topic}/`。
+- 文件名使用 `kebab-case`。
+- H1、frontmatter `title`、`concept`、`topic`、路径和索引分组不互相误导。
+- 新增、重命名、移动、改标题、改 topic、废弃或归档时，同步检查 `docs/index.md`。
+- `related_docs` 和正文链接指向存在文件，且关系有意义。
+- source/time、quality/status、lifecycle、review decision 和 BMad story status 不混用。
+
+`docs/index.md` 是导航入口，不是质量、身份或生命周期的唯一 source of truth。索引更新不能制造 hidden promotion。
+
+## 12. 固定触发词
+
+### 12.1 新建文档
 
 ```text
-为概念 {concept} 新建一篇知识库文档。按 docs/methodology/document-generation-methodology.md 执行：先判断它应走模型型概念文档还是纯概念文档路径，再判断 standard 或 deep；如果是模型型，建立可复用内部模型；如果是纯概念，建立稳定的概念辨识资产，不要硬造机制链。写入合适的 docs/{topic}/ 目录，补齐 frontmatter，并在完成后更新 docs/index.md。
+为概念 {concept} 新建一篇知识库文档。按 docs/methodology/document-generation-methodology.md 执行：先判断任务类型、资产层级、模型型概念文档/纯概念文档路径和 standard/deep；补齐输入合同、正文信息位点、frontmatter、来源/时间语境、质量门禁和 docs/index.md。
 ```
 
-### 13.2 升级旧文档
+### 12.2 升级旧文档
 
 ```text
-按 docs/methodology/document-generation-methodology.md 升级现有文档 {path}。保留原有高价值内容，先找 Hard Fail 和低分项，再判断它应走模型型概念文档还是纯概念文档路径；补对应结构、自测题、迁移入口和仓库集成，并删除那些只是为了套模板而硬写出来的伪机制、伪 tradeoff 或伪锚点。
+按 docs/methodology/document-generation-methodology.md 升级现有文档 {path}。保留高价值内容，先做 gap analysis，再补路径类型对应的信息位点、来源纪律、验证入口、迁移入口、frontmatter、索引和链接影响；不得为了统一风格整篇推倒重写。
 ```
 
-### 13.3 审查 / 验收
+### 12.3 审查 / 验收
 
 ```text
-按 docs/methodology/document-generation-methodology.md 审查文档 {path}。先输出前置分类：任务类型、资产层级、模型型概念文档/纯概念文档/不适用、standard/deep/不适用。再按 docs/methodology/concept-document-quality-gate.md 输出 Hard Fail 证据与修复指导、六项评分或等价治理检查、必改项、可改进项、最终审查决策、允许的 quality_status、index/link/version/lifecycle 影响和未解决风险。任意 Hard Fail 存在时，不得宣称 ready、accepted、validated、upgraded_v1 或 maintained_asset。
+按 docs/methodology/document-generation-methodology.md 和 docs/methodology/concept-document-quality-gate.md 审查文档 {path}。输出前置分类、Hard Fail、六项评分或等价治理检查、必改项、可改进项、最终结论、允许的 quality_status、index/link/version/lifecycle 影响和未解决风险。
 ```
 
-### 13.4 仅更新索引
+### 12.4 仅更新索引
 
 ```text
-检查 docs/index.md 是否已经正确收录 {path}。如果没有，按现有 topic 分组补入，并保持标题、路径和主题一致。
+检查 docs/index.md 是否正确收录 {path}。如果需要更新，只改导航入口和必要 metadata，保持标题、路径、topic、资产类别和索引分组一致；不得把候选或 workflow output 偷偷晋升为正式资产。
 ```
 
-## 14. 参考件如何使用
+## 13. 方法论维护规则
 
-如果主规范已经能满足任务，不必强制回读所有参考文件。  
-只有在下面这些场景里，再进入参考件：
+`docs/methodology/` 默认不再新增平行支撑文件。新增规则时先判断归属：
 
-- 你需要更完整的学习策略时，读 `learning-new-things-playbook.md`
-- 你需要更强的建模约束时，读 `cognitive-modeling-playbook.md`
-- 你要看完整章节骨架或分型规则时，读 `concept-document-template.md`
-- 你要看完整 Hard Fail 与评分细则时，读 `concept-document-quality-gate.md`
-- 你要确认候选稿生成的输入、输出、必需信息位点或出界输出时，读 `concept-document-contract.md`
-- 你要判断任务类型、资产层级、缺失输入、`_bmad-output/` 边界或 batch routing 时，读 `intake-and-intent-classification.md`
-- 你要用 passing/failing examples 校准 Hard Fail、六项评分证据和 reviewer action 倾向时，读 `concept-document-example-catalog.md`
-- 你要细查 current-practice claim、historical/deprecated practice、source labels、unverifiable claims 或 real-world anchor adequacy 时，读 `source-discipline-and-real-world-anchor-policy.md`
-- 你要复制固定入口原文时，读 `fixed-concept-generation-prompt.md`
+| 规则类型 | 写入位置 |
+| --- | --- |
+| 任务摄入、生成合同、正文骨架、固定触发词、仓库集成、方法论边界 | 本文 |
+| Hard Fail、评分、审查输出、质量状态限制、reviewer calibration | `concept-document-quality-gate.md` |
+| 来源、时间语境、当前实践、历史路径、不可验证声明、真实锚点 | `source-discipline-and-real-world-anchor-policy.md` |
 
-默认路径应该是：
+只有当新规则同时满足以下条件时，才考虑新增 methodology 文件：
 
-1. 先看本规范
-2. 直接执行
-3. 只有卡住时，再下钻参考件
+- 不能自然并入三份保留规范。
+- 不新增平行主入口。
+- 有明确 owner entry point、适用范围、非目标、索引处理和下游影响分析。
+- 用户明确授权新增，而不是只要求补充当前执行规则。
+
+## 14. 完成证据
+
+完成文档任务时，至少汇报：
+
+- 修改了哪些正式文件。
+- 任务类型、资产层级、文档路径和深度判断。
+- 质量门禁或等价治理检查结果。
+- 来源/时间语境处理。
+- `docs/index.md`、frontmatter、链接和 related docs 是否同步。
+- 删除、合并、迁移或废弃时的 successor 和引用处理。
+- 未解决问题和后续风险。
+- 未新增未授权软件产物。

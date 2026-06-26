@@ -18,9 +18,8 @@ prompt_version: concept_generation_prompt_v1
 template_version: concept_doc_v1
 quality_status: upgraded_v1
 related_docs:
-  - docs/methodology/learning-new-things-playbook.md
-  - docs/methodology/cognitive-modeling-playbook.md
-  - docs/programming-languages/cpp20-coroutine-playbook.md
+  - docs/methodology/document-generation-methodology.md
+  - docs/programming-languages/coroutine.md
 open_questions:
   - 当 C++ modules 在主流工具链和分发链路里进一步成熟后，PImpl 在“纯编译防火墙”语境下还能保留多少必要性？
   - 对需要强 const 语义和值语义的类型，未来是否会形成比手工 deep-copy 或 clone 更统一的 PImpl 模板？

@@ -18,11 +18,9 @@ prompt_version: concept_generation_prompt_v1
 template_version: concept_doc_v1
 quality_status: upgraded_v1
 related_docs:
-  - docs/methodology/learning-new-things-playbook.md
-  - docs/methodology/cognitive-modeling-playbook.md
+  - docs/methodology/document-generation-methodology.md
   - docs/computer-systems/memory-order.md
   - docs/computer-systems/happens-before.md
-  - docs/computer-systems/fence.md
   - docs/computer-systems/false-sharing.md
 open_questions:
   - 在 CXL、异构加速器和更大规模共享内存系统里，coherence domain 将如何继续分层？
@@ -461,9 +459,8 @@ Intel SDM 提供架构层共享内存语义背景，LKMM 解释文档则提醒�
 
 如果你真正想解决的是程序可见性与顺序，当前更应该转去看：
 
-- [memory-order.md](/Users/maxwell/Knowledge/docs/computer-systems/memory-order.md)
-- [happens-before.md](/Users/maxwell/Knowledge/docs/computer-systems/happens-before.md)
-- [fence.md](/Users/maxwell/Knowledge/docs/computer-systems/fence.md)
+- [memory-order.md](memory-order.md)
+- [happens-before.md](happens-before.md)
 
 如果你真正想解决的是设备可见性，则更应该查：
 
@@ -486,9 +483,9 @@ Intel SDM 提供架构层共享内存语义背景，LKMM 解释文档则提醒�
 
 理解了这篇文档后，你应该能把这套模型迁移到：
 
-- [false-sharing.md](/Users/maxwell/Knowledge/docs/computer-systems/false-sharing.md) 的 line-level 性能分析
-- [memory-order.md](/Users/maxwell/Knowledge/docs/computer-systems/memory-order.md) 的跨地址顺序问题
-- [happens-before.md](/Users/maxwell/Knowledge/docs/computer-systems/happens-before.md) 的语言层同步图
+- [false-sharing.md](false-sharing.md) 的 line-level 性能分析
+- [memory-order.md](memory-order.md) 的跨地址顺序问题
+- [happens-before.md](happens-before.md) 的语言层同步图
 - 驱动 / DMA / MMIO 的设备可见性判断
 - 多插槽、异构共享内存系统的边界分析
 
