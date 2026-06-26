@@ -1,11 +1,11 @@
 ---
-doc_id: governance-fa-li-quan-qing-li
+doc_id: social-systems-fa-li-quan-qing-li
 title: 法利权情理：把复杂冲突拆成规则、利益、权力、情感与法理的五维模型
 concept: fa_li_quan_qing_li
-topic: governance
+topic: social-systems
 depth_mode: deep
 created_at: '2026-03-19T21:10:00+08:00'
-updated_at: '2026-03-20T14:46:11+08:00'
+updated_at: '2026-06-26T00:00:00+08:00'
 source_basis:
   - constitution_article_33_qspfw_checked_2026_03_19
   - labor_dispute_mediation_arbitration_law_npc_checked_2026_03_19
@@ -14,7 +14,8 @@ source_basis:
   - jurisprudential_analysis_method_thepaper_checked_2026_03_19
   - guo_chunlin_public_lecture_traces_checked_2026_03_19
   - chinese_public_discussion_multidimensional_conflict_framing_synthesis
-time_context: foundations_plus_current_governance_practice_checked_2026_03_19
+  - owner_topic_reclassification_2026_06_26
+time_context: foundations_plus_current_governance_practice_checked_2026_03_19_and_topic_reclassified_2026_06_26
 applicability: governance_analysis_dispute_resolution_policy_design_and_organizational_decision_making
 prompt_version: concept_generation_prompt_v1
 template_version: concept_doc_v1

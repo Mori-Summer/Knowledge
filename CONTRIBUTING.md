@@ -58,6 +58,7 @@
 - `docs/networking/`
 - `docs/programming-languages/`
 - `docs/security/`
+- `docs/social-systems/`
 - `docs/systems/`
 
 主题选择原则：

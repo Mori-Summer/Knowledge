@@ -31,7 +31,6 @@ open_questions: []
 
 - [正式 docs 资产治理规范：身份、元数据、路径、生命周期、索引、链接与网络边界](./governance/docs-asset-governance.md)
 - [文档治理执行规范：复用扫描、晋升、合并、迁移、修订、批量、决策与返工闭环](./governance/docs-change-governance.md)
-- [法利权情理：把复杂冲突拆成规则、利益、权力、情感与法理的五维模型](./governance/fa-li-quan-qing-li.md)
 
 ## templates
 
@@ -97,6 +96,10 @@ open_questions: []
 ## security
 
 - [未授权程序观测逻辑：把 DMA、进程内存与抓包放回同一状态获取模型](./security/program-observation-surfaces.md)
+
+## social-systems
+
+- [法利权情理：把复杂冲突拆成规则、利益、权力、情感与法理的五维模型](./social-systems/fa-li-quan-qing-li.md)
 
 ## systems
 

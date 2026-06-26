@@ -143,6 +143,7 @@ docs/
   networking/                 网络协议与网络系统概念
   programming-languages/      编程语言相关概念
   security/                   安全观察面与权限边界概念
+  social-systems/             社会系统、冲突治理与组织判断模型
   systems/                    系统设计与一般系统概念
   index.md                    文档导航
 ```
