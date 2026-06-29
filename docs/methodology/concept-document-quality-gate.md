@@ -5,8 +5,9 @@ concept: concept_document_quality_gate
 topic: methodology
 depth_mode: standard
 created_at: '2026-03-19T18:10:00+08:00'
-updated_at: '2026-06-23T00:00:00+08:00'
+updated_at: '2026-06-26T00:00:00+08:00'
 source_basis:
+  - maxwell_principle_model_first_concept_docs_2026_06_26
   - _bmad-output/project-context.md
   - _bmad-output/planning-artifacts/prd.md
   - _bmad-output/planning-artifacts/architecture.md
@@ -24,10 +25,10 @@ source_basis:
   - docs/governance/docs-change-governance.md
   - docs/governance/docs-asset-governance.md
   - docs/templates/governance-record-templates.md
-time_context: docs_folder_consolidation_progress_2026_06_23
+time_context: docs_folder_consolidation_progress_2026_06_23_and_model_first_principle_2026_06_26
 applicability: concept_doc_acceptance_review_upgrade_and_quality_status_decisions
-prompt_version: concept_generation_prompt_v4
-template_version: quality_gate_v4
+prompt_version: concept_generation_prompt_v5
+template_version: quality_gate_v5
 quality_status: maintained_asset
 related_docs:
   - docs/methodology/document-generation-methodology.md
@@ -60,7 +61,7 @@ open_questions:
 
 本质量门禁资产自身属于方法论治理资产。验证它时应检查 `doc_id`、路径、frontmatter、角色/权威、与主规范关系、来源/时间语境、版本治理记录、链接和维护触发点，而不是把它当成一篇普通概念文档打分。
 
-`prompt_version: concept_generation_prompt_v4` 与 `template_version: quality_gate_v4` 表示 2026-06-18 的 methodology folder consolidation 已把旧样例目录的 reviewer calibration 语义并入本门禁，并删除并列支撑入口。
+`prompt_version: concept_generation_prompt_v5` 与 `template_version: quality_gate_v5` 表示本门禁已在 2026-06-18 的 methodology folder consolidation 基础上，进一步固化 2026-06-26 的“原理优先、模型优先、会造优先”审查口径。旧样例目录的 reviewer calibration 语义仍已并入本门禁，并删除并列支撑入口。
 
 ## 审查前置分类
 
@@ -77,6 +78,10 @@ open_questions:
 7. 输出最终审查结论和允许使用的质量状态。
 
 模型型概念文档适合具有稳定结构、机制、主链路、失败模式、选型价值或调试价值的对象。纯概念文档适合主要解决命名、分类、边界、相邻概念区分、例子/反例和误读纠偏的对象。不得为了套模板把纯概念硬写成伪机制，也不得把需要机制判断的对象降成术语说明。
+
+模型型、机制型、算法型、系统型和工程型概念文档审查默认采用原理优先、模型优先口径。概念文档不是教程、API reference、代码示例集合或操作手册；这些内容只能作为底层模型的映射、验证或边界说明。Reviewer 必须检查这类文档是否让读者获得“会造”的理解：能重建最小模型、解释必要部件、预测失败边界、迁移判断结构，而不只是会调用现成工具。
+
+纯概念、纯定义、命名区分或分类边界型文档不强制适用“机制 / 数学模型 / 最小可重建实现”要求。Reviewer 不得因为这类文档没有因果链、算法流程或工程构造路径而判 Hard Fail；应重点检查定义是否稳定、边界是否清楚、相邻概念是否能区分、例子/反例和误读纠偏是否足够。
 
 `standard` 与 `deep` 只决定展开密度和证据要求，不改变文档路径类型。`deep` 要求更高的信息密度、判断支撑、来源纪律和迁移能力，不是更长的文本。
 
@@ -120,8 +125,10 @@ open_questions:
 
 - 清晰的问题定义或一句话结论
 - 对象边界和非对象范围
+- 核心抽象、变量、状态、约束、不变量或形式化对象
 - 核心结构、部件、层次或分面框架
-- 核心机制、主链路、因果链或可调用判断链
+- 核心机制、主链路、因果链、数学模型或可调用判断链
+- 最小可重建模型、从零构造路径，或能说明“哪些部件必不可少、去掉会退化成什么”的等价解释
 - 关键 tradeoff、失败模式、失效条件或误用边界
 - 自测题、诊断题、预测题或其他验证入口
 - 迁移入口、关联模型或下游判断使用方式
@@ -133,11 +140,22 @@ open_questions:
 - 这个概念在命名什么，以及为什么需要单独命名
 - 什么算它，什么不算它
 - 相邻概念区分
+- 背后的判别轴、分类规则、定义不变量或边界测试
 - 代表性例子、反例、误用或常见误读
 - 自测题、辨析题或其他验证入口
 - 迁移入口、下游模型位置或后续判断使用方式
 
 所有概念文档还必须有未解问题、继续深挖或模型边界说明。若某类信息确实不适用，必须在正文中说明不适用理由；不能静默缺失。
+
+### 原理与模型优先 Hard Fail
+
+- 文档主体以 API、参数、代码、命令、界面步骤、调用示例或产品用法为主，却没有先解释底层抽象、核心变量、状态转换、约束、不变量、机制、数学模型或判别模型。
+- 算法、系统、协议、工程机制或制度模型只写“怎么用 / 怎么操作”，没有写问题形式化、输入输出、目标、状态、更新规则、资源/约束模型或失败边界。
+- 文档让读者只能照着调用现成工具，不能从零重建一个最小版本、最小判别器、最小流程或最小解释模型。
+- 代码示例、接口表、参数说明或命令清单没有明确映射回底层模型，导致它们替代了原理解释。
+- 自测题主要检查 API 名称、命令参数或步骤记忆，而不是检查原理解释、模型重建、边界判断、失败预测或迁移能力。
+
+本 Hard Fail 主要适用于模型型、机制型、算法型、系统型、工程型、制度运行型或涉及 API/工具/框架/产品行为的文档。纯概念、纯定义、命名区分或分类边界型文档不因缺少机制链、数学模型或最小可重建实现而触发本 Hard Fail；它们若缺少稳定定义、判别轴、边界测试、例子/反例或误读纠偏，应回到“文档类型结构 Hard Fail”和“边界清晰度 Hard Fail”处理。
 
 ### 边界清晰度 Hard Fail
 
@@ -145,6 +163,7 @@ open_questions:
 - 没有相邻概念区分，或把相邻概念列成名词清单但不说明判别差异。
 - 把相关概念做成错误等价，例如把实现机制、使用场景、历史做法和当前推荐实践混为一谈。
 - 文档主张无法用于区分、预测、诊断、选型、迁移或纠错，只能复述定义。
+- 文档只能指导使用，不能支持解释、建模、重建最小版本或推演设计取舍。
 - 关键限定条件、适用条件、失效条件或误用边界缺失，导致结论容易被过度泛化。
 
 ### 验证与迁移 Hard Fail
@@ -194,9 +213,9 @@ open_questions:
 
 | 分数 | 操作含义 |
 | --- | --- |
-| `0` | 模型型文档缺少结构/机制链，或纯概念文档缺少分类/判别框架；内容主要是定义复述。 |
-| `1` | 有结构件、机制链或判别框架，但层次浅、链路断、例子不足，难以支撑复杂判断。 |
-| `2` | 模型型文档给出可调用结构和主链路；纯概念文档给出稳定分类边界和判别框架。 |
+| `0` | 模型型文档缺少核心抽象、变量、状态、约束、机制链或数学/因果模型；纯概念文档缺少分类/判别框架；内容主要是定义复述、用法说明或 API/代码堆砌。 |
+| `1` | 有结构件、机制链或判别框架，但层次浅、链路断，或仍主要依赖现成用法，难以支撑从零重建、复杂判断和相邻问题迁移；纯概念文档的定义边界、判别轴或反例仍不够稳定。 |
+| `2` | 模型型文档给出可调用的抽象结构、主链路、必要部件和最小可重建路径；纯概念文档给出稳定定义、分类边界、判别轴、定义不变量或边界测试。 |
 
 ### Tradeoff / 失败模式 / 误读纠偏
 
@@ -219,8 +238,8 @@ open_questions:
 | 分数 | 操作含义 |
 | --- | --- |
 | `0` | 没有验证入口或迁移入口，或只提供术语回忆题。 |
-| `1` | 有自测、验证或迁移内容，但主要检查记忆，不能充分支撑解释、边界判断或相邻问题迁移。 |
-| `2` | 验证入口能检查解释、判别、诊断、预测或选型；迁移入口说明可复用结构和下游模型位置。 |
+| `1` | 有自测、验证或迁移内容，但主要检查记忆、API 参数或操作步骤，不能充分支撑解释、模型重建、边界判断或相邻问题迁移。 |
+| `2` | 验证入口能检查解释、判别、诊断、预测、选型或最小模型重建；迁移入口说明可复用结构和下游模型位置。 |
 
 ### 元数据 / 仓库纪律
 
@@ -345,6 +364,29 @@ open_questions:
 
 Hard Fail、评分维度、分数解释、质量状态、审查结论、完成汇报义务或迁移规则发生语义变化时，必须按 `docs/governance/docs-asset-governance.md` 记录版本治理事件。
 
+本次语义变更将“原理优先、模型优先、会造优先”固化为模型型概念文档质量门禁，并把教程式、API 式、代码示例式但缺少底层模型的模型型文档纳入 Hard Fail；同时明确纯概念、纯定义、命名区分和分类边界型文档不强求机制模型或最小可重建实现。最小版本变更记录如下：
+
+```yaml
+version_change_record:
+  changed_asset: docs/methodology/concept-document-quality-gate.md
+  old_value: quality_gate_v4
+  new_value: quality_gate_v5
+  change_type: quality_gate
+  reason: 固化模型型文档原理优先、模型优先、会造优先的审查口径，并明确纯概念文档不强求机制模型
+  affected_docs_or_assets:
+    - docs/methodology/concept-document-quality-gate.md
+    - docs/methodology/document-generation-methodology.md
+    - future concept document generation and review tasks
+  expected_generation_impact: future model-type concept docs must explain underlying model before API, code, usage, command, or operation steps; pure concept docs focus on stable definition, boundary, distinction, examples and misreadings
+  expected_review_impact: tutorial-like model docs without principle/model core trigger Hard Fail or low structure/verification scores; pure definition docs are judged by boundary and distinction quality instead of mechanism depth
+  migration_plan: targeted_review
+  index_navigation_impact: none_expected_unless_title_path_topic_changes
+  lifecycle_quality_status_impact: no_bulk_status_rewrite
+  approved_deviations: []
+  unresolved_risks:
+    - "existing concept docs may vary in model-first depth; this change does not authorize bulk rewrite without separate target set"
+```
+
 历史版本治理事件曾将本门禁从 `quality_gate_v2` 提升为 `quality_gate_v3`。最小版本变更记录如下：
 
 ```yaml
@@ -402,6 +444,8 @@ version_change_record:
 下面这些文档看起来完整，但不得因语言流畅或章节齐全而放行：
 
 - 结构齐全，但核心机制空心。
+- 结构齐全，但主体是教程、API 表、代码示例、命令清单或操作步骤，底层模型很薄。
+- 会用某个工具，但不能解释为什么这样设计、如何重建最小版本、去掉关键部件会怎样退化。
 - 结构齐全，但纯概念被硬拆成伪机制文档。
 - 结构齐全，但明显复杂的主题却每节只有一小段摘要。
 - 案例很多，但都是泛泛行业印象，无法定位真实对象。
