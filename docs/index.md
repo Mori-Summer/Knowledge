@@ -5,10 +5,10 @@ concept: knowledge_docs_index
 topic: root
 depth_mode: standard
 created_at: '2026-03-16T00:00:00+08:00'
-updated_at: '2026-06-26T00:00:00+08:00'
+updated_at: '2026-06-29T00:00:00+08:00'
 source_basis:
   - derived_repository_index
-time_context: docs_navigation_alignment_2026_06_26
+time_context: docs_navigation_alignment_2026_06_29
 applicability: repository_navigation
 prompt_version: not_applicable
 template_version: index_v1
@@ -74,7 +74,9 @@ open_questions: []
 
 ## image-processing
 
+- [Alpha Matting：从合成方程、欠定性到约束传播与前景恢复的统一模型](./image-processing/alpha-matting.md)
 - [导向滤波与快速导向滤波：局部线性模型、低分辨率系数近似与工程选型](./image-processing/guided-filter-derivation.md)
+- [OpenCV GrabCut：从 GMM、MRF 能量函数到最小割的交互式分割模型](./image-processing/opencv-grabcut.md)
 
 ## mathematics
 
